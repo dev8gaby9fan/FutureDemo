@@ -1,0 +1,59 @@
+if(quoteIsApp.toBoolean()){
+    apply plugin: 'com.android.application'
+}else{
+    apply plugin: 'com.android.library'
+}
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+android {
+    compileSdkVersion rootProject.ext.build_versions.compile_sdk
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.build_versions.min_sdk
+        targetSdkVersion rootProject.ext.build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+        multiDexEnabled true
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            if (quoteIsApp.toBoolean()) {
+                manifest.srcFile 'src/main/manifest/app/AndroidManifest.xml'
+            } else {//作为lib模块的时候，合并到宿主APP中去；排查app目录下的文件
+                manifest.srcFile 'src/main/manifest/module/AndroidManifest.xml'
+                resources {
+                    exclude 'src/main/app/*'
+                }
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api project(":lib_common")
+    kapt deps.arouter.compiler
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.ext
+    androidTestImplementation deps.test.espresso_core
+}

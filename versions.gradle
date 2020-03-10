@@ -1,0 +1,112 @@
+/**
+ * 统一管理依赖库的版本申明
+ * 参考https://github.com/android/architecture-components-samples/blob/master/versions.gradle
+ */
+ext.deps=[:]
+//依赖
+def deps = [:]
+
+//版本
+def versions=[:]
+versions.gradle="3.5.3"
+versions.accpcompat="1.0.2"
+versions.core_ktx="1.0.2"
+versions.material_version="1.0.0"
+versions.constraint_version="1.1.3"
+versions.lifecycle_extensions="2.0.0"
+versions.junit="4.12"
+versions.test_runner="1.1.1"
+versions.test_ext="1.1.0"
+versions.espresso_core="3.1.1"
+versions.multidex="2.0.1"
+versions.kotlin="1.3.41"
+versions.kotlinx_coroutines="1.2.1"
+versions.kotlin="1.3.41"
+versions.fragment_ktx="1.1.0-rc01"
+versions.gson="2.8.5"
+versions.MPAndroidChart="v3.1.0"
+versions.EasyPermissions="3.0.0"
+versions.arouter="1.4.1"
+versions.arouter_compiler="1.2.2"
+versions.okhttp="4.4.0"
+versions.rxjava="2.2.18"
+versions.rxandroid="2.1.1"
+versions.retrofit="2.7.2"
+
+def androidx=[:]
+androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
+androidx.appcompat="androidx.appcompat:appcompat:${versions.accpcompat}"
+androidx.core_ktx="androidx.core:core-ktx:${versions.core_ktx}"
+androidx.lifecycle_extensions="androidx.lifecycle:lifecycle-extensions:${versions.lifecycle_extensions}"
+androidx.multidex="androidx.multidex:multidex:${versions.multidex}"
+androidx.lifecycle_extensions="androidx.constraintlayout:constraintlayout:${versions.lifecycle_extensions}"
+androidx.lifecycle_extensions="androidx.constraintlayout:constraintlayout:${versions.lifecycle_extensions}"
+androidx.lifecycle_extensions="androidx.constraintlayout:constraintlayout:${versions.lifecycle_extensions}"
+
+def arouter = [:]
+arouter.api="com.alibaba:arouter-api:${versions.arouter}"
+arouter.compiler="com.alibaba:arouter-compiler:${versions.arouter_compiler}"
+
+def material= "com.google.android.material:material:${versions.material_version}"
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+kotlin.coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinx_coroutines"
+
+def gson = "com.google.code.gson:gson:${versions.gson}"
+
+def mpchart="com.github.PhilJay:MPAndroidChart:${versions.MPAndroidChart}"
+
+def easy_permission = "pub.devrel:easypermissions:${versions.EasyPermissions}"
+
+def okhttp="com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+def retrofit="com.squareup.retrofit2:retrofit:$versions.retrofit"
+
+def test = [:]
+test.junit="junit:junit:${versions.junit}"
+test.test_runner="androidx.test:runner:${versions.test_runner}"
+test.espresso_core="androidx.test.espresso:espresso-core:${versions.espresso_core}"
+test.ext="androidx.test.ext:junit:$versions.test_ext"
+
+def rxjava=[:]
+rxjava.java="io.reactivex.rxjava2:rxjava:$versions.rxjava"
+rxjava.android="io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+
+deps.androidx = androidx
+deps.material = material
+deps.gson = gson
+deps.mpchart = mpchart
+deps.easy_permission = easy_permission
+deps.test = test
+deps.kotlin=kotlin
+deps.arouter=arouter
+deps.gradle="com.android.tools.build:gradle:$versions.gradle"
+deps.okhttp=okhttp
+deps.rxjava=rxjava
+deps.retrofit=retrofit
+
+//编译版本
+def build_versions=[:]
+build_versions.min_sdk = 21
+build_versions.compile_sdk = 29
+build_versions.target_sdk = 29
+build_versions.build_tools = "29.0.3"
+
+def app_info=[:]
+app_info.id="com.fsh.future"
+app_info.version_code=1
+app_info.version_name="1.0.0"
+
+ext.build_versions = build_versions
+ext.deps = deps
+ext.versions = versions
+ext.app_info=app_info
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+}
+ext.addRepos = this.&addRepos

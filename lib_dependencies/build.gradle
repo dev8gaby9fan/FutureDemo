@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+
+    compileSdkVersion rootProject.ext.build_versions.compile_sdk
+    defaultConfig {
+        minSdkVersion rootProject.ext.build_versions.min_sdk
+        targetSdkVersion rootProject.ext.build_versions.target_sdk
+        versionCode 1
+        versionName "1.0.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api deps.kotlin.stdlib
+    api deps.kotlin.coroutines
+    api deps.kotlin.test
+    api deps.androidx.appcompat
+    api deps.androidx.core_ktx
+    api deps.arouter.api
+    api deps.gson
+    api deps.material
+    api deps.androidx.multidex
+    api deps.easy_permission
+    api deps.okhttp
+    api deps.rxjava.java
+    api deps.rxjava.android
+    api deps.retrofit
+    //TODO 暂时不实现分时和K线
+//    api deps.mpchart
+
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//    implementation 'androidx.appcompat:appcompat:1.0.2'
+//    implementation 'androidx.core:core-ktx:1.0.2'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}

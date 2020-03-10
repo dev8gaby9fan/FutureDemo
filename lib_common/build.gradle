@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+android {
+    compileSdkVersion rootProject.ext.build_versions.compile_sdk
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.build_versions.min_sdk
+        targetSdkVersion rootProject.ext.build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    //可以使用Parcelize注解，不需要事先Parcelable的抽象方法
+    androidExtensions {
+        experimental = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(":lib_dependencies")
+    api project(":lib_resources")
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.ext
+    androidTestImplementation deps.test.espresso_core
+}
