@@ -29,4 +29,8 @@ object ArouterPath {
     const val PAGE_TRADE_TRADE = "/trade/trade"
     //登录界面
     const val PAGE_TRADE_LOGIN = "/trade/login"
+
+    const val SERVICE_QUOTE = "/quote/service"
+
+    const val SERVICE_TRADe = "/trade/service"
 }

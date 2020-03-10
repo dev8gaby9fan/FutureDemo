@@ -21,6 +21,7 @@ class QuoteMainFragment : BaseFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val beginTransaction = childFragmentManager.beginTransaction()
+        beginTransaction.replace(R.id.fl_quote_menu,QuoteMenuFragment()).commitNow()
     }
 }
