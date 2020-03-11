@@ -1,11 +1,12 @@
 package com.fsh.quote.service
 
+import com.fsh.common.repository.BaseRepository
 import com.fsh.common.retrofit.BaseRetrofitApi
-import com.fsh.common.retrofit.RetrofitUtils
 import com.fsh.quote.util.Constants
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import retrofit2.http.GET
+import retrofit2.http.Headers
 
 /**
  * Created by devFan
@@ -17,10 +18,11 @@ import retrofit2.http.GET
  *
  */
 
-interface QuoteReposity : BaseRetrofitApi {
+interface QuoteHttpReposity : BaseRetrofitApi, BaseRepository {
     /**
      * 加载合约
      */
+    @Headers("Accept:application/json")
     @GET(Constants.URL_LAST_INSTRUMENT)
     fun loadInstruments():Observable<JsonObject>
 }

@@ -11,6 +11,6 @@ package com.fsh.quote.util
  */
 
 object Constants {
-    const val URL_LAST_INSTRUMENT = ""
+    const val URL_LAST_INSTRUMENT = "https://openmd.shinnytech.com/t/md/symbols/latest.json"
 
 }
