@@ -1,4 +1,4 @@
-package com.fsh.quote.service
+package com.fsh.quote.repository
 
 import com.fsh.common.repository.BaseRepository
 import com.fsh.common.retrofit.BaseRetrofitApi

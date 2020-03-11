@@ -1,7 +1,11 @@
 package com.fsh.common.retrofit
 
+import com.fsh.common.util.Constants
+import com.fsh.common.util.JsonConvertFactor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateException
@@ -65,8 +69,11 @@ object RetrofitUtils {
 
     private fun initRetrofit(): Retrofit {
         return Retrofit.Builder()
+//            .addConverterFactory(JsonConvertFactor())
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .baseUrl(Constants.BASE_URL_SHINNYTECH)
             .client(_okHttpClient)
-            .baseUrl("")
             .build()
     }
 

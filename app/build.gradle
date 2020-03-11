@@ -30,6 +30,12 @@ dependencies {
     androidTestImplementation deps.test.ext
     androidTestImplementation deps.test.espresso_core
     implementation project(":lib_common")
-    implementation project(":module_trade")
-    implementation project(":module_quote")
+    if(!quoteIsApp.toBoolean()){
+        implementation project(":module_quote")
+    }
+    if(!tradeIsApp.toBoolean()){
+        implementation project(":module_trade")
+    }
+//
+//
 }

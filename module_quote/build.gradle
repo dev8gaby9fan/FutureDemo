@@ -1,6 +1,6 @@
-if(quoteIsApp.toBoolean()){
+if (quoteIsApp.toBoolean()) {
     apply plugin: 'com.android.application'
-}else{
+} else {
     apply plugin: 'com.android.library'
 }
 apply plugin: 'kotlin-android'
@@ -40,7 +40,7 @@ android {
             } else {//作为lib模块的时候，合并到宿主APP中去；排查app目录下的文件
                 manifest.srcFile 'src/main/manifest/module/AndroidManifest.xml'
                 resources {
-                    exclude 'src/main/app/*'
+                    exclude 'src/main/manifest/module/*'
                 }
             }
         }
@@ -52,6 +52,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api project(":lib_common")
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     kapt deps.arouter.compiler
     testImplementation deps.test.junit
     androidTestImplementation deps.test.ext

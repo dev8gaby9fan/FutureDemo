@@ -63,8 +63,10 @@ def easy_permission = "pub.devrel:easypermissions:${versions.EasyPermissions}"
 
 def okhttp="com.squareup.okhttp3:okhttp:$versions.okhttp"
 
-def retrofit="com.squareup.retrofit2:retrofit:$versions.retrofit"
-
+def retrofit=[:]
+retrofit.api="com.squareup.retrofit2:retrofit:$versions.retrofit"
+retrofit.convert="com.squareup.retrofit2:converter-gson:$versions.retrofit"
+retrofit.adapter="com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
 def test = [:]
 test.junit="junit:junit:${versions.junit}"
 test.test_runner="androidx.test:runner:${versions.test_runner}"
@@ -90,7 +92,7 @@ deps.retrofit=retrofit
 
 //编译版本
 def build_versions=[:]
-build_versions.min_sdk = 21
+build_versions.min_sdk = 24
 build_versions.compile_sdk = 29
 build_versions.target_sdk = 29
 build_versions.build_tools = "29.0.3"

@@ -22,8 +22,7 @@ import io.reactivex.Observable
 class QuoteServiceImpl : QuoteService{
 
     override fun init(context: Context?) {
-        //1.加载合约
-        QuoteInfoMgr.loadInstrument()
+
     }
 
     override fun searchInstruments(searchKey: String): Observable<List<InstrumentInfo>> {
