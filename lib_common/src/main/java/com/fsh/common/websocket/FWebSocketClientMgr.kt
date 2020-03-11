@@ -22,7 +22,10 @@ class FWebSocketClientMgr{
         var client = connectionMap[webSocket.hashCode()]
         client = client?: FWebSocketClientImpl(webSocket,true)
         connectionMap[client.getClientHashCode()] = client
-        lastClient?.close()
+        //这里不是同一个连接就需要将前一个连接断开
+        if(lastClient != null && lastClient?.isConnected()!! && lastClient?.getClientHashCode() != webSocket.hashCode()){
+            lastClient?.close()
+        }
         lastClient = client
     }
 

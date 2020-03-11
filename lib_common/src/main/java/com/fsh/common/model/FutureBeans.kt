@@ -36,6 +36,10 @@ data class ExchangeInfo(var name:String,var id:String) :Parcelable{
     fun getInstrument(id:String): InstrumentInfo? = insMap[id]
 
     fun getProduct(id:String): ProductInfo? = productMap[id]
+
+    fun getInstruments():List<InstrumentInfo>{
+        return ArrayList<InstrumentInfo>(insMap.values)
+    }
 }
 
 //品种信息

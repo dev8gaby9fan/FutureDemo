@@ -6,6 +6,7 @@ import com.fsh.common.model.InstrumentInfo
 import com.fsh.quote.event.BaseEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope
+import okhttp3.internal.connection.Exchange
 import org.json.JSONObject
 import java.util.concurrent.ConcurrentHashMap
 
@@ -31,7 +32,8 @@ class QuoteInfoMgr {
     fun addInstrument(ins:InstrumentInfo){
         var exchange = exchangeMap[ins.eid]
         if(exchange == null){
-            exchange = ExchangeInfo(ins.eid,ins.eid)
+            exchange = ExchangeInfo(InstrumentParser.getExchangeName(ins.eid),ins.eid)
+            exchangeMap[ins.eid] = exchange
         }
         exchange.addInstrument(ins)
     }
@@ -50,10 +52,18 @@ class QuoteInfoMgr {
         }
     }
 
+    fun getExchange(exchangeId:String):ExchangeInfo{
+        return exchangeMap[exchangeId]!!
+    }
+
     /**
      * 搜索合约
      */
     fun searchIns(key:String):List<InstrumentInfo>{
         TODO()
+    }
+
+    fun getExchangeList():List<ExchangeInfo>{
+        return ArrayList(exchangeMap.values)
     }
 }

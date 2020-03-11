@@ -49,4 +49,36 @@
     <dimen name="abc_dp_260">260dp</dimen>
     <dimen name="abc_dp_280">280dp</dimen>
     <dimen name="abc_dp_300">300dp</dimen>
+
+    <dimen name="abc_sp_1">1sp</dimen>
+    <dimen name="abc_sp_2">2sp</dimen>
+    <dimen name="abc_sp_4">4sp</dimen>
+    <dimen name="abc_sp_5">5sp</dimen>
+    <dimen name="abc_sp_6">6sp</dimen>
+    <dimen name="abc_sp_8">8sp</dimen>
+    <dimen name="abc_sp_10">10sp</dimen>
+    <dimen name="abc_sp_12">12sp</dimen>
+    <dimen name="abc_sp_14">14sp</dimen>
+    <dimen name="abc_sp_15">15sp</dimen>
+    <dimen name="abc_sp_16">16sp</dimen>
+    <dimen name="abc_sp_18">18sp</dimen>
+    <dimen name="abc_sp_20">20sp</dimen>
+    <dimen name="abc_sp_22">22sp</dimen>
+    <dimen name="abc_sp_24">24sp</dimen>
+    <dimen name="abc_sp_25">25sp</dimen>
+    <dimen name="abc_sp_26">26sp</dimen>
+    <dimen name="abc_sp_28">28sp</dimen>
+    <dimen name="abc_sp_30">30sp</dimen>
+    <dimen name="abc_sp_32">32sp</dimen>
+    <dimen name="abc_sp_34">34sp</dimen>
+    <dimen name="abc_sp_35">35sp</dimen>
+    <dimen name="abc_sp_36">36sp</dimen>
+    <dimen name="abc_sp_38">38sp</dimen>
+    <dimen name="abc_sp_40">40sp</dimen>
+    <dimen name="abc_sp_42">42sp</dimen>
+    <dimen name="abc_sp_44">44sp</dimen>
+    <dimen name="abc_sp_45">45sp</dimen>
+    <dimen name="abc_sp_46">46sp</dimen>
+    <dimen name="abc_sp_48">48sp</dimen>
+    <dimen name="abc_sp_50">50sp</dimen>
 </resources>

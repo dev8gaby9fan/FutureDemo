@@ -23,3 +23,17 @@ inline fun <reified VM : ViewModel> Fragment.viewModelOf(useActivity: Boolean = 
         viewModels { ViewModelFactory(context!!, lifecycle) }
     }
 }
+
+inline fun Fragment.addChildFragment(frameId:Int,fragment:Fragment){
+    childFragmentManager.beginTransaction()
+        .add(frameId,fragment)
+        .commit()
+}
+
+inline fun Fragment.findFragmentById(frameId:Int):Fragment?{
+    return childFragmentManager.findFragmentById(frameId)
+}
+
+inline fun Fragment.findFragmentByTag(tag:String?):Fragment?{
+    return childFragmentManager.findFragmentByTag(tag)
+}

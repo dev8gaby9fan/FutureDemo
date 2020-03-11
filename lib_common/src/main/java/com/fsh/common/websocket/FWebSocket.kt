@@ -1,6 +1,7 @@
 package com.fsh.common.websocket
 
 import android.os.SystemClock
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -34,9 +35,9 @@ class FWebSocket : WebSocketListener() {
 
     private var _dataStream: Subject<FWebSocketMsg> = PublishSubject.create()
     private var connectStatus: AtomicInteger = AtomicInteger(STATUS_CLOSED)
-    private lateinit var connectReq: Request
+    private var connectReq: Request? = null
     //之前是否有连接成功过
-    private var preIsConnected:Boolean = false
+    private var preIsConnected: Boolean = false
     private var connectJob: Job? = null
     lateinit var okHttpClient: OkHttpClient
     lateinit var serverURL: String
@@ -49,16 +50,22 @@ class FWebSocket : WebSocketListener() {
         //这里需要等待一下
 
         connectJob = GlobalScope.launch(Dispatchers.IO) {
-            if(preIsConnected){
+            if (preIsConnected) {
                 GlobalScope.async {
                     SystemClock.sleep(reconnectTimeout)
                 }.await()
             }
+            if (connectReq == null) {
+                connectReq = Request.Builder()
+                    .url(serverURL)
+                    .build()
+            }
             try {
-                var client = okHttpClient.newWebSocket(connectReq, this@FWebSocket)
+                var client = okHttpClient.newWebSocket(connectReq!!, this@FWebSocket)
                 clientMgr.addConnection(client)
             } catch (e: Exception) {
                 changeStatus(STATUS_CLOSED)
+                Log.e("FWebSocket", "async error", e)
             }
         }
     }
@@ -75,6 +82,7 @@ class FWebSocket : WebSocketListener() {
     }
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+        Log.d("FWebSocket", "onClosed $code $reason")
         clientMgr.onClientDisconnect(webSocket)
         if (clientMgr.isConnected()) {
             return
@@ -89,22 +97,37 @@ class FWebSocket : WebSocketListener() {
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        Log.e("FWebSocket", "onClosed ${response?.body?.string()}", t)
+        clientMgr.onClientDisconnect(webSocket)
+        if (clientMgr.isConnected()) {
+            return
+        }
         changeStatus(STATUS_CLOSED)
         clientMgr.close()
         connect()
     }
 
-    fun sendMessage(text:String){
+    override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+        _dataStream.onNext(FWebSocketByteMsg(bytes))
+    }
+
+    override fun onMessage(webSocket: WebSocket, text: String) {
+        _dataStream.onNext(FWebSocketTextMsg(text))
+    }
+
+    fun sendMessage(text: String) {
         clientMgr.sendMessage(text)
     }
-    fun sendMessage(jsonReq:JSONRequest){
+
+    fun sendMessage(jsonReq: JSONRequest) {
         clientMgr.sendMessage(jsonReq)
     }
-    fun sendMessage(byteString:ByteString){
+
+    fun sendMessage(byteString: ByteString) {
         clientMgr.sendMessage(byteString)
     }
 
-    fun close(){
+    fun close() {
         clientMgr.close()
     }
 }

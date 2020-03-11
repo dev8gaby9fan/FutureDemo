@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/fg_quote"
-        android:name="com.fsh.quote.ui.QuoteMainFragment"
+        android:name="com.fsh.quote.ui.main.QuoteMainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
