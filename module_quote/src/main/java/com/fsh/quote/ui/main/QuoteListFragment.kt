@@ -38,13 +38,13 @@ import kotlinx.android.synthetic.main.layout_item_quote.view.*
  *
  */
 
-class QuoteListFragment : BaseFragment(),IContentFragment{
+class QuoteListFragment : BaseFragment(), IContentFragment {
 
-    private var adapter:QuoteItemAdapter = QuoteItemAdapter()
-    private var insList:ArrayList<InstrumentInfo> = ArrayList()
-    private var insMap:HashMap<String,Pair<Int,InstrumentInfo>> = HashMap(50)
-    private lateinit var viewModel:QuoteListViewModel
-    private val disposables:CompositeDisposable = CompositeDisposable()
+    private var adapter: QuoteItemAdapter = QuoteItemAdapter()
+    private var insList: ArrayList<InstrumentInfo> = ArrayList()
+    private var insMap: HashMap<String, Pair<Int, InstrumentInfo>> = HashMap(50)
+    private lateinit var viewModel: QuoteListViewModel
+    private val disposables: CompositeDisposable = CompositeDisposable()
     override fun layoutRes(): Int = R.layout.fragment_quote_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,20 +53,21 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
         initDatas()
     }
 
-    private fun initViews(){
+    private fun initViews() {
         quote_list.itemAnimator = DefaultItemAnimator()
-        quote_list.addItemDecoration(DividerItemDecoration(requireContext(),LinearLayout.VISIBLE))
-        quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,object : OnItemTouchEventListener{
-            override fun onClick(position: Int) {
-                subscribeQuote()
-            }
+        quote_list.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VISIBLE))
+        quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,
+            object : OnItemTouchEventListener {
+                override fun onClick(position: Int) {
+                    subscribeQuote()
+                }
 
-            override fun onLongClick(position: Int) {}
-        }))
-        quote_list.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                override fun onLongClick(position: Int) {}
+            }))
+        quote_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     subscribeQuote()
                 }
             }
@@ -74,34 +75,37 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
         quote_list.adapter = adapter
     }
 
-    private fun initDatas(){
+    private fun initDatas() {
         viewModel = viewModelOf<QuoteListViewModel>().value
         //WebSocket连接状态
         viewModel.socketStatusEvent.observe(this, Observer {
-            Log.d("QuoteListFragment","received socket status event it")
-            if(it == FWebSocket.STATUS_CONNECTED){
+            Log.d("QuoteListFragment", "received socket status event it")
+            if (it == FWebSocket.STATUS_CONNECTED) {
 //                subscribeQuote()
             }
         })
         //行情数据
         disposables.add(viewModel.quoteDataEvent.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
+            .subscribe {
                 val pair = insMap[it.instrument_id]
-                if(pair != null && quote_list.scrollState == RecyclerView.SCROLL_STATE_IDLE && !quote_list.isComputingLayout){
-                    adapter.notifyItemRangeChanged(pair.first,1)
-                    Log.d("QuoteListFragment","notify item changed ${pair.first}-${pair.second}")
+                if (pair != null && quote_list.scrollState == RecyclerView.SCROLL_STATE_IDLE && !quote_list.isComputingLayout) {
+                    adapter.notifyItemRangeChanged(pair.first, 1)
+                    Log.d(
+                        "QuoteListFragment",
+                        "notify item changed ${pair.first}-${pair.second}"
+                    )
                 }
 
             })
     }
 
-    private fun subscribeQuote(){
-        val layoutMangaer:LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
+    private fun subscribeQuote() {
+        val layoutMangaer: LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
         val startPosition = layoutMangaer.findFirstCompletelyVisibleItemPosition()
-        val endPosition = layoutMangaer.findLastCompletelyVisibleItemPosition()+1
-        var indIdList:String = ""
-        insList.subList(startPosition,endPosition).map { ins-> "${ins.id}," }
+        val endPosition = layoutMangaer.findLastCompletelyVisibleItemPosition() + 1
+        var indIdList: String = ""
+        insList.subList(startPosition, endPosition).map { ins -> "${ins.id}," }
             .forEach {
                 indIdList = indIdList.plus(it)
             }
@@ -113,15 +117,21 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
         insMap.clear()
         insList.addAll(QuoteInfoMgr.mgr.getExchange(id).getInstruments())
         insList.forEachIndexed { index, ins ->
-            insMap[ins.id] = Pair(index,ins)
+            insMap[ins.id] = Pair(index, ins)
         }
         adapter.notifyDataSetChanged()
         viewModel.connectSocket()
     }
 
-    inner class QuoteItemAdapter : RecyclerView.Adapter<QuoteItem>(){
+    inner class QuoteItemAdapter : RecyclerView.Adapter<QuoteItem>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuoteItem {
-            return QuoteItem(LayoutInflater.from(requireContext()).inflate(R.layout.layout_item_quote,parent,false))
+            return QuoteItem(
+                LayoutInflater.from(requireContext()).inflate(
+                    R.layout.layout_item_quote,
+                    parent,
+                    false
+                )
+            )
         }
 
         override fun getItemCount(): Int = insList.size
@@ -130,27 +140,17 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
             val ins = insList[position]
             holder.item.tv_ins_name.text = ins.name
             holder.item.tv_ins_short_id.text = ins.shortInsId
-
-
+            //TODO RecyclerView的行情显示有紊乱
             val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.id) ?: return
-
-            if(!Omits.isOmit(quoteEntity.last_price)){
-                holder.item.tv_ins_price.text = quoteEntity.last_price
-            }
-            if(!Omits.isOmit(quoteEntity.pre_settlement)){
-                holder.item.tv_ins_pre_settlement.text = quoteEntity.pre_settlement
-            }
-            //TODO  这里还差涨跌和涨跌幅
-
-            if(!Omits.isOmit(quoteEntity.amount)){
-                holder.item.tv_ins_vol.text = quoteEntity.amount
-            }
-
-            if(!Omits.isOmit(quoteEntity.pre_open_interest)){
-                holder.item.tv_ins_pre_io.text = quoteEntity.pre_open_interest
-            }
+            holder.item.tv_ins_price.text = quoteEntity.last_price
+            holder.item.tv_ins_pre_settlement.text = quoteEntity.pre_settlement
+            holder.item.tv_ins_updown.text = quoteEntity.updown
+            holder.item.tv_ins_updown_ratio.text = quoteEntity.updown_ratio
+            holder.item.tv_ins_vol.text = quoteEntity.amount
+            holder.item.tv_ins_pre_io.text = quoteEntity.pre_open_interest
         }
 
     }
 }
-class QuoteItem(var item:View) : RecyclerView.ViewHolder(item)
+
+class QuoteItem(var item: View) : RecyclerView.ViewHolder(item)

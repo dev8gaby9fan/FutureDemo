@@ -3,6 +3,7 @@ package com.fsh.common.model
 import android.os.Parcelable
 import com.fsh.common.util.Omits
 import kotlinx.android.parcel.Parcelize
+import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
@@ -96,63 +97,65 @@ data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:S
 @Parcelize
 data class QuoteEntity(var instrument_id:String) : Parcelable{
     //深度行情(10档行情),目前天勤系统有数据的只有5档行情
-    var ask_price10:String = Omits.OmitString
-    var ask_volume10:String = Omits.OmitString
-    var ask_price9:String = Omits.OmitString
-    var ask_volume9:String = Omits.OmitString
-    var ask_price8:String = Omits.OmitString
-    var ask_volume8:String = Omits.OmitString
-    var ask_price7:String = Omits.OmitString
-    var ask_volume7:String = Omits.OmitString
-    var ask_price6:String = Omits.OmitString
-    var ask_volume6:String = Omits.OmitString
-    var ask_price5:String = Omits.OmitString
-    var ask_volume5:String = Omits.OmitString
-    var ask_price4:String = Omits.OmitString
-    var ask_volume4:String = Omits.OmitString
-    var ask_price3:String = Omits.OmitString
-    var ask_volume3:String = Omits.OmitString
-    var ask_price2:String = Omits.OmitString
-    var ask_volume2:String = Omits.OmitString
-    var ask_price1:String = Omits.OmitString
-    var ask_volume1:String = Omits.OmitString
-    var bid_price1:String = Omits.OmitString
-    var bid_volume1:String = Omits.OmitString
-    var bid_price2:String = Omits.OmitString
-    var bid_volume2:String = Omits.OmitString
-    var bid_price3:String = Omits.OmitString
-    var bid_volume3:String = Omits.OmitString
-    var bid_price4:String = Omits.OmitString
-    var bid_volume4:String = Omits.OmitString
-    var bid_price5:String = Omits.OmitString
-    var bid_volume5:String = Omits.OmitString
-    var bid_price6:String = Omits.OmitString
-    var bid_volume6:String = Omits.OmitString
-    var bid_price7:String = Omits.OmitString
-    var bid_volume7:String = Omits.OmitString
-    var bid_price8:String = Omits.OmitString
-    var bid_volume8:String = Omits.OmitString
-    var bid_price9:String = Omits.OmitString
-    var bid_volume9:String = Omits.OmitString
-    var bid_price10:String = Omits.OmitString
-    var bid_volume10:String = Omits.OmitString
+    var ask_price10:String = Omits.OmitPrice
+    var ask_volume10:String = Omits.OmitPrice
+    var ask_price9:String = Omits.OmitPrice
+    var ask_volume9:String = Omits.OmitPrice
+    var ask_price8:String = Omits.OmitPrice
+    var ask_volume8:String = Omits.OmitPrice
+    var ask_price7:String = Omits.OmitPrice
+    var ask_volume7:String = Omits.OmitPrice
+    var ask_price6:String = Omits.OmitPrice
+    var ask_volume6:String = Omits.OmitPrice
+    var ask_price5:String = Omits.OmitPrice
+    var ask_volume5:String = Omits.OmitPrice
+    var ask_price4:String = Omits.OmitPrice
+    var ask_volume4:String = Omits.OmitPrice
+    var ask_price3:String = Omits.OmitPrice
+    var ask_volume3:String = Omits.OmitPrice
+    var ask_price2:String = Omits.OmitPrice
+    var ask_volume2:String = Omits.OmitPrice
+    var ask_price1:String = Omits.OmitPrice
+    var ask_volume1:String = Omits.OmitPrice
+    var bid_price1:String = Omits.OmitPrice
+    var bid_volume1:String = Omits.OmitPrice
+    var bid_price2:String = Omits.OmitPrice
+    var bid_volume2:String = Omits.OmitPrice
+    var bid_price3:String = Omits.OmitPrice
+    var bid_volume3:String = Omits.OmitPrice
+    var bid_price4:String = Omits.OmitPrice
+    var bid_volume4:String = Omits.OmitPrice
+    var bid_price5:String = Omits.OmitPrice
+    var bid_volume5:String = Omits.OmitPrice
+    var bid_price6:String = Omits.OmitPrice
+    var bid_volume6:String = Omits.OmitPrice
+    var bid_price7:String = Omits.OmitPrice
+    var bid_volume7:String = Omits.OmitPrice
+    var bid_price8:String = Omits.OmitPrice
+    var bid_volume8:String = Omits.OmitPrice
+    var bid_price9:String = Omits.OmitPrice
+    var bid_volume9:String = Omits.OmitPrice
+    var bid_price10:String = Omits.OmitPrice
+    var bid_volume10:String = Omits.OmitPrice
 
-    var last_price:String = Omits.OmitString
-    var highest:String = Omits.OmitString
-    var lowest:String = Omits.OmitString
-    var open:String = Omits.OmitString
-    var close:String = Omits.OmitString
-    var average:String = Omits.OmitString
-    var volume:String = Omits.OmitString
-    var amount:String = Omits.OmitString
-    var open_interest:String = Omits.OmitString
-    var settlement:String = Omits.OmitString
-    var upper_limit:String = Omits.OmitString
-    var lower_limit:String = Omits.OmitString
-    var pre_open_interest:String = Omits.OmitString
-    var pre_settlement:String = Omits.OmitString
-    var pre_close:String = Omits.OmitString
-    var datetime:String = Omits.OmitString
+    var last_price:String = Omits.OmitPrice
+    var highest:String = Omits.OmitPrice
+    var lowest:String = Omits.OmitPrice
+    var open:String = Omits.OmitPrice
+    var close:String = Omits.OmitPrice
+    var average:String = Omits.OmitPrice
+    var volume:String = Omits.OmitPrice
+    var amount:String = Omits.OmitPrice
+    var open_interest:String = Omits.OmitPrice
+    var settlement:String = Omits.OmitPrice
+    var upper_limit:String = Omits.OmitPrice
+    var lower_limit:String = Omits.OmitPrice
+    var pre_open_interest:String = Omits.OmitPrice
+    var pre_settlement:String = Omits.OmitPrice
+    var pre_close:String = Omits.OmitPrice
+    var datetime:String = Omits.OmitPrice
+    var updown:String = Omits.OmitPrice
+    var updown_ratio:String = Omits.OmitPrice
 
     fun updateQuoteEntity(quoteEntity: QuoteEntity){
         if(!Omits.isOmit(quoteEntity.ask_price10)){
@@ -325,6 +328,12 @@ data class QuoteEntity(var instrument_id:String) : Parcelable{
         }
         if(!Omits.isOmit(quoteEntity.datetime)){
             datetime = quoteEntity.datetime
+        }
+        if(!Omits.isOmit(last_price) && !Omits.isOmit(pre_settlement)){
+            var lastP = BigDecimal(last_price)
+           var preS = BigDecimal(pre_settlement)
+            updown = lastP.subtract(preS).toString()
+            updown_ratio  = String.format("%.2f%%",lastP.subtract(preS).divide(preS,BigDecimal.ROUND_HALF_UP).toDouble())
         }
     }
 }
