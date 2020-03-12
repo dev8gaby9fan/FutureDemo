@@ -13,6 +13,7 @@ import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
 import com.fsh.quote.R
 import com.fsh.quote.event.BaseEvent
+import com.fsh.quote.service.QuoteInfoMgr
 import com.fsh.quote.viewmodel.QuoteMainViewModel
 import kotlinx.android.synthetic.main.fragment_quote.*
 import kotlinx.android.synthetic.main.fragment_quote_main.*
@@ -73,6 +74,7 @@ class QuoteMainFragment : BaseFragment(),MenuEventListener{
 
     override fun switchExchange(exchangeId: String) {
         drawer.closeDrawer(Gravity.LEFT)
+        toolbar.title = QuoteInfoMgr.mgr.getExchange(exchangeId).name
         contentFragment.onSwitchExchange(exchangeId)
     }
 }

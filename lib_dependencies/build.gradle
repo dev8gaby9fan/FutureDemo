@@ -34,6 +34,7 @@ dependencies {
     api deps.androidx.multidex
     api deps.androidx.constraint_layout
     api deps.androidx.fragment_ktx
+    api deps.androidx.cardview
     api deps.arouter.api
     api deps.gson
     api deps.material

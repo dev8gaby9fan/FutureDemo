@@ -3,8 +3,11 @@ package com.fsh.common.model
 import android.os.Parcelable
 import com.fsh.common.util.Omits
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
+import java.util.concurrent.ConcurrentSkipListSet
+import kotlin.collections.ArrayList
 
 /**
  * Created by devFan
@@ -17,11 +20,12 @@ import java.util.concurrent.ConcurrentSkipListMap
  */
 //交易所信息
 @Parcelize
-data class ExchangeInfo(var name:String,var id:String) :Parcelable{
-    private val insMap:ConcurrentSkipListMap<String, InstrumentInfo> by lazy {
-        ConcurrentSkipListMap<String, InstrumentInfo>(Comparator { t, t2 ->
-            t.compareTo(t2)
-        })
+data class ExchangeInfo(var name:String,var id:String,var sortKey:Int) :Parcelable{
+    private val insList:ArrayList<InstrumentInfo> by lazy{
+        ArrayList<InstrumentInfo>(20)
+    }
+    private val insMap:ConcurrentHashMap<String, InstrumentInfo> by lazy {
+        ConcurrentHashMap<String, InstrumentInfo>()
     }
 
     private val productMap:ConcurrentHashMap<String, ProductInfo> by lazy{
@@ -42,7 +46,11 @@ data class ExchangeInfo(var name:String,var id:String) :Parcelable{
     fun getProduct(id:String): ProductInfo? = productMap[id]
 
     fun getInstruments():List<InstrumentInfo>{
-        return ArrayList<InstrumentInfo>(insMap.values)
+        if(insList.isEmpty()){
+            insList.addAll(insMap.values)
+            insList.sortWith(Comparator { ins1, ins2 -> ins1.sortkey.compareTo(ins2.sortkey) })
+        }
+        return insList
     }
 }
 
@@ -57,7 +65,7 @@ data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:S
     var volumeMultiple:Int? = null
     var priceTick:String? = null
     var priceDecs:String? = null
-    var sortkey:String? = null
+    var sortkey:Int = Omits.OmitInt
     var py:String? = null
     var productShortName:String? = null
     var deliveryYear:String? = null

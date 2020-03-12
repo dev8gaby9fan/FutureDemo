@@ -48,15 +48,6 @@ class QuoteMenuFragment : BaseFragment(),IDrawerMenuFragment{
     private fun initExchangeList(){
         exchange_list.layoutManager = GridLayoutManager(requireContext(),2)
         exchange_list.adapter = ItemAdapter()
-        exchange_list.addOnItemTouchListener(RecyclerViewItemClickListener(exchange_list,
-            object : OnItemTouchEventListener{
-                override fun onClick(pos:Int) {
-                    Log.d("QuoteMenuFragment","exchange item click event $pos")
-                    menuEventListener?.switchExchange(exchangeList[pos].id)
-                }
-
-                override fun onLongClick(pos:Int) {}
-            }))
         menuEventListener?.switchExchange(exchangeList[0].id)
     }
 
@@ -69,6 +60,9 @@ class QuoteMenuFragment : BaseFragment(),IDrawerMenuFragment{
 
         override fun onBindViewHolder(holder: ExchangeItem, position: Int) {
             holder.item.tv_exchange_name.text = exchangeList[position].name
+            holder.item.setOnClickListener {
+                menuEventListener?.switchExchange(exchangeList[position].id)
+            }
         }
 
     }

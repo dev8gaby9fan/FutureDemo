@@ -7,6 +7,7 @@ import com.fsh.common.ext.optInt
 import com.fsh.common.ext.optString
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
+import com.fsh.common.util.Omits
 import com.fsh.quote.event.BaseEvent.Companion.ACTION_LOAD_INS_OK
 import com.google.gson.JsonObject
 import io.reactivex.subjects.Subject
@@ -34,19 +35,27 @@ class InstrumentParser : DataParser<Int> {
     companion object {
         private val supportClassType = arrayOf("FUTURE_CONT", "FUTURE")
         private val supportedExchange = mapOf(
-            "CFFEX" to "中金所",
-            "DCE" to "大商所",
-            "SHFE" to "上期所",
-            "INE" to "能源所",
-            "CZCE" to "郑商所",
-            "KQ" to "主力合约"
+            "CFFEX" to Pair(5,"中金所"),
+            "DCE" to Pair(4,"大商所"),
+            "SHFE" to Pair(1,"上期所"),
+            "INE" to Pair(2,"能源所"),
+            "CZCE" to Pair(3,"郑商所"),
+            "KQ" to Pair(0,"主力合约")
         )
+
 
         fun getExchangeName(id: String): String {
             if (supportedExchange.containsKey(id)) {
-                return supportedExchange[id]!!
+                return supportedExchange[id]!!.second
             }
             return "UnKnown"
+        }
+
+        fun getExchangeSortKey(id:String):Int{
+            if (supportedExchange.containsKey(id)) {
+                return supportedExchange[id]!!.first
+            }
+            return Int.MAX_VALUE
         }
     }
 
@@ -68,7 +77,7 @@ class InstrumentParser : DataParser<Int> {
             val volumeMultiple = subObj.optInt("volume_multiple")
             val priceTick = subObj.optString("price_tick")
             val priceDecs = subObj.optString("price_decs")
-            val sortKey = subObj.optString("sort_key")
+            val sortKey = subObj.optInt("sort_key")
             val productShortName = subObj.optString("product_short_name")
             val py = subObj.optString("py")
             val underlying_symbol = subObj.optString("underlying_symbol")

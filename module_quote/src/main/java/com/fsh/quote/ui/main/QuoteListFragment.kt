@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.common.base.BaseFragment
@@ -53,6 +55,7 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
 
     private fun initViews(){
         quote_list.itemAnimator = DefaultItemAnimator()
+        quote_list.addItemDecoration(DividerItemDecoration(requireContext(),LinearLayout.VISIBLE))
         quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,object : OnItemTouchEventListener{
             override fun onClick(position: Int) {
                 subscribeQuote()
@@ -112,7 +115,7 @@ class QuoteListFragment : BaseFragment(),IContentFragment{
         insList.forEachIndexed { index, ins ->
             insMap[ins.id] = Pair(index,ins)
         }
-        adapter.notifyItemRangeChanged(0,insList.size)
+        adapter.notifyDataSetChanged()
         viewModel.connectSocket()
     }
 

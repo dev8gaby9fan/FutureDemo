@@ -33,7 +33,7 @@ class QuoteInfoMgr {
     fun addInstrument(ins:InstrumentInfo){
         var exchange = exchangeMap[ins.eid]
         if(exchange == null){
-            exchange = ExchangeInfo(InstrumentParser.getExchangeName(ins.eid),ins.eid)
+            exchange = ExchangeInfo(InstrumentParser.getExchangeName(ins.eid),ins.eid,InstrumentParser.getExchangeSortKey(ins.eid))
             exchangeMap[ins.eid] = exchange
         }
         exchange.addInstrument(ins)
@@ -65,7 +65,9 @@ class QuoteInfoMgr {
     }
 
     fun getExchangeList():List<ExchangeInfo>{
-        return ArrayList(exchangeMap.values)
+        val list = ArrayList(exchangeMap.values)
+        list.sortWith(Comparator { exc1, exc2 -> exc1.sortKey.compareTo(exc2.sortKey) })
+        return list
     }
 
     fun storeQuote(quoteEntity:QuoteEntity){
