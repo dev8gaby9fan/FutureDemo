@@ -25,7 +25,10 @@ android {
         }
         buildConfigField "String", "WS_URL", "\"wss://openmd.shinnytech.com/t/md/front/mobile\""
     }
-
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     buildTypes {
         release {
             minifyEnabled false

@@ -3,6 +3,7 @@ package com.fsh.quote.service
 import android.util.Log
 import com.fsh.common.model.ExchangeInfo
 import com.fsh.common.model.InstrumentInfo
+import com.fsh.common.model.QuoteEntity
 import com.fsh.quote.event.BaseEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap
 class QuoteInfoMgr {
     //5个交易所
     private var exchangeMap:ConcurrentHashMap<String,ExchangeInfo> = ConcurrentHashMap(5)
-
+    private var quoteMap:ConcurrentHashMap<String,QuoteEntity> = ConcurrentHashMap(100)
     companion object{
         val mgr:QuoteInfoMgr by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED){
             QuoteInfoMgr()
@@ -65,5 +66,18 @@ class QuoteInfoMgr {
 
     fun getExchangeList():List<ExchangeInfo>{
         return ArrayList(exchangeMap.values)
+    }
+
+    fun storeQuote(quoteEntity:QuoteEntity){
+        var storeQuote = quoteMap[quoteEntity.instrument_id]
+        if(storeQuote == null){
+            storeQuote = QuoteEntity(quoteEntity.instrument_id)
+            quoteMap[quoteEntity.instrument_id] = storeQuote
+        }
+        storeQuote.updateQuoteEntity(quoteEntity)
+    }
+
+    fun getQuoteEntity(insId:String):QuoteEntity?{
+        return quoteMap[insId]
     }
 }

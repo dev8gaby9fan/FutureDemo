@@ -1,10 +1,16 @@
 package com.fsh.quote.service
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.fsh.common.ext.optInt
 import com.fsh.common.ext.optString
 import com.fsh.common.model.InstrumentInfo
+import com.fsh.common.model.QuoteEntity
+import com.fsh.quote.event.BaseEvent.Companion.ACTION_LOAD_INS_OK
 import com.google.gson.JsonObject
+import io.reactivex.subjects.Subject
+import java.lang.Exception
 
 /**
  * Created by devFan
@@ -16,26 +22,35 @@ import com.google.gson.JsonObject
  *
  */
 
-interface DataParser {
+interface DataParser<T> {
 
-    fun parse(json: JsonObject)
+    fun parse(json: JsonObject): T
 }
 
 /**
  * 合约信息解析
  */
-class InstrumentParser : DataParser {
-    companion object{
-        private val supportClassType = arrayOf("FUTURE_CONT","FUTURE")
-        private val supportedExchange = mapOf("CFFEX" to "中金所","DCE" to "大商所","SHFE" to "上期所","INE" to "能源所","CZCE" to "郑商所","KQ" to "主力合约")
-        fun getExchangeName(id:String):String{
-            if(supportedExchange.containsKey(id)){
+class InstrumentParser : DataParser<Int> {
+    companion object {
+        private val supportClassType = arrayOf("FUTURE_CONT", "FUTURE")
+        private val supportedExchange = mapOf(
+            "CFFEX" to "中金所",
+            "DCE" to "大商所",
+            "SHFE" to "上期所",
+            "INE" to "能源所",
+            "CZCE" to "郑商所",
+            "KQ" to "主力合约"
+        )
+
+        fun getExchangeName(id: String): String {
+            if (supportedExchange.containsKey(id)) {
                 return supportedExchange[id]!!
             }
             return "UnKnown"
         }
     }
-    override fun parse(json: JsonObject) {
+
+    override fun parse(json: JsonObject): Int {
         for (instrumentId in json.keySet()) {
             val subObj = json.getAsJsonObject(instrumentId)
             val classN = subObj.optString("class")
@@ -56,14 +71,14 @@ class InstrumentParser : DataParser {
             val sortKey = subObj.optString("sort_key")
             val productShortName = subObj.optString("product_short_name")
             val py = subObj.optString("py")
-            val preVolume = subObj.optString("pre_volume")
+            val underlying_symbol = subObj.optString("underlying_symbol")
             //交易所
 
-            var instrument = InstrumentInfo(insName,simInsId,exchId,productId)
+            var instrument = InstrumentInfo(insName, instrumentId, exchId, productId)
             instrument.classType = classN
             instrument.eid = exchId
             instrument.pid = productId
-            instrument.shortInsId = simInsId
+            instrument.shortInsId = if("FUTURE_CONT" == classN)underlying_symbol else simInsId
             instrument.volumeMultiple = volumeMultiple
             instrument.priceTick = priceTick
             instrument.priceDecs = priceDecs
@@ -71,7 +86,6 @@ class InstrumentParser : DataParser {
             instrument.productShortName = productShortName
             instrument.py = py
             instrument.pid = productId
-            instrument.shortInsId = subObj.optString("underlying_symbol")
             instrument.deliveryYear = subObj.optString("delivery_year")
             instrument.deliveryMonth = subObj.optString("delivery_month")
             instrument.expireTime = subObj.optString("expire_datetime")
@@ -103,12 +117,72 @@ class InstrumentParser : DataParser {
 //                exchange.putInstrument(instrument)
 //            }
         }
+        return ACTION_LOAD_INS_OK
     }
 
 }
 
-class QuoteParser : DataParser {
+class WebSocketFrameParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<Unit> {
+    companion object {
+        private const val JSON_KEY_AID = "aid"
+        private const val AID_RSP_LOGIN = "rsp_login"
+        private const val AID_RETURN_DATA = "rtn_data"
+    }
+
+    private val quoteParser: QuoteParser by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+        QuoteParser(quoteLieData)
+    }
+
     override fun parse(json: JsonObject) {
+        when (json.optString(JSON_KEY_AID)) {
+            AID_RSP_LOGIN -> Log.d("WebSocketFrameParser", "received rsp_login")
+            AID_RETURN_DATA -> quoteParser.parse(json)
+            else -> Log.d("WebSocketFrameParser", "UnHandle AID ${json.optString(JSON_KEY_AID)}")
+        }
+    }
+
+}
+
+class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<Unit> {
+    companion object {
+        private const val JSON_DATA = "data"
+        private const val JSON_QUOTES = "quotes"
+    }
+
+    override fun parse(json: JsonObject) {
+        var jsonArray = json.get(JSON_DATA).asJsonArray
+        for (jsonObj in jsonArray) {
+            val keySet = jsonObj.asJsonObject.keySet()
+            for (key in keySet) {
+                val dataJson = jsonObj.asJsonObject.get(key)
+                when (key) {
+                    JSON_QUOTES -> parseQuoteReturn(dataJson.asJsonObject)
+                    //TODO 这里未来还需要K线解析
+                }
+            }
+        }
+    }
+
+    private fun parseQuoteReturn(jsonObj: JsonObject) {
+        for (insId in jsonObj.keySet()) {
+            if(!jsonObj.get(insId).isJsonObject){
+                Log.d("QuoteParser","parseQuoteReturn ${jsonObj.get(insId)}")
+                return
+            }
+            val quoteDataObj = jsonObj.get(insId).asJsonObject
+            val quoteEntity = QuoteEntity(insId)
+            for (property in quoteDataObj.keySet()) {
+                val field = QuoteEntity::class.java.getDeclaredField(property)
+                field.isAccessible = true
+                field.set(quoteEntity, quoteDataObj.optString(property))
+            }
+            //TODO 这里QuoteInfoMgr storeQuote
+            QuoteInfoMgr.mgr.storeQuote(quoteEntity)
+            quoteLieData.onNext(quoteEntity)
+        }
+    }
+
+    private fun parseChartReturn(jsonObj: JsonObject) {
 
     }
 

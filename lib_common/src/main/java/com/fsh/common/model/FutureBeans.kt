@@ -1,8 +1,10 @@
 package com.fsh.common.model
 
 import android.os.Parcelable
+import com.fsh.common.util.Omits
 import kotlinx.android.parcel.Parcelize
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListMap
 
 /**
  * Created by devFan
@@ -16,8 +18,10 @@ import java.util.concurrent.ConcurrentHashMap
 //交易所信息
 @Parcelize
 data class ExchangeInfo(var name:String,var id:String) :Parcelable{
-    private val insMap:ConcurrentHashMap<String, InstrumentInfo> by lazy {
-        ConcurrentHashMap<String, InstrumentInfo>()
+    private val insMap:ConcurrentSkipListMap<String, InstrumentInfo> by lazy {
+        ConcurrentSkipListMap<String, InstrumentInfo>(Comparator { t, t2 ->
+            t.compareTo(t2)
+        })
     }
 
     private val productMap:ConcurrentHashMap<String, ProductInfo> by lazy{
@@ -77,48 +81,243 @@ data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:S
     var underlyingmultiple:String? = null
 }
 
+/**
+ *
+ */
 //行情数据
 @Parcelize
-data class QuoteEntity(var id:String) : Parcelable{
-    //最后更新时间
-    var datetime:String? = null
-    //卖一价
-    var askprice1:Double? = null
-    //卖一量
-    var askvolume1:Int? = null
-    //买一价
-    var bidprice1:Double? = null
-    //买一量
-    var bidvolume1:Int? = null
-    //最新价
-    var lastprice:Double? = null
-    //均价
-    var average:Double? = null
-    //成交量
-    var volume:Int? = null
-    //成交额
-    var amount:Int? = null
-    //持仓量
-    var openinterest:Int? = null
-    //最高价
-    var highest:Double? = null
-    //最低价
-    var lowest:Double? = null
-    //昨日未平仓量
-    var preopeninterest:Int? = null
-    //昨收价
-    var preclose:Double? = null
-    //开仓价
-    var open:Double? = null
-    //平仓价
-    var close:Double? = null
-    //跌停价
-    var lowerlimit:Double? = null
-    //涨停价
-    var upperlimit:Double? = null
-    //昨结算价
-    var presettlement:Double? = null
-    //结算价
-    var settlement:Double? = null
+data class QuoteEntity(var instrument_id:String) : Parcelable{
+    //深度行情(10档行情),目前天勤系统有数据的只有5档行情
+    var ask_price10:String = Omits.OmitString
+    var ask_volume10:String = Omits.OmitString
+    var ask_price9:String = Omits.OmitString
+    var ask_volume9:String = Omits.OmitString
+    var ask_price8:String = Omits.OmitString
+    var ask_volume8:String = Omits.OmitString
+    var ask_price7:String = Omits.OmitString
+    var ask_volume7:String = Omits.OmitString
+    var ask_price6:String = Omits.OmitString
+    var ask_volume6:String = Omits.OmitString
+    var ask_price5:String = Omits.OmitString
+    var ask_volume5:String = Omits.OmitString
+    var ask_price4:String = Omits.OmitString
+    var ask_volume4:String = Omits.OmitString
+    var ask_price3:String = Omits.OmitString
+    var ask_volume3:String = Omits.OmitString
+    var ask_price2:String = Omits.OmitString
+    var ask_volume2:String = Omits.OmitString
+    var ask_price1:String = Omits.OmitString
+    var ask_volume1:String = Omits.OmitString
+    var bid_price1:String = Omits.OmitString
+    var bid_volume1:String = Omits.OmitString
+    var bid_price2:String = Omits.OmitString
+    var bid_volume2:String = Omits.OmitString
+    var bid_price3:String = Omits.OmitString
+    var bid_volume3:String = Omits.OmitString
+    var bid_price4:String = Omits.OmitString
+    var bid_volume4:String = Omits.OmitString
+    var bid_price5:String = Omits.OmitString
+    var bid_volume5:String = Omits.OmitString
+    var bid_price6:String = Omits.OmitString
+    var bid_volume6:String = Omits.OmitString
+    var bid_price7:String = Omits.OmitString
+    var bid_volume7:String = Omits.OmitString
+    var bid_price8:String = Omits.OmitString
+    var bid_volume8:String = Omits.OmitString
+    var bid_price9:String = Omits.OmitString
+    var bid_volume9:String = Omits.OmitString
+    var bid_price10:String = Omits.OmitString
+    var bid_volume10:String = Omits.OmitString
+
+    var last_price:String = Omits.OmitString
+    var highest:String = Omits.OmitString
+    var lowest:String = Omits.OmitString
+    var open:String = Omits.OmitString
+    var close:String = Omits.OmitString
+    var average:String = Omits.OmitString
+    var volume:String = Omits.OmitString
+    var amount:String = Omits.OmitString
+    var open_interest:String = Omits.OmitString
+    var settlement:String = Omits.OmitString
+    var upper_limit:String = Omits.OmitString
+    var lower_limit:String = Omits.OmitString
+    var pre_open_interest:String = Omits.OmitString
+    var pre_settlement:String = Omits.OmitString
+    var pre_close:String = Omits.OmitString
+    var datetime:String = Omits.OmitString
+
+    fun updateQuoteEntity(quoteEntity: QuoteEntity){
+        if(!Omits.isOmit(quoteEntity.ask_price10)){
+            ask_price10 = quoteEntity.ask_price10
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume10)){
+            ask_volume10 = quoteEntity.ask_volume10
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price9)){
+            ask_price9 = quoteEntity.ask_price9
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume9)){
+            ask_volume9 = quoteEntity.ask_volume9
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price8)){
+            ask_price8 = quoteEntity.ask_price8
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume8)){
+            ask_volume8 = quoteEntity.ask_volume8
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price7)){
+            ask_price7 = quoteEntity.ask_price7
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume7)){
+            ask_volume7 = quoteEntity.ask_volume7
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price6)){
+            ask_price6 = quoteEntity.ask_price6
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume6)){
+            ask_volume6 = quoteEntity.ask_volume6
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price5)){
+            ask_price5 = quoteEntity.ask_price5
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume5)){
+            ask_volume5 = quoteEntity.ask_volume5
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price4)){
+            ask_price4 = quoteEntity.ask_price4
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume4)){
+            ask_volume4 = quoteEntity.ask_volume4
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price3)){
+            ask_price3 = quoteEntity.ask_price3
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume3)){
+            ask_volume3 = quoteEntity.ask_volume3
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price2)){
+            ask_price2 = quoteEntity.ask_price2
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume2)){
+            ask_volume2 = quoteEntity.ask_volume2
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price1)){
+            ask_price1 = quoteEntity.ask_price1
+        }
+        if(!Omits.isOmit(quoteEntity.ask_volume1)){
+            ask_volume1 = quoteEntity.ask_volume1
+        }
+        if(!Omits.isOmit(quoteEntity.ask_price1)){
+            ask_price1 = quoteEntity.ask_price1
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price1)){
+            bid_price1 = quoteEntity.bid_price1
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume1)){
+            bid_volume1 = quoteEntity.bid_volume1
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price2)){
+            bid_price2 = quoteEntity.bid_price2
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume2)){
+            bid_volume2 = quoteEntity.bid_volume2
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price3)){
+            bid_price3 = quoteEntity.bid_price3
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume3)){
+            bid_volume3 = quoteEntity.bid_volume3
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price4)){
+            bid_price4 = quoteEntity.bid_price4
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume4)){
+            bid_volume4 = quoteEntity.bid_volume4
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price5)){
+            bid_price5 = quoteEntity.bid_price5
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume5)){
+            bid_volume5 = quoteEntity.bid_volume5
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price6)){
+            bid_price6 = quoteEntity.bid_price6
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume6)){
+            bid_volume6 = quoteEntity.bid_volume6
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price7)){
+            bid_price7 = quoteEntity.bid_price7
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume7)){
+            bid_volume7 = quoteEntity.bid_volume7
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price8)){
+            bid_price8 = quoteEntity.bid_price8
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume8)){
+            bid_volume8 = quoteEntity.bid_volume8
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price9)){
+            bid_price9 = quoteEntity.bid_price9
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume9)){
+            bid_volume9 = quoteEntity.bid_volume9
+        }
+        if(!Omits.isOmit(quoteEntity.bid_price10)){
+            bid_price10 = quoteEntity.bid_price10
+        }
+        if(!Omits.isOmit(quoteEntity.bid_volume10)){
+            bid_volume10 = quoteEntity.bid_volume10
+        }
+        if(!Omits.isOmit(quoteEntity.last_price)){
+            last_price = quoteEntity.last_price
+        }
+        if(!Omits.isOmit(quoteEntity.highest)){
+            highest = quoteEntity.highest
+        }
+        if(!Omits.isOmit(quoteEntity.lowest)){
+            lowest = quoteEntity.lowest
+        }
+        if(!Omits.isOmit(quoteEntity.open)){
+            open = quoteEntity.open
+        }
+        if(!Omits.isOmit(quoteEntity.close)){
+            close = quoteEntity.close
+        }
+        if(!Omits.isOmit(quoteEntity.average)){
+            average = quoteEntity.average
+        }
+        if(!Omits.isOmit(quoteEntity.volume)){
+            volume = quoteEntity.volume
+        }
+        if(!Omits.isOmit(quoteEntity.amount)){
+            amount = quoteEntity.amount
+        }
+        if(!Omits.isOmit(quoteEntity.open_interest)){
+            open_interest = quoteEntity.open_interest
+        }
+        if(!Omits.isOmit(quoteEntity.settlement)){
+            settlement = quoteEntity.settlement
+        }
+        if(!Omits.isOmit(quoteEntity.upper_limit)){
+            upper_limit = quoteEntity.upper_limit
+        }
+        if(!Omits.isOmit(quoteEntity.lower_limit)){
+            lower_limit = quoteEntity.lower_limit
+        }
+        if(!Omits.isOmit(quoteEntity.pre_open_interest)){
+            pre_open_interest = quoteEntity.pre_open_interest
+        }
+        if(!Omits.isOmit(quoteEntity.pre_settlement)){
+            pre_settlement = quoteEntity.pre_settlement
+        }
+        if(!Omits.isOmit(quoteEntity.pre_close)){
+            pre_close = quoteEntity.pre_close
+        }
+        if(!Omits.isOmit(quoteEntity.datetime)){
+            datetime = quoteEntity.datetime
+        }
+    }
 }
 

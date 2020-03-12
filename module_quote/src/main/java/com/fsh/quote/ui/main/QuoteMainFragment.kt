@@ -55,9 +55,6 @@ class QuoteMainFragment : BaseFragment(),MenuEventListener{
             addChildFragment(R.id.fragment_container,mainPageFragment)
         }
         contentFragment = mainPageFragment as IContentFragment
-        tv_top.setOnClickListener {
-            quoteMainViewModel.connect()
-        }
     }
 
     private fun initDatas(){

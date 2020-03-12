@@ -28,7 +28,6 @@ import java.util.function.Consumer
 
 class QuoteMainViewModel : BaseViewModel<QuoteHttpReposity>(){
     private var _insEvent: MutableLiveData<BaseEvent> = MutableLiveData()
-    private lateinit var quoteSocketRepository:QuoteSocketRepository
     val insEvent = _insEvent
     private val disposables:CompositeDisposable by lazy{
         CompositeDisposable()
@@ -37,7 +36,6 @@ class QuoteMainViewModel : BaseViewModel<QuoteHttpReposity>(){
     override fun onCreate() {
         Log.d("QuoteMainViewModel","onCreate")
         repository = QuoteRepositoryProvider.providerHttpRepository()
-        quoteSocketRepository = QuoteRepositoryProvider.providerSocketRepository()
         //TODO showloading
         loadInstrument()
     }
@@ -59,10 +57,6 @@ class QuoteMainViewModel : BaseViewModel<QuoteHttpReposity>(){
                 _insEvent.postValue(BaseEvent(BaseEvent.ACTION_LOAD_INS_FAIL))
             })
         )
-    }
-
-    fun connect(){
-        quoteSocketRepository.connectSocket()
     }
 
     override fun onDestroy() {
