@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/quote_white"
     >
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_dp_120"
-        android:text="菜单布局的头部"
-        android:gravity="center"
-        />
+        android:layout_height="@dimen/abc_dp_200"
+        android:background="@color/colorPrimary"
+        >
+
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exchange_list"
         android:layout_width="match_parent"

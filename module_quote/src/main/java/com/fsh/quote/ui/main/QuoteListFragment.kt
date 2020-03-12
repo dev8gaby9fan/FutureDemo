@@ -81,7 +81,7 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         viewModel.socketStatusEvent.observe(this, Observer {
             Log.d("QuoteListFragment", "received socket status event it")
             if (it == FWebSocket.STATUS_CONNECTED) {
-//                subscribeQuote()
+                subscribeQuote()
             }
         })
         //行情数据
@@ -120,7 +120,9 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             insMap[ins.id] = Pair(index, ins)
         }
         adapter.notifyDataSetChanged()
-        viewModel.connectSocket()
+        if(!viewModel.connectSocket()){
+            subscribeQuote()
+        }
     }
 
     inner class QuoteItemAdapter : RecyclerView.Adapter<QuoteItem>() {
