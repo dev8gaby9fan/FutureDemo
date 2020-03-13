@@ -11,7 +11,7 @@ def versions=[:]
 versions.gradle="3.5.3"
 versions.accpcompat="1.0.2"
 versions.core_ktx="1.0.2"
-versions.material_version="1.0.0"
+versions.material="1.1.0"
 versions.constraint_version="1.1.3"
 versions.lifecycle_extensions="2.0.0"
 versions.fragment="1.2.2"
@@ -35,6 +35,7 @@ versions.rxjava="2.2.18"
 versions.rxandroid="2.1.1"
 versions.retrofit="2.7.2"
 versions.cardview="1.0.0"
+versions.annotation="1.1.0"
 
 def androidx=[:]
 androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
@@ -44,12 +45,13 @@ androidx.lifecycle_extensions="androidx.lifecycle:lifecycle-extensions:${version
 androidx.multidex="androidx.multidex:multidex:${versions.multidex}"
 androidx.fragment_ktx="androidx.fragment:fragment-ktx:$versions.fragment_ktx"
 androidx.cardview="androidx.recyclerview:recyclerview:$versions.cardview"
+androidx.annotation="androidx.annotation:annotation:$versions.annotation"
 
 def arouter = [:]
 arouter.api="com.alibaba:arouter-api:${versions.arouter}"
 arouter.compiler="com.alibaba:arouter-compiler:${versions.arouter_compiler}"
 
-def material= "com.google.android.material:material:${versions.material_version}"
+def material= "com.google.android.material:material:${versions.material}"
 
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"

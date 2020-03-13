@@ -1,11 +1,11 @@
-if(tradeIsApp.toBoolean()){
+if (tradeIsApp.toBoolean()) {
     apply plugin: 'com.android.application'
-}else{
+} else {
     apply plugin: 'com.android.library'
 }
-
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion rootProject.ext.build_versions.compile_sdk
 
@@ -17,8 +17,22 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+        multiDexEnabled true
+        ndk {
+            //## CTP TradeApi CPU架构
+            //目前SDK支持armeabi/armeabi-v7a/arm64-v8a/x86/x86_64，不支持mips/mips64架构。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', "x86", "x86_64"
+        }
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
     }
-
+    //可以使用Parcelize注解，不需要事先Parcelable的抽象方法
+    androidExtensions {
+        experimental = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -34,20 +48,28 @@ android {
             } else {//作为lib模块的时候，合并到宿主APP中去；排查app目录下的文件
                 manifest.srcFile 'src/main/manifest/module/AndroidManifest.xml'
                 resources {
-                    exclude 'src/main/app/*'
+                    exclude 'src/main/manifest/app/*'
                 }
             }
         }
     }
-
+    repositories {
+        flatDir {
+            dirs "libs"
+        }
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    api project(":lib_common")
+    implementation(name: "trade_api_release_v1.5", ext: "aar")
+    kapt deps.arouter.compiler
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.ext
+    androidTestImplementation deps.test.espresso_core
 }

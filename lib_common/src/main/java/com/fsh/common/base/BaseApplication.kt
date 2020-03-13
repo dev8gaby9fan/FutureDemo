@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.multidex.BuildConfig
 import androidx.multidex.MultiDex
 import com.alibaba.android.arouter.launcher.ARouter
+import com.fsh.common.util.CommonUtil
 
 /**
  * Created by devFan
@@ -28,6 +29,7 @@ open class BaseApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         initArouter()
+        CommonUtil.application = this
     }
 
     private fun initArouter(){
