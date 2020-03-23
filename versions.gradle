@@ -36,6 +36,7 @@ versions.rxandroid="2.1.1"
 versions.retrofit="2.7.2"
 versions.cardview="1.0.0"
 versions.annotation="1.1.0"
+versions.room="2.2.3"
 
 def androidx=[:]
 androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
@@ -46,6 +47,10 @@ androidx.multidex="androidx.multidex:multidex:${versions.multidex}"
 androidx.fragment_ktx="androidx.fragment:fragment-ktx:$versions.fragment_ktx"
 androidx.cardview="androidx.recyclerview:recyclerview:$versions.cardview"
 androidx.annotation="androidx.annotation:annotation:$versions.annotation"
+androidx.room_runtime="androidx.room:room-runtime:$versions.room"
+androidx.room_compiler="androidx.room:room-compiler:$versions.room"
+androidx.room_ktx="androidx.room:room-ktx:$versions.room"
+androidx.room_testing="androidx.room:room-testing:$versions.room"
 
 def arouter = [:]
 arouter.api="com.alibaba:arouter-api:${versions.arouter}"

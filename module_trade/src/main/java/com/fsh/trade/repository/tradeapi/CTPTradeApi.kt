@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * email:  devfanshan@gmail.com
  * date: 2020/3/13
  * description: CTP TradeApi 实现
- *
+ * CTP API每秒只能请求一次服务，不能请求太快
  */
 
 class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
@@ -101,12 +101,12 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             return;
         }
         //3.1请求交易账号信息
-        val reqAccountField = CThostFtdcQryTradingAccountField()
-        reqAccountField.brokerID = broker.brokerId
-        reqAccountField.currencyID = "CNY"
-        reqAccountField.investorID = account.investorId
-        tradeApi?.ReqQryTradingAccount(reqAccountField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","ReqQryTradingAccount ${account.investorId}")
+//        val reqAccountField = CThostFtdcQryTradingAccountField()
+//        reqAccountField.brokerID = broker.brokerId
+//        reqAccountField.currencyID = "CNY"
+//        reqAccountField.investorID = account.investorId
+//        tradeApi?.ReqQryTradingAccount(reqAccountField,nRequestIDFactor.getAndIncrement())
+//        Log.d("CTPTradeApi","ReqQryTradingAccount ${account.investorId}")
         //3.请求结算单信息
         val reqSettlementField = CThostFtdcQrySettlementInfoField()
         reqSettlementField.accountID = account.investorId
@@ -179,11 +179,6 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
 
 
     companion object{
-        private const val CODE_AUTH = 10000
-        private const val CODE_USER_LOGIN = 10001
-        private const val CODE_REQ_SETTLEMENT = 10002
-        private const val CODE_COMFIRM_SETTLEMENT = 10003
-        private const val CODE_USER_LOGOUT = 10004
         private const val CODE_SUCCESS = 0
         init {
             try {

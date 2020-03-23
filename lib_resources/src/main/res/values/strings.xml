@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Lib_Resources</string>
+    <string name="hint_broker_id">请输入经纪公司编号</string>
+    <string name="hint_app_id">请输入APPID</string>
+    <string name="hint_auth_code">请输入认证码</string>
+    <string name="hint_front_ip">请输入柜台前置IP</string>
 </resources>

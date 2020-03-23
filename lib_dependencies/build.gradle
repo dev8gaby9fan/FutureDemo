@@ -36,6 +36,8 @@ dependencies {
     api deps.androidx.fragment_ktx
     api deps.androidx.cardview
     api deps.androidx.annotation
+    api deps.androidx.room_runtime
+    api deps.androidx.room_ktx
     api deps.arouter.api
     api deps.gson
     api deps.material
