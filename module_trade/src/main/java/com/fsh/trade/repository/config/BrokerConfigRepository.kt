@@ -1,6 +1,7 @@
 package com.fsh.trade.repository.config
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.withTransaction
@@ -31,9 +32,7 @@ class BrokerConfigRepository : BaseRepository {
             .build()
     }
 
-    suspend fun getBrokers(): List<BrokerConfig> {
-        return configDB.brokerConfigDao().queryAll()
-    }
+    fun getBrokers(): LiveData<List<BrokerConfig>> =  configDB.brokerConfigDao().queryAll()
 
     suspend fun saveBroker(broker: BrokerConfig) {
         configDB.brokerConfigDao().update(broker)

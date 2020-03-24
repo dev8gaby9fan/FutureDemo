@@ -1,6 +1,7 @@
 package com.fsh.trade.ui.config
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.fsh.common.base.BaseViewModel
 import com.fsh.common.util.SPUtils
@@ -21,9 +22,9 @@ class BrokerConfigViewModel : BaseViewModel<BrokerConfigRepository>(){
     fun insertConfig(brokerConfig: BrokerConfig){
         viewModelScope.launch(Dispatchers.IO) {
             repository!!.saveBroker(brokerConfig)
-            val configs = repository!!.getBrokers()
-            Log.d("BrokerConfigViewModel","${configs.size}")
+            loadDbConfigs()
         }
-
     }
+
+    fun loadDbConfigs(): LiveData<List<BrokerConfig>> = repository!!.getBrokers()
 }

@@ -11,37 +11,54 @@
     android:paddingBottom="@dimen/abc_dp_16"
     tools:context=".ui.login.TradeLoginActivity">
 
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/broker_spinner"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/abc_dp_40"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_add_spinner"
+        />
+    <ImageView
+        android:id="@+id/iv_add_spinner"
+        android:layout_width="@dimen/abc_dp_30"
+        android:layout_height="@dimen/abc_dp_30"
+        app:layout_constraintLeft_toRightOf="@id/broker_spinner"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/broker_spinner"
+        app:layout_constraintBottom_toBottomOf="@id/broker_spinner"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_marginLeft="@dimen/abc_dp_5"
+        />
     <EditText
         android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="24dp"
-
-        android:hint="@string/prompt_email"
-        android:inputType="textEmailAddress"
+        android:hint="@string/hint_trade_acc"
+        android:inputType="numberSigned"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/broker_spinner"
+        android:layout_marginTop="@dimen/abc_dp_40"
+        android:layout_marginLeft="@dimen/abc_dp_20"
+        android:layout_marginRight="@dimen/abc_dp_20"
+        />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-
-        android:hint="@string/prompt_password"
+        android:hint="@string/hint_trade_pwd"
         android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintLeft_toLeftOf="@id/username"
+        app:layout_constraintRight_toRightOf="@id/username"
+        app:layout_constraintTop_toBottomOf="@id/username"
+        android:layout_marginTop="@dimen/abc_dp_5"
+        />
 
     <Button
         android:id="@+id/login"
