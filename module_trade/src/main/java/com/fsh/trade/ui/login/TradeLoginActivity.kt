@@ -66,6 +66,8 @@ class TradeLoginActivity : BaseActivity(),BrokerConfigPicker.OnBrokerItemClickLi
                     return@setOnClickListener
                 }
                 loginViewModel.reqUserLogin(TradeAccountConfig(username.text.toString(),password.text.toString()), selectedBroker!!)
+                setLoadingDialogMessage("正在登陆交易(1/4)")
+                showLoadingDialog()
             }
         }
     }

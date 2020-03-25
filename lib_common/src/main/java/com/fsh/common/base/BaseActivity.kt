@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import com.fsh.common.widget.LoadingDialog
 
 /**
  * Created by devFan
@@ -19,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
  */
 
 abstract class BaseActivity : AppCompatActivity(){
-
+    private val loadingDialog: LoadingDialog = LoadingDialog()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -40,5 +42,27 @@ abstract class BaseActivity : AppCompatActivity(){
     override fun onDestroy() {
         ActivityManager.remove(this)
         super.onDestroy()
+    }
+
+    fun showLoadingDialog(){
+        loadingDialog.show(supportFragmentManager, TAG_LOADING)
+    }
+    fun setLoadingDialogMessage(@StringRes msgRes:Int){
+        setLoadingDialogMessage(resources.getString(msgRes))
+    }
+    fun setLoadingDialogMessage(message:String){
+        loadingDialog.setMessage(message)
+    }
+
+    fun dismissLoading(){
+        loadingDialog.dismiss()
+    }
+
+    fun setLoadingCancelable(enableCancel:Boolean){
+        loadingDialog.isCancelable = enableCancel
+    }
+
+    companion object{
+        const val TAG_LOADING = "LOADING"
     }
 }

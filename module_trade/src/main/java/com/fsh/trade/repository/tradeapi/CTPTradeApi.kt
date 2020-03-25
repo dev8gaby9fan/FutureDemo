@@ -93,16 +93,16 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         super.OnRspUserLogin(respLoginField, rspField, nRequestID, bIsLast)
         Log.d("CTPTradeApi", "OnRspUserLogin ${rspField?.errorID} ${rspField?.errorMsg}")
         tradeEventPublish?.onNext(RspUserLoginEvent(respLoginField, rspField))
-        if (rspField == null || rspField!!.errorID != CODE_SUCCESS) {
-            return
-        }
-        //查询用户的结算单确认记录
-        val field = CThostFtdcQrySettlementInfoConfirmField()
-        field.investorID = account.investorId
-        field.accountID = respLoginField?.userID
-        field.brokerID = respLoginField?.brokerID
-        tradeApi?.ReqQrySettlementInfoConfirm(field, nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi", "ReqQrySettlementInfo ${account.investorId}")
+//        if (rspField == null || rspField!!.errorID != CODE_SUCCESS) {
+//            return
+//        }
+//        //查询用户的结算单确认记录
+//        val field = CThostFtdcQrySettlementInfoConfirmField()
+//        field.investorID = account.investorId
+//        field.accountID = respLoginField?.userID
+//        field.brokerID = respLoginField?.brokerID
+//        tradeApi?.ReqQrySettlementInfoConfirm(field, nRequestIDFactor.getAndIncrement())
+//        Log.d("CTPTradeApi", "ReqQrySettlementInfo ${account.investorId}")
     }
 
     //查询资金响应
