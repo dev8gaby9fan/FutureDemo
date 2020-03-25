@@ -1,4 +1,4 @@
-package com.fsh.trade.ui.config
+package com.fsh.trade.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData

@@ -14,22 +14,6 @@ import com.fsh.trade.repository.tradeapi.TradeApiRepository
  * description: 交易登录Repository
  */
 
-class CTPTradeApiRepository(var api:CTPTradeApi) : TradeApiRepository(api){
-
-    override fun reqUserLogin(brokerConfig: BrokerConfig, account: TradeAccountConfig) {
-        api.reqUserLogin(brokerConfig,account)
-    }
-
-    override fun initTradeApi() {
-        api.initTradeApi()
-    }
-
-    override fun reqUserLogout() {
-
-    }
-
-    override fun reqAuthenticate() {
-
-    }
+class CTPTradeApiRepository(api:CTPTradeApi) : TradeApiRepository(api){
 
 }

@@ -26,8 +26,8 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-@Entity(tableName = "table_broker")
-data class BrokerConfig(@ColumnInfo var brokerName:String,@ColumnInfo var appId:String, @ColumnInfo var authCode:String, @ColumnInfo var frontIp:String, @PrimaryKey @ColumnInfo var brokerId:String, @ColumnInfo var userProductInfo:String) : Parcelable
+@Entity(tableName = "table_broker",primaryKeys = arrayOf("frontIp","brokerId"))
+data class BrokerConfig(@ColumnInfo var brokerName:String,@ColumnInfo var appId:String, @ColumnInfo var authCode:String, @ColumnInfo var frontIp:String,@ColumnInfo var brokerId:String, @ColumnInfo var userProductInfo:String) : Parcelable
 
 @Parcelize
 data class TradeAccountConfig(var investorId:String,var password:String) : Parcelable

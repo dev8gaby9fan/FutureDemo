@@ -1,7 +1,6 @@
 package com.fsh.trade.ui.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,6 @@ class BrokerConfigPicker : BaseBottomSheetDialog(){
                 dismiss()
             }
         }
-
     }
 
     class BrokerItem(var item:View) : RecyclerView.ViewHolder(item)

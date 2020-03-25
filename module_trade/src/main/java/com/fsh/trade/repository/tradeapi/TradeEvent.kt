@@ -42,6 +42,8 @@ data class RspQrySettlementEvent(var rspField: CThostFtdcSettlementInfoLongField
 /** 请求确认结算单信息*/
 data class ReqConfirmSettlementEvent(var account:TradeAccountConfig,var broker: BrokerConfig):TradeEvent(TradeEventType.ReqConfirmSettlement)
 
+data class RspQryConfirmSettlementEvent(var rspField:CThostFtdcSettlementInfoConfirmField?,var rspInfo:CThostFtdcRspInfoField?,var bIsLast: Boolean):TradeEvent(TradeEventType.RspQryConfirmSettlement)
+
 /** 确认结算单响应*/
 data class RspConfirmSettlementEvent(var rspField:CThostFtdcSettlementInfoConfirmField?,var rspInfo:CThostFtdcRspInfoField?,var bIsLast:Boolean):TradeEvent(TradeEventType.RspConfirmSettlement)
 
@@ -94,6 +96,8 @@ enum class TradeEventType{
     ReqConfirmSettlement,
     //确认结算单响应
     RspConfirmSettlement,
+    //查询结算单确认记录响应
+    RspQryConfirmSettlement,
     //资金响应
     RspTradingAccount,
     //持仓明细响应

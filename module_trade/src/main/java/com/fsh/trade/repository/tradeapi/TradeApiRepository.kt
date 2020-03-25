@@ -3,6 +3,9 @@ package com.fsh.trade.repository.tradeapi
 import com.fsh.common.repository.BaseRepository
 import com.fsh.trade.bean.BrokerConfig
 import com.fsh.trade.bean.TradeAccountConfig
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 
 /**
  * Created by devFan
@@ -14,13 +17,56 @@ import com.fsh.trade.bean.TradeAccountConfig
  *
  */
 
-abstract class TradeApiRepository(tradeApiSource: TradeApiSource) : BaseRepository{
+abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepository{
+    private val tradeEventPublish:Subject<TradeEvent> = PublishSubject.create()
 
-    abstract fun reqAuthenticate()
+    init {
+        tradeApiSource.registerSubject(tradeEventPublish)
+    }
+    fun reqAuthenticate(){
+        tradeApiSource.reqAuthenticate()
+    }
 
-    abstract fun reqUserLogin(brokerConfig: BrokerConfig,account:TradeAccountConfig)
+    fun reqUserLogin(brokerConfig: BrokerConfig,account:TradeAccountConfig){
+        tradeApiSource.reqUserLogin(brokerConfig,account)
+    }
 
-    abstract fun initTradeApi()
+    fun initTradeApi(){
+        tradeApiSource.initTradeApi()
+    }
 
-    abstract fun reqUserLogout()
+    fun reqUserLogout(){
+        tradeApiSource.reqUserLogout()
+    }
+    /** 请求确认结算单*/
+    fun reqConfirmSettlement(){
+        tradeApiSource.reqConfirmSettlement()
+    }
+
+    fun reqQryConfirmSettlement(){
+        tradeApiSource.reqQryConfirmSettlement()
+    }
+
+    fun reqQryOrder(){
+        tradeApiSource.reqQryOrder()
+    }
+
+    fun reqQryTrade(){
+        tradeApiSource.reqQryTrade()
+    }
+
+    fun reqOrderInsert(){
+        tradeApiSource.reqOrderInsert()
+    }
+
+    fun reqOrderAction(){
+        tradeApiSource.reqOrderAction()
+    }
+
+    fun reqQryPositionDetail(){
+        tradeApiSource.reqQryPositionDetail()
+    }
+
+    fun getTradeEventObserver():Observable<TradeEvent> = tradeEventPublish
+
 }

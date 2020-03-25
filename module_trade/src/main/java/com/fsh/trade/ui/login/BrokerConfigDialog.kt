@@ -1,6 +1,5 @@
 package com.fsh.trade.ui.login
 
-import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -11,14 +10,14 @@ import androidx.fragment.app.DialogFragment
 import com.fsh.common.util.Constants
 import com.fsh.trade.R
 import com.fsh.trade.bean.BrokerConfig
-import com.fsh.trade.ui.config.BrokerConfigViewModel
+import com.fsh.trade.model.BrokerConfigViewModel
 import com.fsh.trade.util.VerifyUtil
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_broker_config.*
 import java.lang.IllegalArgumentException
 import java.lang.ref.WeakReference
 
-class BrokerConfigDialog(viewModel:BrokerConfigViewModel) : DialogFragment(){
+class BrokerConfigDialog(viewModel: BrokerConfigViewModel) : DialogFragment(){
     private val viewModelRef:WeakReference<BrokerConfigViewModel> = WeakReference(viewModel)
     override fun onStart() {
         super.onStart()

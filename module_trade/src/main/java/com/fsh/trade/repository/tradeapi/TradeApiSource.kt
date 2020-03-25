@@ -35,5 +35,39 @@ interface TradeApiSource {
      */
     fun reqUserLogout()
 
+    /**
+     * 查询请求确认结算单记录
+     */
+    fun reqQryConfirmSettlement()
+    /**
+     * 确认结算单
+     */
+    fun reqConfirmSettlement()
+
+    /**
+     * 查询委托
+     */
+    fun reqQryOrder()
+
+    /**
+     * 查询成交
+     */
+    fun reqQryTrade()
+
+    /**
+     * 查询持仓明细
+     */
+    fun reqQryPositionDetail()
+
+    /**
+     * 请求报单
+     */
+    fun reqOrderInsert()
+
+    /**
+     * 请求撤单
+     */
+    fun reqOrderAction()
+
     fun registerSubject(publish:Subject<TradeEvent>)
 }
