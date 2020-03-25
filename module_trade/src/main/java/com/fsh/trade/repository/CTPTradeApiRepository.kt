@@ -15,6 +15,7 @@ import com.fsh.trade.repository.tradeapi.TradeApiRepository
  */
 
 class CTPTradeApiRepository(var api:CTPTradeApi) : TradeApiRepository(api){
+
     override fun reqUserLogin(brokerConfig: BrokerConfig, account: TradeAccountConfig) {
         api.reqUserLogin(brokerConfig,account)
     }

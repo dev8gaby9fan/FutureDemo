@@ -2,6 +2,7 @@ package com.fsh.trade.repository.tradeapi
 
 import com.fsh.trade.bean.BrokerConfig
 import com.fsh.trade.bean.TradeAccountConfig
+import io.reactivex.subjects.Subject
 
 /**
  * Created by devFan
@@ -33,4 +34,6 @@ interface TradeApiSource {
      * 请求退出
      */
     fun reqUserLogout()
+
+    fun registerSubject(publish:Subject<TradeEvent>)
 }

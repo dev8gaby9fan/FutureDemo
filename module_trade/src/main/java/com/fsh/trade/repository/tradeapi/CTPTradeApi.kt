@@ -6,6 +6,7 @@ import com.fsh.trade.bean.BrokerConfig
 import com.fsh.trade.bean.TradeAccountConfig
 import com.sfit.ctp.thosttraderapi.*
 import com.sfit.ctp.thosttraderapi.CThostFtdcReqUserLoginField
+import io.reactivex.subjects.Subject
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -20,6 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 
 class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
+    private var tradeEventPublish:Subject<TradeEvent>? = null
+    override fun registerSubject(publish: Subject<TradeEvent>) {
+        tradeEventPublish = publish
+    }
+
     private val appPath = CommonUtil.application!!.filesDir.absolutePath
     private var tradeApi:CThostFtdcTraderApi? = null
     private lateinit var account:TradeAccountConfig
@@ -32,6 +38,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         tradeApi!!.SubscribePublicTopic(THOST_TE_RESUME_TYPE.THOST_TERT_QUICK)
         tradeApi!!.SubscribePrivateTopic(THOST_TE_RESUME_TYPE.THOST_TERT_QUICK)
         tradeApi!!.Init()
+        tradeEventPublish?.onNext(InitApiEvent(broker))
         Log.d("CTPTradeApi","initTradeApi")
     }
 
@@ -42,6 +49,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         authField.authCode = broker.authCode
         authField.userProductInfo = broker.userProductInfo
         tradeApi?.ReqAuthenticate(authField, nRequestIDFactor.getAndIncrement())
+        tradeEventPublish?.onNext(ReqAuthenEvent(broker))
         Log.d("CTPTradeApi","reqAuthenticate ${broker.brokerId} ${broker.frontIp} ${broker.appId}")
     }
 
@@ -54,11 +62,15 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     }
 
     override fun reqUserLogout() {
-
+        val logoutField = CThostFtdcUserLogoutField()
+        logoutField.brokerID = broker.brokerId
+        logoutField.userID = account.investorId
+        tradeApi?.ReqUserLogout(logoutField,nRequestIDFactor.getAndIncrement())
     }
     //柜台连接成功
     override fun OnFrontConnected() {
         super.OnFrontConnected()
+        tradeEventPublish?.onNext(FrontConnectedEvent(broker))
         //1.先认证柜台
         reqAuthenticate()
     }
@@ -72,6 +84,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     ) {
         super.OnRspAuthenticate(pRspAuthenticateField, pRspInfo, nRequestID, bIsLast)
         Log.d("CTPTradeApi","OnRspAuthenticate ${pRspInfo?.errorID} ${pRspInfo?.errorMsg}")
+        tradeEventPublish?.onNext(RspAuthenEvent(pRspAuthenticateField,pRspInfo))
         //2.发起登录
         if(pRspInfo != null && pRspInfo.errorID == CODE_SUCCESS){
             val loginField = CThostFtdcReqUserLoginField()
@@ -79,14 +92,25 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             loginField.userID = account.investorId
             loginField.password = account.password
             tradeApi?.ReqUserLogin(CommonUtil.application!!,loginField, nRequestIDFactor.getAndIncrement())
+            tradeEventPublish?.onNext(ReqUserLoginEvent(account,broker))
         }
     }
 
     override fun OnFrontDisconnected(p0: Int) {
         super.OnFrontDisconnected(p0)
+        tradeEventPublish?.onNext(FrontDisconnectedEvent(broker))
         nRequestIDFactor.compareAndSet(nRequestIDFactor.get(),0)
     }
 
+    override fun OnRspUserLogout(
+        p0: CThostFtdcUserLogoutField?,
+        p1: CThostFtdcRspInfoField?,
+        p2: Int,
+        p3: Boolean
+    ) {
+        super.OnRspUserLogout(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspUserLogoutEvent(p0,p1,p3))
+    }
 
     //登录响应
     override fun OnRspUserLogin(
@@ -97,16 +121,10 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     ) {
         super.OnRspUserLogin(respLoginField, rspField, nRequestID, bIsLast)
         Log.d("CTPTradeApi","OnRspAuthenticate ${rspField?.errorID} ${rspField?.errorMsg}")
+        tradeEventPublish?.onNext(RspUserLoginEvent(respLoginField,rspField))
         if(rspField == null || rspField!!.errorID != CODE_SUCCESS){
             return
         }
-        //3.1请求交易账号信息
-//        val reqAccountField = CThostFtdcQryTradingAccountField()
-//        reqAccountField.brokerID = broker.brokerId
-//        reqAccountField.currencyID = "CNY"
-//        reqAccountField.investorID = account.investorId
-//        tradeApi?.ReqQryTradingAccount(reqAccountField,nRequestIDFactor.getAndIncrement())
-//        Log.d("CTPTradeApi","ReqQryTradingAccount ${account.investorId}")
         //3.请求结算单信息
         val reqSettlementField = CThostFtdcQrySettlementInfoField()
         reqSettlementField.accountID = account.investorId
@@ -114,9 +132,10 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         reqSettlementField.currencyID = "CNY"
         reqSettlementField.investorID = account.investorId
         tradeApi?.ReqQrySettlementInfo(reqSettlementField,nRequestIDFactor.getAndIncrement())
+        tradeEventPublish?.onNext(ReqQrySettlementEvent(account,broker))
         Log.d("CTPTradeApi","ReqQrySettlementInfo ${account.investorId}")
     }
-
+    //查询资金响应
     override fun OnRspQryTradingAccount(
         accountField: CThostFtdcTradingAccountField?,
         rspField: CThostFtdcRspInfoField?,
@@ -124,10 +143,9 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         bIsLast: Boolean
     ) {
         super.OnRspQryTradingAccount(accountField, rspField, nRequestID, bIsLast)
+        tradeEventPublish?.onNext(RspQryTradingAccountEvent(accountField,rspField,bIsLast))
         Log.d("CTPTradeApi","OnRspQryTradingAccount ${rspField?.errorID} ${rspField?.errorMsg} ${accountField?.accountID} ${accountField?.settlementID}")
     }
-
-
 
 
     //请求结算单响应
@@ -138,6 +156,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         bIsLast: Boolean
     ) {
         super.OnRspQrySettlementInfo(pSettlementInfo, rspField, nRequestID, bIsLast)
+        tradeEventPublish?.onNext(RspQrySettlementEvent(pSettlementInfo,rspField,bIsLast))
         Log.d("CTPTradeApi","OnRspQrySettlementInfo ${rspField?.errorID} ${rspField?.errorMsg}" +
                 "${pSettlementInfo?.investorID} ${pSettlementInfo?.brokerID} ${pSettlementInfo?.settlementID} ${pSettlementInfo?.sequenceNo} \r\n $bIsLast ${pSettlementInfo?.content}")
         //4.确认结算单
@@ -150,9 +169,10 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         p3: Boolean
     ) {
         super.OnRspQrySettlementInfoConfirm(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspConfirmSettlementEvent(p0,p1,p3))
         //登录成功
     }
-
+    //
     override fun OnRspExecOrderInsert(
         p0: CThostFtdcInputExecOrderField?,
         p1: CThostFtdcRspInfoField?,
@@ -161,13 +181,57 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     ) {
         super.OnRspExecOrderInsert(p0, p1, p2, p3)
     }
-
-
-
+    //查询委托响应
+    override fun OnRspQryOrder(
+        p0: CThostFtdcOrderField?,
+        p1: CThostFtdcRspInfoField?,
+        p2: Int,
+        p3: Boolean
+    ) {
+        super.OnRspQryOrder(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspQryOrderEvent(p0,p1,p3))
+    }
+    //委托汇报
     override fun OnRtnOrder(p0: CThostFtdcOrderField?) {
         super.OnRtnOrder(p0)
+        tradeEventPublish?.onNext(RtnOrderEvent(p0))
     }
-
+    //撤单响应
+    override fun OnRspOrderAction(
+        p0: CThostFtdcInputOrderActionField?,
+        p1: CThostFtdcRspInfoField?,
+        p2: Int,
+        p3: Boolean
+    ) {
+        super.OnRspOrderAction(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspOrderActionEvent(p0,p1,p3))
+    }
+    //查询成交响应
+    override fun OnRspQryTrade(
+        p0: CThostFtdcTradeField?,
+        p1: CThostFtdcRspInfoField?,
+        p2: Int,
+        p3: Boolean
+    ) {
+        super.OnRspQryTrade(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspQryTradeEvent(p0,p1,p3))
+    }
+    //成交回报
+    override fun OnRtnTrade(p0: CThostFtdcTradeField?) {
+        super.OnRtnTrade(p0)
+        tradeEventPublish?.onNext(RtnTradeEvent(p0))
+    }
+    //持仓明细响应
+    override fun OnRspQryInvestorPositionDetail(
+        p0: CThostFtdcInvestorPositionDetailField?,
+        p1: CThostFtdcRspInfoField?,
+        p2: Int,
+        p3: Boolean
+    ) {
+        super.OnRspQryInvestorPositionDetail(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspQryPositionDetailEvent(p0,p1,p3))
+    }
+    //报单响应--注意报单失败
     override fun OnRspOrderInsert(
         p0: CThostFtdcInputOrderField?,
         p1: CThostFtdcRspInfoField?,
@@ -175,8 +239,8 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         p3: Boolean
     ) {
         super.OnRspOrderInsert(p0, p1, p2, p3)
+        tradeEventPublish?.onNext(RspOrderInsertEvent(p0,p1))
     }
-
 
     companion object{
         private const val CODE_SUCCESS = 0

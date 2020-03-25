@@ -36,6 +36,7 @@ class TradeLoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         loginViewModel = viewModelOf<LoginViewModel>().value
         brokerConfigViewModel = viewModelOf<BrokerConfigViewModel>().value
+        Log.d("TradeLoginActivity", "onCreate ${filesDir.absolutePath} ${dataDir.absolutePath}")
         brokerConfigViewModel.allBrokerLiveData.observe(this, Observer {
             Log.d("TradeLoginActivity", "received broker list from db ${it.size}")
             if(it.isNotEmpty()){

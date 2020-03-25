@@ -12,4 +12,5 @@ package com.fsh.common.util
 object Constants {
     const val BASE_URL_SHINNYTECH = "https://openmd.shinnytech.com"
     const val URL_LAST_INSTRUMENT = "/t/md/symbols/latest.json"
+    const val TCP_PROCO = "tcp://"
 }

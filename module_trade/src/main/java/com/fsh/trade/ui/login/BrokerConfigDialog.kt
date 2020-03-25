@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.fsh.common.util.Constants
 import com.fsh.trade.R
 import com.fsh.trade.bean.BrokerConfig
 import com.fsh.trade.ui.config.BrokerConfigViewModel
@@ -51,7 +52,7 @@ class BrokerConfigDialog(viewModel:BrokerConfigViewModel) : DialogFragment(){
                         .isBlank(et_auth_code.text,"请输入认证码")
                     viewModelRef.get()!!.insertConfig(
                         BrokerConfig(et_broker_name.text.toString(),et_app_id.text.toString(),
-                            et_auth_code.text.toString(),et_broker_front_ip.text.toString(),
+                            et_auth_code.text.toString(),Constants.TCP_PROCO+et_broker_front_ip.text.toString(),
                             et_broker_id.text.toString(),"future_demo")
                     )
                 }catch (e: IllegalArgumentException){
