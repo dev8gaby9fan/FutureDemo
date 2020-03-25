@@ -22,7 +22,7 @@
         android:paddingLeft="@dimen/abc_dp_20"
         android:drawableRight="@drawable/ic_arrow_down"
         android:gravity="end|center_vertical"
-        tools:text="上期技术"
+        android:text="@string/tv_select_broker"
         android:textSize="@dimen/abc_sp_16"
         android:textColor="@color/dark_deep"
         />

@@ -5,4 +5,5 @@
     <string name="hint_auth_code">请输入认证码</string>
     <string name="hint_front_ip">请输入柜台前置IP</string>
     <string name="tv_add_broker">添加经纪公司</string>
+    <string name="tv_select_broker">-----------请选择经纪公司-----------</string>
 </resources>
