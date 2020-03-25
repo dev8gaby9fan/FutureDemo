@@ -20,6 +20,7 @@ class VerifyUtil {
                     + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
                     + "|[1-9][0-9]|[0-9])):[1-9]\\d+")
         private const val PATTERN_URL_ADD = ""
+        private const val PATTERN_PASS_WORD = "[0-9A-Za-z]{6,18}"
     }
 
     fun isBrokerID(input:CharSequence):VerifyUtil{
@@ -32,6 +33,11 @@ class VerifyUtil {
         return this
     }
 
+    fun isPassword(input:CharSequence):VerifyUtil{
+        require(Pattern.matches(PATTERN_PASS_WORD,input)){"请输入6-18位数字和字母密码"}
+        return this
+    }
+
     fun isFrontIP(input:CharSequence):VerifyUtil{
         Patterns.WEB_URL
         require(Pattern.matches(PATTERN_IP_ADD,input)){"请输入正确的交易地址"}
@@ -40,6 +46,11 @@ class VerifyUtil {
 
     fun isBlank(input:CharSequence?,errorMsg:String="请输入内容"):VerifyUtil{
         require(input != null && input.isNotEmpty()){errorMsg}
+        return this
+    }
+
+    fun isNotNull(obj:Any?,errorMsg: String):VerifyUtil{
+        require(obj != null){errorMsg}
         return this
     }
 

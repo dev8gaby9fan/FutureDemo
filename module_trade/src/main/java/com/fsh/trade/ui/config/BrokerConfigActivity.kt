@@ -26,7 +26,7 @@ class BrokerConfigActivity : BaseActivity() {
                         .isFrontIP(et_broker_front_ip.text)
                         .isBlank(et_app_id.text,"请输入APPID")
                         .isBlank(et_auth_code.text,"请输入认证码")
-                    viewModel.insertConfig(BrokerConfig(et_app_id.text.toString(),
+                    viewModel.insertConfig(BrokerConfig(et_broker_name.text.toString(),et_app_id.text.toString(),
                         et_auth_code.text.toString(),et_broker_front_ip.text.toString(),
                         et_broker_id.text.toString(),"future_demo"))
                     finish()

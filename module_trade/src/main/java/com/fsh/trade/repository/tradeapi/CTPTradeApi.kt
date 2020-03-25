@@ -98,7 +98,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         super.OnRspUserLogin(respLoginField, rspField, nRequestID, bIsLast)
         Log.d("CTPTradeApi","OnRspAuthenticate ${rspField?.errorID} ${rspField?.errorMsg}")
         if(rspField == null || rspField!!.errorID != CODE_SUCCESS){
-            return;
+            return
         }
         //3.1请求交易账号信息
 //        val reqAccountField = CThostFtdcQryTradingAccountField()

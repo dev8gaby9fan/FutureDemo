@@ -14,17 +14,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class BrokerConfigViewModel : BaseViewModel<BrokerConfigRepository>(){
-
+    val allBrokerLiveData:LiveData<List<BrokerConfig>>
     init {
         repository = TradeApiProvider.providerConfigRepository()
+        allBrokerLiveData = repository!!.getBrokers()
     }
 
     fun insertConfig(brokerConfig: BrokerConfig){
         viewModelScope.launch(Dispatchers.IO) {
             repository!!.saveBroker(brokerConfig)
-            loadDbConfigs()
         }
     }
-
-    fun loadDbConfigs(): LiveData<List<BrokerConfig>> = repository!!.getBrokers()
 }

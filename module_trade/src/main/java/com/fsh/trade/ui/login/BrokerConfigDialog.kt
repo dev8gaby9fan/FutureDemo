@@ -1,14 +1,13 @@
 package com.fsh.trade.ui.login
 
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.fsh.common.ext.viewModelOf
 import com.fsh.trade.R
 import com.fsh.trade.bean.BrokerConfig
 import com.fsh.trade.ui.config.BrokerConfigViewModel
@@ -16,11 +15,10 @@ import com.fsh.trade.util.VerifyUtil
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_broker_config.*
 import java.lang.IllegalArgumentException
+import java.lang.ref.WeakReference
 
-class BrokerConfigDialog : DialogFragment(){
-    private lateinit var viewModel: BrokerConfigViewModel
-    private var _brokerLiveData: MutableLiveData<List<BrokerConfig>> = MutableLiveData()
-    val brokerLiveData:LiveData<List<BrokerConfig>> = _brokerLiveData
+class BrokerConfigDialog(viewModel:BrokerConfigViewModel) : DialogFragment(){
+    private val viewModelRef:WeakReference<BrokerConfigViewModel> = WeakReference(viewModel)
     override fun onStart() {
         super.onStart()
         if(dialog != null){
@@ -28,7 +26,10 @@ class BrokerConfigDialog : DialogFragment(){
             activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
             dialog!!.window!!.setLayout((displayMetrics.widthPixels*0.75).toInt(),ViewGroup.LayoutParams.WRAP_CONTENT)
         }
+        Log.d("BrokerConfigDialog","onStart ...")
     }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,7 +40,6 @@ class BrokerConfigDialog : DialogFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = viewModelOf<BrokerConfigViewModel>().value
         btn_save.apply{
             setOnClickListener {
                 try{
@@ -49,8 +49,8 @@ class BrokerConfigDialog : DialogFragment(){
                         .isFrontIP(et_broker_front_ip.text)
                         .isBlank(et_app_id.text,"请输入APPID")
                         .isBlank(et_auth_code.text,"请输入认证码")
-                    viewModel.insertConfig(
-                        BrokerConfig(et_app_id.text.toString(),
+                    viewModelRef.get()!!.insertConfig(
+                        BrokerConfig(et_broker_name.text.toString(),et_app_id.text.toString(),
                             et_auth_code.text.toString(),et_broker_front_ip.text.toString(),
                             et_broker_id.text.toString(),"future_demo")
                     )

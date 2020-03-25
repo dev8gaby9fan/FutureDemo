@@ -33,9 +33,9 @@ class TradeDatabaseTest {
 
     @Test
     fun testRoomAdd() = GlobalScope.launch{
-        database.brokerConfigDao()
-            .update(BrokerConfig("future_demo","00000000",
-                "tcp://127.0.0.1:123","9999","future_demo"))
+//        database.brokerConfigDao()
+//            .update(BrokerConfig("future_demo","00000000",
+//                "tcp://127.0.0.1:123","9999","future_demo"))
 //        val queryAll = database.brokerConfigDao()
 //            .queryAll()
 //        System.err.println("queryAll size --> ${queryAll.size}")

@@ -13,4 +13,5 @@
     <string name="btn_save">保存</string>
     <string name="hint_trade_acc">请输入交易账号</string>
     <string name="hint_trade_pwd">请输入密码</string>
+    <string name="tv_picker_broker">选择经纪公司</string>
 </resources>

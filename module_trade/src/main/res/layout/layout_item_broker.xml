@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/broker_name"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/abc_dp_40"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/abc_dp_10"
+    android:textColor="@color/dark_deep"
+    android:textSize="@dimen/abc_sp_14"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/selectableItemBackground"
+    tools:text="上期技术"
+    />
