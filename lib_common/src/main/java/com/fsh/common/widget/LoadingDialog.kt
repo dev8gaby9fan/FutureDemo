@@ -14,7 +14,7 @@ class LoadingDialog : BaseDialog(){
     override fun getLayoutWidth(): Int {
         val displayMetrics = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return (displayMetrics.widthPixels*0.4).toInt()
+        return (displayMetrics.widthPixels*0.6).toInt()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

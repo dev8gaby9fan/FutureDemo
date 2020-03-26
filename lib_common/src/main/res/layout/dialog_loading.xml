@@ -9,7 +9,7 @@
         android:layout_width="@dimen/abc_dp_60"
         android:layout_height="@dimen/abc_dp_60"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/abc_dp_20"
+        android:layout_marginTop="@dimen/abc_dp_10"
         android:indeterminateBehavior="repeat"
         android:indeterminateDrawable="@drawable/drawable_loading" />
 

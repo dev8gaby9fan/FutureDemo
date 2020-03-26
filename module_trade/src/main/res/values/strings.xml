@@ -14,4 +14,6 @@
     <string name="hint_trade_acc">请输入交易账号</string>
     <string name="hint_trade_pwd">请输入密码</string>
     <string name="tv_picker_broker">选择经纪公司</string>
+    <string name="tv_settlement_cancel">暂不确认</string>
+    <string name="tv_confirm_settlement">确认结算单</string>
 </resources>

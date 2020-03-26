@@ -20,7 +20,7 @@ class VerifyUtil {
                     + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
                     + "|[1-9][0-9]|[0-9])):[1-9]\\d+")
         private const val PATTERN_URL_ADD = ""
-        private const val PATTERN_PASS_WORD = "[0-9A-Za-z]{6,18}"
+        private const val PATTERN_PASS_WORD = "[0-9A-Za-z]{5,18}"
     }
 
     fun isBrokerID(input:CharSequence):VerifyUtil{
@@ -34,7 +34,7 @@ class VerifyUtil {
     }
 
     fun isPassword(input:CharSequence):VerifyUtil{
-        require(Pattern.matches(PATTERN_PASS_WORD,input)){"请输入6-18位数字和字母密码"}
+        require(Pattern.matches(PATTERN_PASS_WORD,input)){"请输入5-18位数字和字母密码"}
         return this
     }
 

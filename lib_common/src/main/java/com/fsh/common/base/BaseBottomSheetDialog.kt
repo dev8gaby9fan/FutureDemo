@@ -19,13 +19,25 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * 从底部弹出的对话框
  */
 abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
-//    private lateinit var mBehavior:View
+    var isShowing:Boolean = false
+    private lateinit var mBehavior:BottomSheetBehavior<View>
+    private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback(){
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_DRAGGING && !enableBottomSheetBehavior()) {
+                mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float){}
+    }
     var dismissListener:DialogInterface.OnDismissListener? = null
 
     override fun onStart() {
         super.onStart()
         setWindowHeight()
+        isShowing = true
     }
+
     private fun setWindowHeight(){
         if(dialog != null){
             val bottomSheet = dialog!!.findViewById<View>(R.id.design_bottom_sheet)
@@ -34,17 +46,24 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
             }else{
                 Log.w("BaseBottomSheetDialog","layout params null")
             }
+            dialog!!.setCancelable(false)
         }
 
         view!!.post {
             val layoutParams: CoordinatorLayout.LayoutParams = (view!!.parent as View).layoutParams as CoordinatorLayout.LayoutParams
-            val behavior = layoutParams.behavior as BottomSheetBehavior
+            mBehavior = layoutParams.behavior as BottomSheetBehavior<View>
+            mBehavior.setBottomSheetCallback(mBottomSheetCallback)
             val display = DisplayMetrics()
             activity!!.windowManager.defaultDisplay.getMetrics(display)
-            val displayHeight = (display.heightPixels*0.4).toInt()
-            behavior.peekHeight = displayHeight
+            val displayHeight = (display.heightPixels*getBehaviorPeekHeight()).toInt()
+            mBehavior.peekHeight = displayHeight
         }
     }
+
+    open fun getBehaviorPeekHeight():Float = 0.4f
+
+    open fun enableBottomSheetBehavior():Boolean = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,6 +74,7 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        isShowing = false
         dismissListener?.onDismiss(dialog)
     }
 
