@@ -6,10 +6,12 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.fsh.common.util.Omits
 import com.fsh.common.util.SizeUtils
 import com.fsh.trade.R
+
 
 class OrderButton : View {
     private val textPaint:Paint
@@ -56,11 +58,19 @@ class OrderButton : View {
         //绘制第一行的文字 委托价格
         val orderPriceBounds = Rect()
         textPaint.getTextBounds(orderPrice,0,orderPrice.length,orderPriceBounds)
-        canvas?.drawText(orderPrice,((measuredWidth - orderPriceBounds.width())/2.0f),orderPriceBounds.top+(measuredHeight/4.0f-orderPriceBounds.height()/2.0f),textPaint)
+        val fontMetrics = textPaint.fontMetrics
+        val distance = (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom
+        val baseline = measuredHeight/4.0f + distance
+        canvas?.drawText(orderPrice,((measuredWidth - orderPriceBounds.width())/2.0f),
+            baseline,textPaint)
+        Log.d("OrderButton","OrderPrice view top=[$top] bottom=[${bottom}] y=[$y] textWidth=[${orderPriceBounds.width()}] textHeight=[${orderPriceBounds.height()}] startY=[$baseline]")
         //第二行的文字
         val orderTextBounds = Rect()
         textPaint.getTextBounds(orderText,0,orderText.length,orderTextBounds)
-        canvas?.drawText(orderText,(measuredWidth - orderTextBounds.width())/2.0f,orderPriceBounds.top+(measuredHeight/2.0f+measuredHeight/4.0f-orderTextBounds.height()/2.0f),textPaint)
+
+        val baseline2 = measuredHeight/4.0f*3.0f + distance
+        canvas?.drawText(orderText,0,orderText.length,(measuredWidth - orderTextBounds.width())/2.0f,baseline2,textPaint)
+        Log.d("OrderButton","OrderText view top=[$top] bottom=[${bottom}] y=[$y] textWidth=[${orderTextBounds.width()}] textHeight=[${orderTextBounds.height()}] startY2=[$baseline2]")
     }
 
     fun setOrderPriceText(price:String){
