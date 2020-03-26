@@ -396,7 +396,6 @@
             app:layout_constraintTop_toBottomOf="@id/ll_right"
             app:orderPrice="178"
             app:orderText="卖出"
-            android:background="@color/colorAccent"
             />
         <com.fsh.trade.widget.OrderButton
             android:id="@+id/btn_close"
