@@ -16,4 +16,11 @@
     <string name="tv_picker_broker">选择经纪公司</string>
     <string name="tv_settlement_cancel">暂不确认</string>
     <string name="tv_confirm_settlement">确认结算单</string>
+    <string name="tv_ask_price">卖价</string>
+    <string name="tv_ask_volume">卖量</string>
+    <string name="tv_now_volume">现手</string>
+    <string name="tv_bid_price">买价</string>
+    <string name="tv_bid_volume">买量</string>
+    <string name="tv_transaction_ins">交易合约</string>
+    <string name="tv_price">价格</string>
 </resources>

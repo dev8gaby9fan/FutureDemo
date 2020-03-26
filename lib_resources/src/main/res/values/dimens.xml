@@ -50,6 +50,22 @@
     <dimen name="abc_dp_260">260dp</dimen>
     <dimen name="abc_dp_280">280dp</dimen>
     <dimen name="abc_dp_300">300dp</dimen>
+    <dimen name="abc_dp_n_1">-1dp</dimen>
+    <dimen name="abc_dp_n_2">-2dp</dimen>
+    <dimen name="abc_dp_n_3">-2dp</dimen>
+    <dimen name="abc_dp_n_4">-4dp</dimen>
+    <dimen name="abc_dp_n_5">-5dp</dimen>
+    <dimen name="abc_dp_n_6">-6dp</dimen>
+    <dimen name="abc_dp_n_7">-7dp</dimen>
+    <dimen name="abc_dp_n_8">-8dp</dimen>
+    <dimen name="abc_dp_n_9">-9dp</dimen>
+    <dimen name="abc_dp_n_10">-10dp</dimen>
+    <dimen name="abc_dp_n_12">-12dp</dimen>
+    <dimen name="abc_dp_n_14">-14dp</dimen>
+    <dimen name="abc_dp_n_15">-15dp</dimen>
+    <dimen name="abc_dp_n_16">-16dp</dimen>
+    <dimen name="abc_dp_n_18">-18dp</dimen>
+    <dimen name="abc_dp_n_20">-20dp</dimen>
 
     <dimen name="abc_sp_1">1sp</dimen>
     <dimen name="abc_sp_2">2sp</dimen>

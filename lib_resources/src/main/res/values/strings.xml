@@ -6,4 +6,9 @@
     <string name="hint_front_ip">请输入柜台前置IP</string>
     <string name="tv_add_broker">添加经纪公司</string>
     <string name="tv_select_broker">-----------请选择经纪公司-----------</string>
+    <string name="tv_balance">权益:</string>
+    <string name="tv_profit">盈亏:</string>
+    <string name="tv_avaliable">可用:</string>
+    <string name="tv_last">最新</string>
+    <string name="tv_order_volume">手数</string>
 </resources>
