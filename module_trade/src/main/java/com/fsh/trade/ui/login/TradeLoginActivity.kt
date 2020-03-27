@@ -1,9 +1,11 @@
 package com.fsh.trade.ui.login
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.ext.viewModelOf
 import com.fsh.trade.R
@@ -15,6 +17,7 @@ import com.fsh.trade.model.TradeLoginFlowEvent
 import com.fsh.trade.model.TradeLoginFlowType
 import com.fsh.trade.repository.tradeapi.RspConfirmSettlementEvent
 import com.fsh.trade.repository.tradeapi.RspQrySettlementEvent
+import com.fsh.trade.ui.transaction.TransactionActivity
 import com.fsh.trade.util.VerifyUtil
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_trade_login.*
@@ -69,6 +72,7 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
             TradeLoginFlowType.RspQryConfirmSettlementData->{
                 //已经确认过了结算单，登录成功
                 Snackbar.make(container,"登录成功",Snackbar.LENGTH_SHORT).show()
+                onLoginSuccess()
             }
             TradeLoginFlowType.RspSettlementInfo->{
                 val tradeEvent = event.event as RspQrySettlementEvent
@@ -84,10 +88,14 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
                 Snackbar.make(container,tradeEvent.rsp.rspInfoField.errorMsg,Snackbar.LENGTH_SHORT).show()
                 //确认成功
                 if(tradeEvent.rsp.rspInfoField.errorID ==0){
-
+                    onLoginSuccess()
                 }
             }
         }
+    }
+    private fun onLoginSuccess(){
+        finish()
+        startActivity(Intent(this,TransactionActivity::class.java))
     }
 
     private fun initViews() {

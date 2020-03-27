@@ -23,4 +23,12 @@
     <string name="tv_bid_volume">买量</string>
     <string name="tv_transaction_ins">交易合约</string>
     <string name="tv_price">价格</string>
+    <string name="menu_order">委托</string>
+    <string name="menu_trade">成交</string>
+    <string-array name="tab_trans">
+        <item>持仓</item>
+        <item>挂单</item>
+        <item>委托</item>
+        <item>成交</item>
+    </string-array>
 </resources>

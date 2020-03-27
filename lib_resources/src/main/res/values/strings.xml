@@ -11,4 +11,6 @@
     <string name="tv_avaliable">可用:</string>
     <string name="tv_last">最新</string>
     <string name="tv_order_volume">手数</string>
+    <string name="menu_position">持仓</string>
+    <string name="menu_with_draw">挂单</string>
 </resources>

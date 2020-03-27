@@ -379,10 +379,11 @@
         <com.fsh.trade.widget.OrderButton
             android:id="@+id/btn_buy"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_60"
+            android:layout_height="@dimen/abc_dp_70"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/btn_sell"
             app:layout_constraintTop_toBottomOf="@id/ll_right"
+            android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="买入"
             android:background="@color/colorPrimary"
@@ -390,23 +391,79 @@
         <com.fsh.trade.widget.OrderButton
             android:id="@+id/btn_sell"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_60"
+            android:layout_height="@dimen/abc_dp_70"
             app:layout_constraintLeft_toRightOf="@id/btn_buy"
             app:layout_constraintRight_toLeftOf="@id/btn_close"
             app:layout_constraintTop_toBottomOf="@id/ll_right"
+            android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="卖出"
             />
         <com.fsh.trade.widget.OrderButton
             android:id="@+id/btn_close"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_60"
+            android:layout_height="@dimen/abc_dp_70"
             app:layout_constraintLeft_toRightOf="@id/btn_sell"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_right"
+            android:layout_marginRight="@dimen/abc_dp_5"
+            android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="平仓"
             android:background="@color/colorPrimary"
+            />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/nav_layer_trans"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_buy"
+            app:tabIndicatorHeight="@dimen/abc_dp_3"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorAnimationDuration="200"
+            app:tabTextColor="@color/dark_light"
+            app:tabSelectedTextColor="@color/dark_deep"
+            app:tabMode="fixed"
+            android:background="?android:attr/windowBackground"
+            android:layout_marginTop="5dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/abc_dp_40"
+            android:orientation="horizontal">
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_position"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_position"
+                />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_with_draw"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_with_draw"
+                />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_order"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_order"
+                />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_trade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_trade"
+                />
+        </com.google.android.material.tabs.TabLayout>
+        <com.fsh.common.widget.ScrollableViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/abc_dp_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nav_layer_trans"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:scrollable="false"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
