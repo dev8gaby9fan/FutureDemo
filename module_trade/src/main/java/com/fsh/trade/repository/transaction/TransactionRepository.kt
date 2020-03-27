@@ -16,12 +16,15 @@ class TransactionRepository : ITransactionRepository {
     override val tradeLiveData: LiveData<List<RspTradeField>> = MutableLiveData()
     override val positionLiveData: LiveData<List<InstrumentPosition>> = MutableLiveData()
 
-    override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {
+    private val orderDataHandler:IOrderHandler = OrderDataHandler()
 
+
+    override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {
+        orderDataHandler.handleRspQryOrder(event.rsp)
     }
 
     override fun handleRtnOrderEvent(event: RtnOrderEvent) {
-
+        orderDataHandler.handleRtnOrder(event.rtn)
     }
 
     override fun handleRspQryTradeEvent(event: RspQryTradeEvent) {
