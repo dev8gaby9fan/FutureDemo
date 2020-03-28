@@ -7,7 +7,7 @@ import com.fsh.trade.bean.YTDInstrumentPosition
 
 /**
  * 报单状态
- * @param codeInt 状态码
+ * @param code 状态码
  * @param notion 定义
  * @param remark 备注
  */
