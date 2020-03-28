@@ -11,10 +11,10 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
     var volume:Int =0 //总手数
     var longVolume:Int = 0 //多长手数
     var shortVolume:Int = 0 //空仓手数
-    var longFrezonVolume:Int = 0 //多仓冻结手数
-    var shortFrezonVolume:Int = 0 //空仓冻结
+    var longFrozenVolume:Int = 0 //多仓冻结手数
+    var shortFrozenVolume:Int = 0 //空仓冻结
     var todayVolume:Int = 0 //今仓手数
-    var yestodayVolume:Int =0 //昨仓手数
+    var yesterdayVolume:Int =0 //昨仓手数
     var instrumentID:String = Omits.OmitString
     var exchangeID:String = Omits.OmitString
 
@@ -35,9 +35,9 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
 
     override fun compare(obj: InstrumentPosition): Boolean {
         return obj.instrumentID == instrumentID && obj.exchangeID == exchangeID && obj.volume == volume
-                && obj.longVolume == longVolume && obj.longFrezonVolume == longFrezonVolume
-                && obj.shortVolume == obj.shortVolume && obj.shortFrezonVolume == shortFrezonVolume
-                && obj.todayVolume == obj.todayVolume && obj.yestodayVolume == yestodayVolume;
+                && obj.longVolume == longVolume && obj.longFrozenVolume == longFrozenVolume
+                && obj.shortVolume == obj.shortVolume && obj.shortFrozenVolume == shortFrozenVolume
+                && obj.todayVolume == obj.todayVolume && obj.yesterdayVolume == yesterdayVolume;
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,10 +54,10 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
         var result = volume
         result = 31 * result + longVolume
         result = 31 * result + shortVolume
-        result = 31 * result + longFrezonVolume
-        result = 31 * result + shortFrezonVolume
+        result = 31 * result + longFrozenVolume
+        result = 31 * result + shortFrozenVolume
         result = 31 * result + todayVolume
-        result = 31 * result + yestodayVolume
+        result = 31 * result + yesterdayVolume
         result = 31 * result + instrumentID.hashCode()
         result = 31 * result + exchangeID.hashCode()
         return result
@@ -67,6 +67,6 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
 
         //根据交易所ID，创建持仓类型
         fun createPositionPoJoByExchangeId(exchangeId:String):InstrumentPosition? =
-            ExchangeType.from(exchangeId)?.clazzType?.newInstance()
+            ExchangeType.from(exchangeId)?.getInstrumentInstance()
     }
 }

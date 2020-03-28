@@ -84,6 +84,10 @@ enum class ExchangeType(val exchangeID: String, val exchangeName: String,val cla
     SHFE("SHFE", "上期所",YTDInstrumentPosition::class.java),
     INE("INE", "能源所",YTDInstrumentPosition::class.java);
 
+    fun getInstrumentInstance():InstrumentPosition{
+        return clazzType.newInstance()
+    }
+
     companion object {
         private val exchanges: HashMap<String, ExchangeType> = HashMap(10)
 
