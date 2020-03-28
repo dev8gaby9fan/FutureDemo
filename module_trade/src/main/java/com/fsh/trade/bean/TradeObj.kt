@@ -1,6 +1,7 @@
 package com.fsh.trade.bean
 
 import com.fsh.common.util.Omits
+import com.fsh.trade.util.DiffComparable
 import com.sfit.ctp.thosttraderapi.*
 
 /**
@@ -126,7 +127,28 @@ class RspTradingAccount(var rspField:RspTradingAccountField?,rspInfo: RspInfoFie
 /**
  * 委托记录数据
  */
-data class RspOrderField(var brokerID: String,var investorID: String,var instrumentID:String,var orderRef:String,var userID:String,var orderPriceType:Char,var direction:Char,var combOffsetFlag:String,var combHedgeFlag:String,var limitPrice:Double,var volumeTotalOriginal:Int,var timeCondition:Char,var GTDDate:String,var volumeCondition:Char,var minVolume:Int,var contingentCondition:Char,var stopPrice:Double,var forceCloseReason:Char,var isAutoSuspend:Int,var businessUnit:String,var requestID:Int,var orderLocalID:String,var exchangeID:String,var participantID:String,var clientID:String,var exchangeInstID:String,var traderID:String,var installID:Int,var orderSubmitStatus:Char,var notifySequence:Int,var tradingDay:String,var settlementID:Int,var orderSysID:String,var orderSource:Char,var orderStatus:Char,var orderType:Char,var volumeTraded:Int,var volumeTotal:Int,var insertDate:String,var insertTime:String,var activeTime:String,var suspendTime:String,var updateTime:String,var cancelTime:String,var activeTraderID:String,var clearingPartID:String,var sequenceNo:Int,var frontID:Int,var sessionID:Int,var userProductInfo:String,var statusMsg:String,var userForceClose:Int,var activeUserID:String,var brokerOrderSeq:Int,var relativeOrderSysID:String,var ZCETotalTradedVolume:Int,var isSwapOrder:Int,var branchID:String,var investUnitID:String,var accountID: String,var currencyID: String,var ipAddress:String,var macAddress:String){
+class RspOrderField(var brokerID: String,var investorID: String,var instrumentID:String,var orderRef:String,var userID:String,var orderPriceType:Char,var direction:Char,var combOffsetFlag:String,var combHedgeFlag:String,var limitPrice:Double,var volumeTotalOriginal:Int,var timeCondition:Char,var GTDDate:String,var volumeCondition:Char,var minVolume:Int,var contingentCondition:Char,var stopPrice:Double,var forceCloseReason:Char,var isAutoSuspend:Int,var businessUnit:String,var requestID:Int,var orderLocalID:String,var exchangeID:String,var participantID:String,var clientID:String,var exchangeInstID:String,var traderID:String,var installID:Int,var orderSubmitStatus:Char,var notifySequence:Int,var tradingDay:String,var settlementID:Int,var orderSysID:String,var orderSource:Char,var orderStatus:Char,var orderType:Char,var volumeTraded:Int,var volumeTotal:Int,var insertDate:String,var insertTime:String,var activeTime:String,var suspendTime:String,var updateTime:String,var cancelTime:String,var activeTraderID:String,var clearingPartID:String,var sequenceNo:Int,var frontID:Int,var sessionID:Int,var userProductInfo:String,var statusMsg:String,var userForceClose:Int,var activeUserID:String,var brokerOrderSeq:Int,var relativeOrderSysID:String,var ZCETotalTradedVolume:Int,var isSwapOrder:Int,var branchID:String,var investUnitID:String,var accountID: String,var currencyID: String,var ipAddress:String,var macAddress:String)
+    : DiffComparable<RspOrderField> {
+    /**
+     * 判断内容是否发生变化
+     */
+    override fun compare(obj : RspOrderField): Boolean {
+        return (obj.investorID == investorID && obj.instrumentID == instrumentID && obj.frontID == frontID && obj.sessionID == sessionID && obj.orderRef == orderRef && obj.volumeTraded == volumeTraded && obj.volumeTotalOriginal == volumeTotalOriginal)
+    }
+
+    /**
+     * 判断是不是同一个对象
+     */
+    override fun equals(other: Any?): Boolean {
+        if(other == null) return  false
+        if(other === this) return true
+        if(other !is RspOrderField){
+            return false
+        }
+        val o = other!!
+        return (o.investorID == investorID && o.instrumentID == instrumentID && o.frontID == frontID && o.sessionID == sessionID && o.orderRef == orderRef)
+    }
+
     companion object{
         fun fromCTPAPI(rsp:CThostFtdcOrderField?):RspOrderField? =
             if(rsp == null) null
@@ -179,7 +201,18 @@ class RspOrderAction(var rspField:RspOrderActionField?,rspInfo: RspInfoField,bIs
 /**
  * 成交数据
  */
-data class RspTradeField(var brokerID: String,var investorID: String,var instrumentID: String,var orderRef: String,var userID: String,var exchangeID: String,var tradeID:String,var direction: Char,var orderSysID: String,var participantID: String,var clientID: String,var tradingRole:Char,var exchangeInstID:String,var offsetFlag:Char,var hedgeFlag:Char,var price:Double,var volume:Int,var tradeDate:String,var tradeTime:String,var tradeType:Char,var priceSource:Char,var traderID: String,var orderLocalID: String,var clearingPartID: String,var businessUnit: String,var sequenceNo: Int,var tradingDay: String,var settlementID: Int,var brokerOrderSeq: Int,var tradeSource: Char,var investUnitID: String){
+class RspTradeField(var brokerID: String,var investorID: String,var instrumentID: String,var orderRef: String,var userID: String,var exchangeID: String,var tradeID:String,var direction: Char,var orderSysID: String,var participantID: String,var clientID: String,var tradingRole:Char,var exchangeInstID:String,var offsetFlag:Char,var hedgeFlag:Char,var price:Double,var volume:Int,var tradeDate:String,var tradeTime:String,var tradeType:Char,var priceSource:Char,var traderID: String,var orderLocalID: String,var clearingPartID: String,var businessUnit: String,var sequenceNo: Int,var tradingDay: String,var settlementID: Int,var brokerOrderSeq: Int,var tradeSource: Char,var investUnitID: String)
+    :DiffComparable<RspTradeField>{
+    override fun compare(obj: RspTradeField): Boolean {
+        return obj.investorID == investorID && obj.tradeID == tradeID && obj.instrumentID == obj.instrumentID
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other === this) return true
+        if(other !is RspTradeField) return false
+        return other.investorID == investorID && other.tradeID == tradeID && other.instrumentID == other.instrumentID
+    }
+
     companion object{
         fun fromCTPAPI(rsp:CThostFtdcTradeField?):RspTradeField? =
             if(rsp == null) null

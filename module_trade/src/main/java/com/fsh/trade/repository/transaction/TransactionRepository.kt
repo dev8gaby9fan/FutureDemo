@@ -5,41 +5,51 @@ import androidx.lifecycle.MutableLiveData
 import com.fsh.trade.bean.InstrumentPosition
 import com.fsh.trade.bean.RspOrderField
 import com.fsh.trade.bean.RspTradeField
+import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.repository.tradeapi.*
 
 /**
  * 交易业务处理的Repository
  */
 class TransactionRepository : ITransactionRepository {
-    override val orderLiveData: LiveData<List<RspOrderField>> = MutableLiveData()
-    override val withDrawLiveData: LiveData<List<RspOrderField>> = MutableLiveData()
+    private val orderDataHandler:IOrderHandler = OrderDataHandler()
+    private val tradeDataHandler:ITradeDataHandler = TradeDataHandler()
+    private val positionDataHandler:IPositionDataHandler = PositionDataHandler()
+
+    override val orderLiveData: LiveData<List<RspOrderField>> = orderDataHandler.getLiveData()
+    override val withDrawLiveData: LiveData<List<RspOrderField>> = orderDataHandler.getWithDrawLiveData()
     override val tradeLiveData: LiveData<List<RspTradeField>> = MutableLiveData()
     override val positionLiveData: LiveData<List<InstrumentPosition>> = MutableLiveData()
-
-    private val orderDataHandler:IOrderHandler = OrderDataHandler()
-
+    override val tradingAccountLiveData:MutableLiveData<RspTradingAccountField> = MutableLiveData()
 
     override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {
         orderDataHandler.handleRspQryOrder(event.rsp)
+        //持仓也需要处理委托响应，计算仓位冻结手数
+        positionDataHandler.handleRspQryOrder(event.rsp)
     }
 
     override fun handleRtnOrderEvent(event: RtnOrderEvent) {
         orderDataHandler.handleRtnOrder(event.rtn)
+        //持仓也需要处理委托响应，计算仓位冻结手数
+        positionDataHandler.handleRtnOrder(event.rtn)
     }
 
     override fun handleRspQryTradeEvent(event: RspQryTradeEvent) {
-
+        tradeDataHandler.handleRspQryTrade(event.rsp)
     }
 
     override fun handleRtnTradeEvent(event: RtnTradeEvent) {
-
+        tradeDataHandler.handleRtnQryTrade(event.rtn)
+        //持仓也需要处理成交回报，计算仓位
+        positionDataHandler.handleRtnTrade(event.rtn)
     }
 
     override fun handleRspQryPositionDetailEvent(event: RspQryPositionDetailEvent) {
-
+        positionDataHandler.handleRspQryPositionDetail(event.rsp)
     }
 
     override fun handleRspQryTradingAccountEvent(event: RspQryTradingAccountEvent) {
-
+        //资金数据就直接往丢，不用处理
+        tradingAccountLiveData.postValue(event.rsp.rspField)
     }
 }

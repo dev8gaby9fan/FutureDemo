@@ -1,15 +1,18 @@
 package com.fsh.trade.repository.transaction
 
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.fsh.common.util.Omits
 import com.fsh.trade.bean.RspOrderField
 import com.fsh.trade.bean.RspQryOrder
 import com.fsh.trade.bean.RtnOrder
+import com.fsh.trade.enums.CTPOrderStatusType
 
 /**
  * 处理委托响应、回报数据
  */
-interface IOrderHandler{
+interface IOrderHandler : BaseDataHandler<RspOrderField>{
     /**
      * 处理查询委托响应
      */
@@ -29,9 +32,17 @@ interface IOrderHandler{
      * 获取挂单列表
      */
     fun getWithDrawList():List<RspOrderField>
+
+    /**
+     * 挂单数据的LiveData
+     */
+    fun getWithDrawLiveData():LiveData<List<RspOrderField>>
 }
 
 class OrderDataHandler : IOrderHandler{
+    private val orderLiveData:MutableLiveData<List<RspOrderField>> = MutableLiveData()
+    private val withDrawLiveData:MutableLiveData<List<RspOrderField>> = MutableLiveData()
+
     //初始化容器大小为100，委托数据多于挂单数据
     private val orderDataContainer:ArrayMap<String,RspOrderField> = ArrayMap(100)
     //初始化20条数据,挂单数据会比较少
@@ -52,8 +63,9 @@ class OrderDataHandler : IOrderHandler{
         //存在数据容器中的数据
         val orderKey = "${data.frontID}${data.sessionID}${data.orderSysID}${data.instrumentID}${data.investorID}"
         orderDataContainer[orderKey] = data
+        val orderStatus = CTPOrderStatusType.from(data.orderStatus)
         //没有全部成交
-        if(data.orderStatus.toInt() != 48){
+        if(!orderStatus.isOver){
             withDrawOrderDataContainer[orderKey] = data
         }else{
             //全部成交
@@ -69,4 +81,7 @@ class OrderDataHandler : IOrderHandler{
         return ArrayList<RspOrderField>(withDrawOrderDataContainer.values)
     }
 
+    override fun getLiveData(): LiveData<List<RspOrderField>> = orderLiveData
+
+    override fun getWithDrawLiveData(): LiveData<List<RspOrderField>> = withDrawLiveData
 }

@@ -5,6 +5,7 @@ import com.fsh.common.repository.BaseRepository
 import com.fsh.trade.bean.InstrumentPosition
 import com.fsh.trade.bean.RspOrderField
 import com.fsh.trade.bean.RspTradeField
+import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.repository.tradeapi.*
 
 interface ITransactionRepository : BaseRepository {
@@ -12,6 +13,7 @@ interface ITransactionRepository : BaseRepository {
     val withDrawLiveData:LiveData<List<RspOrderField>>
     val tradeLiveData:LiveData<List<RspTradeField>>
     val positionLiveData:LiveData<List<InstrumentPosition>>
+    val tradingAccountLiveData:LiveData<RspTradingAccountField>
     /**
      * 查询委托响应
      */
