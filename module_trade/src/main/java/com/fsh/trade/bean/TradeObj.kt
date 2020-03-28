@@ -145,8 +145,7 @@ class RspOrderField(var brokerID: String,var investorID: String,var instrumentID
         if(other !is RspOrderField){
             return false
         }
-        val o = other!!
-        return (o.investorID == investorID && o.instrumentID == instrumentID && o.frontID == frontID && o.sessionID == sessionID && o.orderRef == orderRef)
+        return (other.investorID == investorID && other.instrumentID == instrumentID && other.frontID == frontID && other.sessionID == sessionID && other.orderRef == orderRef)
     }
 
     companion object{

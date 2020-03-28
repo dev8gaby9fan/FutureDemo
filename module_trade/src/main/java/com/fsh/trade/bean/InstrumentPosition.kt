@@ -1,6 +1,7 @@
 package com.fsh.trade.bean
 
 import com.fsh.common.util.Omits
+import com.fsh.trade.enums.ExchangeType
 import com.fsh.trade.util.DiffComparable
 
 /**
@@ -31,4 +32,41 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
      * 处理持仓查询响应
      */
     abstract fun handleRspQryPositionDetail(rsp:RspPositionDetailField)
+
+    override fun compare(obj: InstrumentPosition): Boolean {
+        return obj.instrumentID == instrumentID && obj.exchangeID == exchangeID && obj.volume == volume
+                && obj.longVolume == longVolume && obj.longFrezonVolume == longFrezonVolume
+                && obj.shortVolume == obj.shortVolume && obj.shortFrezonVolume == shortFrezonVolume
+                && obj.todayVolume == obj.todayVolume && obj.yestodayVolume == yestodayVolume;
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other == null)
+            return false
+        if(other === this)
+            return  true
+        if(other !is InstrumentPosition)
+            return false
+        return other.instrumentID == instrumentID && other.exchangeID == exchangeID
+    }
+
+    override fun hashCode(): Int {
+        var result = volume
+        result = 31 * result + longVolume
+        result = 31 * result + shortVolume
+        result = 31 * result + longFrezonVolume
+        result = 31 * result + shortFrezonVolume
+        result = 31 * result + todayVolume
+        result = 31 * result + yestodayVolume
+        result = 31 * result + instrumentID.hashCode()
+        result = 31 * result + exchangeID.hashCode()
+        return result
+    }
+
+    companion object{
+
+        //根据交易所ID，创建持仓类型
+        fun createPositionPoJoByExchangeId(exchangeId:String):InstrumentPosition? =
+            ExchangeType.from(exchangeId)?.clazzType?.newInstance()
+    }
 }

@@ -45,7 +45,6 @@ class TransactionFragment :BaseFragment(){
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    Log.d("TransactionFragment","onTabSelected ${tab?.position!!}")
                     view_pager.currentItem = tab?.position!!
                 }
             })

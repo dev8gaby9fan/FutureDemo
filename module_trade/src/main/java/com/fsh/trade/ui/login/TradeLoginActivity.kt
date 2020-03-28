@@ -84,12 +84,13 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
             //确认结算单响应
             TradeLoginFlowType.RspConfirmSettlementInfo->{
                 settlementInfoDialog.dismiss()
-                val tradeEvent = event.event as RspConfirmSettlementEvent
-                Snackbar.make(container,tradeEvent.rsp.rspInfoField.errorMsg,Snackbar.LENGTH_SHORT).show()
-                //确认成功
-                if(tradeEvent.rsp.rspInfoField.errorID ==0){
-                    onLoginSuccess()
-                }
+//                val tradeEvent = event.event as RspConfirmSettlementEvent
+//                Snackbar.make(container,tradeEvent.rsp.rspInfoField.errorMsg,Snackbar.LENGTH_SHORT).show()
+//                //确认成功
+//                if(tradeEvent.rsp.rspInfoField.errorID ==0){
+//                    onLoginSuccess()
+//                }
+                onLoginSuccess()
             }
         }
     }

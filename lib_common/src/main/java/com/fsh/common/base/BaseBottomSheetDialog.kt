@@ -78,6 +78,12 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
         dismissListener?.onDismiss(dialog)
     }
 
+    override fun dismiss() {
+        if(isShowing){
+            super.dismiss()
+        }
+    }
+
     @LayoutRes
     abstract fun getLayoutRes():Int
 }

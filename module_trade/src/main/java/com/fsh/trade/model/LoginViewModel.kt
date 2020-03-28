@@ -1,6 +1,5 @@
 package com.fsh.trade.model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fsh.common.base.BaseViewModel
@@ -70,9 +69,11 @@ class LoginViewModel : BaseViewModel<TradeApiRepository>(){
             is ReqQrySettlementEvent -> {}
             //查询结算单响应
             is RspQrySettlementEvent -> {
-                val rspSettlementEvent = event
-                if(rspSettlementEvent.rsp.bIsLast && (rspSettlementEvent.rsp.rspInfoField.errorID == 0 || !Omits.isOmit(rspSettlementEvent.rsp.rspField?.content))){
+                if(event.rsp.bIsLast && (event.rsp.rspInfoField.errorID == 0 || !Omits.isOmit(event.rsp.rspField?.content))){
                     _loginLiveData.postValue(TradeLoginFlowEvent(TradeLoginFlowType.RspSettlementInfo,event))
+                }else if(event.rsp.rspField == null && Omits.isOmit(event.rsp.rspInfoField.errorID)){
+                    //盘后环境没有rspField和rspInfo
+                    _loginLiveData.postValue(TradeLoginFlowEvent(TradeLoginFlowType.RspConfirmSettlementInfo,event))
                 }
             }
             //确认结算单响应

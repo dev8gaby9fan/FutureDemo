@@ -1,5 +1,6 @@
 package com.fsh.trade.repository.transaction
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fsh.trade.bean.InstrumentPosition
@@ -23,6 +24,7 @@ class TransactionRepository : ITransactionRepository {
     override val tradingAccountLiveData:MutableLiveData<RspTradingAccountField> = MutableLiveData()
 
     override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {
+        Log.d("TransactionRepository","handleRspQryOrderEvent ${event.rsp.rspInfoField?.errorMsg}  ${event.rsp.rspInfoField?.errorID}")
         orderDataHandler.handleRspQryOrder(event.rsp)
         //持仓也需要处理委托响应，计算仓位冻结手数
         positionDataHandler.handleRspQryOrder(event.rsp)
