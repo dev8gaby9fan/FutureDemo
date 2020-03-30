@@ -69,5 +69,10 @@ interface TradeApiSource {
      */
     fun reqOrderAction()
 
+    /**
+     * 查询资金
+     */
+    fun reqQryTradingAccount()
+
     fun registerSubject(publish:Subject<TradeEvent>)
 }

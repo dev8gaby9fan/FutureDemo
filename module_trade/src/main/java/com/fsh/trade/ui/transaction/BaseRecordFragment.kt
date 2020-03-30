@@ -55,6 +55,7 @@ abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewH
             val oldList = recordList
             val calculateDiff = DiffUtil.calculateDiff(RecordDiffCallback(oldList, list))
             calculateDiff.dispatchUpdatesTo(recordAdapter)
+            recordList = list
         }
     }
 

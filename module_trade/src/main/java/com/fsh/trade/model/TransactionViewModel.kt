@@ -7,6 +7,7 @@ import com.fsh.common.base.BaseViewModel
 import com.fsh.trade.bean.InstrumentPosition
 import com.fsh.trade.bean.RspOrderField
 import com.fsh.trade.bean.RspTradeField
+import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.repository.TradeApiProvider
 import com.fsh.trade.repository.tradeapi.*
 import com.fsh.trade.repository.transaction.ITransactionRepository
@@ -20,6 +21,7 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     val withDrawOrderLiveData:LiveData<List<RspOrderField>> = transactionRepository.withDrawLiveData
     val positionLiveData:LiveData<List<InstrumentPosition>> = transactionRepository.positionLiveData
     val tradeLiveData:LiveData<List<RspTradeField>> = transactionRepository.tradeLiveData
+    val tradingAccountLiveData:LiveData<RspTradingAccountField> = transactionRepository.tradingAccountLiveData
     init {
         repository = TradeApiProvider.providerCTPTradeApi().apply {
             disposable.add(getTradeEventObserver().subscribe {
@@ -58,6 +60,10 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     fun reqQryPositionDetail(){
         repository?.reqQryPositionDetail()
         Log.d("TransactionViewModel","reqQryPositionDetail")
+    }
+
+    fun reqQryTradingAccount(){
+        repository?.reqQryTradingAccount()
     }
 
     /**

@@ -147,7 +147,7 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
 
     override fun onEnsureClick() {
         //确认的时候，就显示确认提示窗
-       loginViewModel.loginLiveData
+       loginViewModel.reqConfirmSettlementInfo()
     }
     override fun onItemClick(
         pos: Int,

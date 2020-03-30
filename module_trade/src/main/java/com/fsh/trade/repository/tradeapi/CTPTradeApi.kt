@@ -292,44 +292,72 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     }
 
     override fun reqUserLogout() {
-        val logoutField = CThostFtdcUserLogoutField()
-        logoutField.brokerID = broker?.brokerId
-        logoutField.userID = account?.investorId
+        val logoutField = CThostFtdcUserLogoutField().apply {
+            brokerID = broker?.brokerId
+            userID = account?.investorId
+        }
         tradeApi?.ReqUserLogout(logoutField, nRequestIDFactor.getAndIncrement())
         Log.d("CTPTradeApi","[${account?.investorId}] req user logout")
     }
 
     override fun reqQryConfirmSettlement() {
-        val reqField = CThostFtdcQrySettlementInfoConfirmField()
-        reqField.brokerID = broker?.brokerId
-        reqField.accountID = account?.investorId
-        reqField.investorID = account?.investorId
+        val reqField = CThostFtdcQrySettlementInfoConfirmField().apply {
+            brokerID = broker?.brokerId
+            accountID = account?.investorId
+            investorID = account?.investorId
+        }
         tradeApi?.ReqQrySettlementInfoConfirm(reqField,nRequestIDFactor.getAndIncrement())
         Log.d("CTPTradeApi","[${account?.investorId}] req qry confirm settlement")
     }
 
     override fun reqConfirmSettlement() {
-        val reqField = CThostFtdcSettlementInfoConfirmField()
-        reqField.accountID = account?.investorId
-        reqField.brokerID = broker?.brokerId
-        reqField.investorID = account?.investorId
-        reqField.confirmDate = DateUtils.formatNow1()
-        reqField.confirmTime = DateUtils.formatNow3()
+        val reqField = CThostFtdcSettlementInfoConfirmField().apply {
+            accountID = account?.investorId
+            brokerID = broker?.brokerId
+            investorID = account?.investorId
+            confirmDate = DateUtils.formatNow1()
+            confirmTime = DateUtils.formatNow3()
+        }
         tradeApi?.ReqSettlementInfoConfirm(reqField, nRequestIDFactor.getAndIncrement())
         Log.d("CTPTradeApi","[${account?.investorId}] req confirm settlement")
     }
 
 
     override fun reqQryOrder() {
-
+        val refField = CThostFtdcQryOrderField().apply {
+            brokerID = broker?.brokerId
+            investorID = account?.investorId
+        }
+        tradeApi?.ReqQryOrder(refField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqQryOrder ${broker?.brokerId} ${account?.investorId}")
     }
 
     override fun reqQryTrade() {
+        val reqField = CThostFtdcQryTradeField().apply {
+            brokerID = broker?.brokerId
+            investorID = account?.investorId
+        }
+        tradeApi?.ReqQryTrade(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqQryTrade ${broker?.brokerId} ${account?.investorId}")
+    }
 
+    override fun reqQryTradingAccount() {
+        val reqField = CThostFtdcQryTradingAccountField().apply{
+            investorID = account?.investorId
+            accountID = account?.investorId
+            brokerID = broker?.brokerId
+        }
+        tradeApi?.ReqQryTradingAccount(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqQryTradingAccount ${broker?.brokerId} ${account?.investorId}")
     }
 
     override fun reqQryPositionDetail() {
-
+        val reqField = CThostFtdcQryInvestorPositionDetailField().apply {
+            brokerID = broker?.brokerId
+            investorID = account?.investorId
+        }
+        tradeApi?.ReqQryInvestorPositionDetail(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqQryPositionDetail ${broker?.brokerId} ${account?.investorId}")
     }
 
     override fun reqOrderInsert() {

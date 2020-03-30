@@ -3,14 +3,15 @@ package com.fsh.trade.ui.transaction
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.Observer
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
 import com.fsh.trade.R
+import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.model.TransactionViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_transaction.*
-import java.util.*
 
 class TransactionFragment :BaseFragment(){
     private lateinit var pagerAdapter: CommonFragmentPagerAdapter
@@ -28,7 +29,14 @@ class TransactionFragment :BaseFragment(){
     }
 
     fun initViews(){
-        viewModel = viewModelOf<TransactionViewModel>().value
+        viewModel = viewModelOf<TransactionViewModel>().value.apply {
+            //查一下资金
+            reqQryTradingAccount()
+            tradingAccountLiveData.observe(this@TransactionFragment, Observer {
+                updateAccountDetails(it)
+            })
+        }
+
         val titleList = resources.getStringArray(R.array.tab_trans).toMutableList()
         fragmentList = getRecordFragmentList()
         pagerAdapter = CommonFragmentPagerAdapter(childFragmentManager,fragmentList,titleList)
@@ -52,6 +60,12 @@ class TransactionFragment :BaseFragment(){
                 it.getTabAt(index)?.text = pagerAdapter.getPageTitle(index)
             }
         }
+    }
+
+    private fun updateAccountDetails(account:RspTradingAccountField){
+        tv_balance.text = account.balance.toString()
+        tv_avaliable.text = account.avaliable.toString()
+        tv_profit.text = account.closeProfit.toString()
     }
 
     private fun getRecordFragmentList():List<BaseRecordFragment<*,*>> = arrayListOf(

@@ -33,4 +33,9 @@ interface TradeService : IProvider{
      * 设置交易的合约
      */
     fun setTradeIns(ins:InstrumentInfo)
+
+    /**
+     * 是否有账号登录
+     */
+    fun isTradingLogin():Boolean
 }

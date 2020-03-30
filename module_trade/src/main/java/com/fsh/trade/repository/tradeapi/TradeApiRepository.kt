@@ -67,6 +67,10 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         tradeApiSource.reqQryPositionDetail()
     }
 
+    fun reqQryTradingAccount(){
+        tradeApiSource.reqQryTradingAccount()
+    }
+
     fun getTradeEventObserver():Observable<TradeEvent> = tradeEventPublish
 
 }

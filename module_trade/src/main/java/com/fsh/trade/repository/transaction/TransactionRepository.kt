@@ -19,8 +19,8 @@ class TransactionRepository : ITransactionRepository {
 
     override val orderLiveData: LiveData<List<RspOrderField>> = orderDataHandler.getLiveData()
     override val withDrawLiveData: LiveData<List<RspOrderField>> = orderDataHandler.getWithDrawLiveData()
-    override val tradeLiveData: LiveData<List<RspTradeField>> = MutableLiveData()
-    override val positionLiveData: LiveData<List<InstrumentPosition>> = MutableLiveData()
+    override val tradeLiveData: LiveData<List<RspTradeField>> = tradeDataHandler.getLiveData()
+    override val positionLiveData: LiveData<List<InstrumentPosition>> = positionDataHandler.getLiveData()
     override val tradingAccountLiveData:MutableLiveData<RspTradingAccountField> = MutableLiveData()
 
     override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {

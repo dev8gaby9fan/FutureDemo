@@ -4,9 +4,7 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fsh.common.util.Omits
-import com.fsh.trade.bean.RspOrderField
-import com.fsh.trade.bean.RspQryOrder
-import com.fsh.trade.bean.RtnOrder
+import com.fsh.trade.bean.*
 import com.fsh.trade.enums.CTPOrderStatusType
 
 /**
@@ -22,6 +20,16 @@ interface IOrderHandler : BaseDataHandler<RspOrderField>{
      * 处理委托回报
      */
     fun handleRtnOrder(rtn: RtnOrder)
+
+    /**
+     * 处理报单响应
+     */
+    fun handleRspOrderInsert(rsp:RspOrderInsert)
+
+    /**
+     * 处理报单录入
+     */
+    fun handleRspOrderAction(rsp:RspOrderAction)
 
     /**
      * 获取委托列表
@@ -49,10 +57,25 @@ class OrderDataHandler : IOrderHandler{
     private val withDrawOrderDataContainer:ArrayMap<String,RspOrderField> = ArrayMap(20)
     override fun handleRspQryOrder(rsp: RspQryOrder) {
         dealRspOrderFieldData(rsp.rspField)
+        if(rsp.bIsLast){
+            orderLiveData.postValue(ArrayList(orderDataContainer.values))
+            withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values))
+        }
     }
 
     override fun handleRtnOrder(rtn: RtnOrder) {
         dealRspOrderFieldData(rtn.rspField)
+    }
+    override fun handleRspOrderInsert(rsp: RspOrderInsert) {
+        if(rsp.rspInfoField.errorID != 0 && !Omits.isOmit(rsp.rspInfoField.errorID)){
+            //TODO 这里需要找到那一笔报单 更新它的状态
+        }
+    }
+
+    override fun handleRspOrderAction(rsp: RspOrderAction) {
+        if(rsp.rspInfoField.errorID !=0 && !Omits.isOmit(rsp.rspInfoField.errorID)){
+            //TODO 这里需要找到那一笔报单 更新它的状态
+        }
     }
 
     private fun dealRspOrderFieldData(data:RspOrderField?){
