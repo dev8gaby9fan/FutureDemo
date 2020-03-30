@@ -10,7 +10,7 @@ import com.fsh.trade.R
 import com.fsh.trade.bean.RspOrderField
 import com.fsh.trade.enums.CTPCombOffsetFlag
 import com.fsh.trade.enums.CTPDirection
-import com.fsh.trade.enums.CTPHedge
+import com.fsh.trade.enums.CTPHedgeType
 import com.fsh.trade.enums.CTPOrderStatusType
 import kotlinx.android.synthetic.main.layout_item_order.view.*
 import kotlinx.android.synthetic.main.layout_item_with_draw.view.tv_ins_name
@@ -56,7 +56,7 @@ class OrderRecordFragment : BaseRecordFragment<RspOrderField,OrderRecordItemVH>(
         holder.itemView.tv_trade_volume.text = itemRec.volumeTraded.toString()
         holder.itemView.tv_with_draw.text = (itemRec.volumeTotalOriginal - itemRec.volumeTraded).toString()
         holder.itemView.tv_time.text = itemRec.insertTime
-        holder.itemView.tv_hedge.text = CTPHedge.from(itemRec.combHedgeFlag[0])?.text
+        holder.itemView.tv_hedge.text = CTPHedgeType.from(itemRec.combHedgeFlag[0])?.text
         holder.itemView.tv_smsg.text = itemRec.statusMsg
     }
 

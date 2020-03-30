@@ -1,6 +1,8 @@
 package com.fsh.trade.bean
 
+import android.util.ArrayMap
 import com.fsh.common.util.Omits
+import com.fsh.trade.enums.CTPDirection
 import com.fsh.trade.enums.ExchangeType
 import com.fsh.trade.util.DiffComparable
 
@@ -17,7 +19,15 @@ abstract class InstrumentPosition : DiffComparable<InstrumentPosition>{
     var yesterdayVolume:Int =0 //昨仓手数
     var instrumentID:String = Omits.OmitString
     var exchangeID:String = Omits.OmitString
-
+    var direction:CTPDirection = CTPDirection.Buy
+    //今套保仓
+    val todayHedgePositions:ArrayMap<String,RspPositionDetailField> = ArrayMap(60)
+    //昨套保仓
+    val yesterDayHedgePositions:ArrayMap<String,RspPositionDetailField> = ArrayMap(60)
+    //今投机仓
+    val todaySpeculationPositions:ArrayMap<String,RspPositionDetailField> = ArrayMap(60)
+    //昨投机仓
+    val yesterDaySpeculationPositions:ArrayMap<String,RspPositionDetailField> = ArrayMap(60)
     /**
      * 处理委托响应和委托回报
      */

@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.trade.R
-import com.fsh.trade.bean.RspQryTrade
 import com.fsh.trade.bean.RspTradeField
 import com.fsh.trade.enums.CTPCombOffsetFlag
 import com.fsh.trade.enums.CTPDirection
-import com.fsh.trade.enums.CTPHedge
+import com.fsh.trade.enums.CTPHedgeType
 import kotlinx.android.synthetic.main.layout_item_trade.view.*
 
 /**
@@ -44,7 +43,7 @@ class TradeRecordFragment : BaseRecordFragment<RspTradeField,TradeRecordItemVH>(
         holder.itemView.tv_offset.text = CTPCombOffsetFlag.from(record.offsetFlag).text
         holder.itemView.tv_price.text = record.price.toString()
         holder.itemView.tv_volume.text = record.volume.toString()
-        holder.itemView.tv_hedge.text = CTPHedge.from(record.hedgeFlag)?.text
+        holder.itemView.tv_hedge.text = CTPHedgeType.from(record.hedgeFlag)?.text
         holder.itemView.tv_time.text = record.tradeTime
     }
 

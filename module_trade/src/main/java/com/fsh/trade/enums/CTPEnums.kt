@@ -102,13 +102,13 @@ enum class CTPDirection(val direction: Char, val text: String) {
 /**
  * 投机套保标志
  */
-enum class CTPHedge(val code: Char, val text: String) {
+enum class CTPHedgeType(val code: Char, val text: String) {
     Speculation('1', "投机"),
     Arbitrage('2', "套利"),
     Hedge('3', "套保");
 
     companion object {
-        private val all: HashMap<Char, CTPHedge> = HashMap()
+        private val all: HashMap<Char, CTPHedgeType> = HashMap()
 
         init {
             for (hedge in values()) {
@@ -116,7 +116,7 @@ enum class CTPHedge(val code: Char, val text: String) {
             }
         }
 
-        fun from(hedge: Char): CTPHedge? {
+        fun from(hedge: Char): CTPHedgeType? {
             return all[hedge]
         }
     }

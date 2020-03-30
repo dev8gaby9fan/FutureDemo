@@ -361,6 +361,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     }
 
     override fun reqOrderInsert() {
+        val reqField = CThostFtdcInputOrderField()
 
     }
 
