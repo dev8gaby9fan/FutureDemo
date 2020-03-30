@@ -4,7 +4,7 @@ import com.fsh.trade.enums.*
 import com.sfit.ctp.thosttraderapi.CThostFtdcInputOrderField
 
 interface IOrderInsertField{
-    fun toCTPInputOrderField():CThostFtdcInputOrderField
+    fun toCThostFtdcInputOrderField():CThostFtdcInputOrderField
 }
 
 class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrumentId:String,val orderRef:String,
@@ -18,7 +18,7 @@ class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrume
 
 
 
-    override fun toCTPInputOrderField(): CThostFtdcInputOrderField =
+    override fun toCThostFtdcInputOrderField(): CThostFtdcInputOrderField =
         CThostFtdcInputOrderField().apply {
             this.brokerID = brokerId
             investorID = investorId

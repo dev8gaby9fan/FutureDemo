@@ -360,13 +360,16 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         Log.d("CTPTradeApi","reqQryPositionDetail ${broker?.brokerId} ${account?.investorId}")
     }
 
-    override fun reqOrderInsert() {
-        val reqField = CThostFtdcInputOrderField()
-
+    override fun reqOrderInsert(order:IOrderInsertField) {
+        val reqField = order.toCThostFtdcInputOrderField()
+        tradeApi?.ReqOrderInsert(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqOrderInsert ${broker?.brokerId} ${account?.investorId}")
     }
 
-    override fun reqOrderAction() {
-
+    override fun reqOrderAction(action:IInputOrderActionField) {
+        val reqField = action.toCThostFtdcInputOrderActionField()
+        tradeApi?.ReqOrderAction(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","reqOrderAction ${broker?.brokerId} ${account?.investorId}")
     }
 
     companion object {

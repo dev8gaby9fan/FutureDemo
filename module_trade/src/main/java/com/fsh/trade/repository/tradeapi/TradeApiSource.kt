@@ -1,6 +1,8 @@
 package com.fsh.trade.repository.tradeapi
 
 import com.fsh.trade.bean.BrokerConfig
+import com.fsh.trade.bean.IInputOrderActionField
+import com.fsh.trade.bean.IOrderInsertField
 import com.fsh.trade.bean.TradeAccountConfig
 import io.reactivex.subjects.Subject
 
@@ -62,12 +64,12 @@ interface TradeApiSource {
     /**
      * 请求报单
      */
-    fun reqOrderInsert()
+    fun reqOrderInsert(order:IOrderInsertField)
 
     /**
      * 请求撤单
      */
-    fun reqOrderAction()
+    fun reqOrderAction(action:IInputOrderActionField)
 
     /**
      * 查询资金
