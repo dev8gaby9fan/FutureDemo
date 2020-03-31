@@ -25,6 +25,31 @@
     <string name="tv_price">价格</string>
     <string name="menu_order">委托</string>
     <string name="menu_trade">成交</string>
+    <string name="tv_balance">今权益</string>
+    <string name="tv_with_draw_quota">今可取</string>
+    <string name="tv_available">今可用</string>
+    <string name="tv_profit">盈亏</string>
+    <string name="tv_pos_profit">未结盈亏</string>
+    <string name="tv_margin">保证金</string>
+    <string name="tv_frozen_margin">冻结保证金</string>
+    <string name="tv_with_draw_money">出金</string>
+    <string name="tv_deposit">入金</string>
+    <string name="tv_commission">手续费</string>
+    <string name="tv_frozen_commission">冻结手续费</string>
+    <string name="tv_pre_fund_mortgage_in">昨货币质入</string>
+    <string name="tv_pre_fund_mortgage_out">昨货币质出</string>
+    <string name="tv_fund_mortgage_in">今货币质入</string>
+    <string name="tv_fund_mortgage_out">今货币质出</string>
+    <string name="tv_fund_mortgage_available">质押余额</string>
+    <string name="tv_mortgageable_fund">质押余额</string>
+    <string name="tv_spec_product_margin">特殊产品保证金</string>
+    <string name="tv_spec_product_frozen_margin">特殊产品冻结保证金</string>
+    <string name="tv_spec_product_commission">特殊产品手续费</string>
+    <string name="tv_spec_product_frozen_commission">特殊产品冻结手续费</string>
+    <string name="tv_spec_product_position_profit">特殊产品持仓盈亏</string>
+    <string name="tv_spec_product_close_profit">特殊产品平仓盈亏</string>
+    <string name="tv_refresh">刷新</string>
+    <string name="tv_account_info" formatted="false">%1s(%2s)</string>
     <string-array name="tab_trans">
         <item>持仓</item>
         <item>挂单</item>

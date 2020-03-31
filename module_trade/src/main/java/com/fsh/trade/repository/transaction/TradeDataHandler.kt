@@ -39,7 +39,7 @@ class TradeDataHandler : ITradeDataHandler {
 
     override fun handleRspQryTrade(rsp: RspQryTrade) {
         //错误数据，不显示
-        if (rsp.rspInfoField.errorID != 0 && !Omits.isOmit(rsp.rspInfoField.errorID)) {
+        if (rsp.rspField == null || (rsp.rspInfoField.errorID != 0 && !Omits.isOmit(rsp.rspInfoField.errorID))) {
 
         } else {
             handleRspTradeField(rsp.rspField!!)

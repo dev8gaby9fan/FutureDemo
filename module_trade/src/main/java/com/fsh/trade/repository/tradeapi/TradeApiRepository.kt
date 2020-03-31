@@ -2,6 +2,8 @@ package com.fsh.trade.repository.tradeapi
 
 import com.fsh.common.repository.BaseRepository
 import com.fsh.trade.bean.BrokerConfig
+import com.fsh.trade.bean.CTPInputOrderActionField
+import com.fsh.trade.bean.IOrderInsertField
 import com.fsh.trade.bean.TradeAccountConfig
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -55,12 +57,12 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         tradeApiSource.reqQryTrade()
     }
 
-    fun reqOrderInsert(){
-        tradeApiSource.reqOrderInsert()
+    fun reqOrderInsert(insertField: IOrderInsertField){
+        tradeApiSource.reqOrderInsert(insertField)
     }
 
-    fun reqOrderAction(){
-        tradeApiSource.reqOrderAction()
+    fun reqOrderAction(actionField:CTPInputOrderActionField){
+        tradeApiSource.reqOrderAction(actionField)
     }
 
     fun reqQryPositionDetail(){

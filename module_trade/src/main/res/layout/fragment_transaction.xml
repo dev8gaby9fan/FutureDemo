@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     tools:context="com.fsh.trade.ui.transaction.TransactionFragment"
     android:orientation="vertical">
 
@@ -19,6 +20,7 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="noScroll">
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_account"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView

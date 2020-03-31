@@ -44,4 +44,10 @@ abstract class BaseDialog : DialogFragment(){
         super.onDestroyView()
         isLoading = false
     }
+
+    override fun dismiss() {
+        if(isLoading){
+            super.dismiss()
+        }
+    }
 }

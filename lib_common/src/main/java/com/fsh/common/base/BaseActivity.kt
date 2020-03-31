@@ -5,9 +5,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import com.fsh.resources.R
 import com.fsh.common.widget.LoadingDialog
 
 /**
@@ -30,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity(){
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.TRANSPARENT
+            window.statusBarColor = getColor(getStatusBarColorRes())
         }
         ActivityManager.push(this)
         setContentView(layoutRes())
@@ -38,6 +40,12 @@ abstract class BaseActivity : AppCompatActivity(){
 
     @LayoutRes
     abstract fun layoutRes():Int
+
+    /**
+     * 状态栏颜色
+     */
+    @ColorRes
+    fun getStatusBarColorRes():Int = R.color.colorPrimary
 
     override fun onDestroy() {
         ActivityManager.remove(this)

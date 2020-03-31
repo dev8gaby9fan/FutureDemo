@@ -188,14 +188,18 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         p3: Boolean
     ) {
         super.OnRspQryOrder(p0, p1, p2, p3)
-        tradeEventPublish?.onNext(RspQryOrderEvent(RspQryOrder(RspOrderField.fromCTPAPI(p0),
-            RspInfoField.fromCTPAPIRsp(p1),p3)))
+        val rspData = RspQryOrder(RspOrderField.fromCTPAPI(p0),
+            RspInfoField.fromCTPAPIRsp(p1),p3)
+        tradeEventPublish?.onNext(RspQryOrderEvent(rspData))
+        Log.d("CTPTradeApi","OnRspQryOrder ${rspData.rspField?.orderSysID} ${rspData.rspInfoField.errorMsg} ${rspData.rspInfoField.errorID}")
     }
 
     //委托汇报
     override fun OnRtnOrder(p0: CThostFtdcOrderField?) {
         super.OnRtnOrder(p0)
-        tradeEventPublish?.onNext(RtnOrderEvent(RtnOrder(RspOrderField.fromCTPAPI(p0)!!)))
+        val rtnData = RtnOrder(RspOrderField.fromCTPAPI(p0)!!)
+        tradeEventPublish?.onNext(RtnOrderEvent(rtnData))
+        Log.d("CTPTradeApi","OnRtnOrder ${rtnData.rspField.orderSysID}")
     }
 
     //撤单响应
@@ -218,14 +222,18 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         p3: Boolean
     ) {
         super.OnRspQryTrade(p0, p1, p2, p3)
-        tradeEventPublish?.onNext(RspQryTradeEvent(RspQryTrade(RspTradeField.fromCTPAPI(p0),
-            RspInfoField.fromCTPAPIRsp(p1),p3)))
+        val rspData = RspQryTrade(RspTradeField.fromCTPAPI(p0),
+            RspInfoField.fromCTPAPIRsp(p1),p3)
+        tradeEventPublish?.onNext(RspQryTradeEvent(rspData))
+        Log.d("CTPTradeApi","OnRtnTrade ${rspData.rspField?.orderSysID} ${rspData.rspInfoField.errorMsg} ${rspData.rspInfoField.errorID}")
     }
 
     //成交回报
     override fun OnRtnTrade(p0: CThostFtdcTradeField?) {
         super.OnRtnTrade(p0)
-        tradeEventPublish?.onNext(RtnTradeEvent(RtnTrade(RspTradeField.fromCTPAPI(p0)!!)))
+        val rtnData = RtnTrade(RspTradeField.fromCTPAPI(p0)!!)
+        tradeEventPublish?.onNext(RtnTradeEvent(rtnData))
+        Log.d("CTPTradeApi","OnRtnTrade ${rtnData.rspField.orderSysID}")
     }
 
     //持仓明细响应

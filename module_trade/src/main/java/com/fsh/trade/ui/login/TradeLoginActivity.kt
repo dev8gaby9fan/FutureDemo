@@ -17,6 +17,7 @@ import com.fsh.trade.model.TradeLoginFlowEvent
 import com.fsh.trade.model.TradeLoginFlowType
 import com.fsh.trade.repository.tradeapi.RspConfirmSettlementEvent
 import com.fsh.trade.repository.tradeapi.RspQrySettlementEvent
+import com.fsh.trade.repository.tradeapi.RspUserLoginEvent
 import com.fsh.trade.ui.transaction.TransactionActivity
 import com.fsh.trade.util.VerifyUtil
 import com.google.android.material.snackbar.Snackbar
@@ -58,7 +59,12 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
     private fun handleTradeLoginFlowEvent(event:TradeLoginFlowEvent){
         if(!event.flowType.isSuccess){
             dismissLoading()
-            Snackbar.make(container,event.flowType.flowName,Snackbar.LENGTH_SHORT).show()
+            if(event.flowType == TradeLoginFlowType.RspUserLoginFail){
+                val failRsp = (event.event as RspUserLoginEvent).rsp
+                Snackbar.make(container,failRsp.rspInfo.errorMsg,Snackbar.LENGTH_SHORT).show()
+            }else{
+                Snackbar.make(container,event.flowType.flowName,Snackbar.LENGTH_SHORT).show()
+            }
             return
         }
 

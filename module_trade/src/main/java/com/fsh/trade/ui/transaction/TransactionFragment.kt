@@ -1,5 +1,6 @@
 package com.fsh.trade.ui.transaction
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import com.fsh.common.ext.viewModelOf
 import com.fsh.trade.R
 import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.model.TransactionViewModel
+import com.fsh.trade.ui.account.TradingAccountActivity
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_transaction.*
 
@@ -60,12 +62,16 @@ class TransactionFragment :BaseFragment(){
                 it.getTabAt(index)?.text = pagerAdapter.getPageTitle(index)
             }
         }
+        layout_account.setOnClickListener {
+            startActivity(Intent(context,TradingAccountActivity::class.java))
+        }
     }
 
     private fun updateAccountDetails(account:RspTradingAccountField){
         tv_balance.text = account.balance.toString()
         tv_avaliable.text = account.avaliable.toString()
         tv_profit.text = account.closeProfit.toString()
+        tv_account_info.text = getString(R.string.tv_account_info,account.accountID,account.brokerID)
     }
 
     private fun getRecordFragmentList():List<BaseRecordFragment<*,*>> = arrayListOf(
