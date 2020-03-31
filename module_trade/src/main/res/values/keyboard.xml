@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="key_add">10001</integer>
+    <integer name="key_sub">10002</integer>
+    <integer name="key_del">10003</integer>
+    <integer name="key_delete">10004</integer>
+    <integer name="key_price_queue">10005</integer>
+    <integer name="key_price_opponent">10006</integer>
+    <integer name="key_price_market">10007</integer>
+    <integer name="key_price_limit">10008</integer>
+    <integer name="key_clear">10009</integer>
+</resources>

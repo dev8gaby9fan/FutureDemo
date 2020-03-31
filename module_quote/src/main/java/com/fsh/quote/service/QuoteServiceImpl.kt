@@ -20,6 +20,8 @@ import io.reactivex.Observable
  */
 @Route(path = ArouterPath.SERVICE_QUOTE)
 class QuoteServiceImpl : QuoteService{
+    override fun getQuoteByInstrument(instrumentId: String?):QuoteEntity? =
+        QuoteInfoMgr.mgr.getQuoteEntity(instrumentId)
 
     override fun init(context: Context?) {
 

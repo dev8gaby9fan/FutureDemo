@@ -32,5 +32,5 @@ object ArouterPath {
 
     const val SERVICE_QUOTE = "/quote/service"
 
-    const val SERVICE_TRADe = "/trade/service"
+    const val SERVICE_TRADE = "/trade/service"
 }

@@ -332,6 +332,6 @@ enum class ExchangeType(
             }
         }
 
-        fun from(exchangeID: String): ExchangeType? = exchanges[exchangeID]
+        fun from(exchangeID: String?): ExchangeType? = exchanges[exchangeID]
     }
 }

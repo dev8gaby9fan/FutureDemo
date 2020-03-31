@@ -79,7 +79,7 @@ class QuoteInfoMgr {
         storeQuote.updateQuoteEntity(quoteEntity)
     }
 
-    fun getQuoteEntity(insId:String):QuoteEntity?{
+    fun getQuoteEntity(insId:String?):QuoteEntity?{
         return quoteMap[insId]
     }
 }

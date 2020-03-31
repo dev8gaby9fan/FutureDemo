@@ -26,6 +26,8 @@ interface QuoteService : IProvider{
      * 搜索行情
      */
     fun searchInstruments(searchKey:String):Observable<List<InstrumentInfo>>
+
+    fun getQuoteByInstrument(instrumentId:String?):QuoteEntity?
 }
 
 interface TradeService : IProvider{

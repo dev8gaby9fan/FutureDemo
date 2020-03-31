@@ -295,8 +295,11 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:layout_marginTop="@dimen/abc_dp_16"
+            android:layout_marginLeft="@dimen/abc_dp_5"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_60">
+            android:layout_height="@dimen/abc_dp_50"
+            android:background="@drawable/share_rectangle_with_border"
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -310,8 +313,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_transaction_ins"
+                android:background="@color/white"
                 android:layout_marginTop="@dimen/abc_dp_n_10"
-                android:layout_marginLeft="@dimen/abc_dp_18"
+                android:layout_marginLeft="@dimen/abc_dp_10"
+                android:paddingLeft="@dimen/abc_dp_5"
+                android:paddingRight="@dimen/abc_dp_5"
                 />
         </RelativeLayout>
         <LinearLayout
@@ -322,15 +328,17 @@
             android:orientation="horizontal"
             android:clipToPadding="false"
             android:clipChildren="false"
+            android:paddingLeft="@dimen/abc_dp_5"
             app:layout_constraintHorizontal_weight="2"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_60">
+            android:layout_height="@dimen/abc_dp_50">
             <RelativeLayout
                 android:id="@+id/rl_volume"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:background="@drawable/share_rectangle_with_border"
                 android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tv_volume_input"
@@ -340,13 +348,16 @@
                     android:textSize="@dimen/abc_sp_16"
                     android:textColor="@color/dark_deep"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/abc_dp_10"
+                    android:layout_marginLeft="@dimen/abc_dp_15"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/abc_dp_10"
                     android:layout_marginTop="@dimen/abc_dp_n_10"
+                    android:paddingLeft="@dimen/abc_dp_5"
+                    android:paddingRight="@dimen/abc_dp_5"
+                    android:background="@color/white"
                     android:text="@string/tv_order_volume"
                     />
             </RelativeLayout>
@@ -357,6 +368,9 @@
                 android:layout_weight="2"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:layout_marginLeft="@dimen/abc_dp_5"
+                android:layout_marginRight="@dimen/abc_dp_5"
+                android:background="@drawable/share_rectangle_with_border"
                 android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tv_order_price_input"
@@ -366,13 +380,16 @@
                     android:textSize="@dimen/abc_sp_16"
                     android:textColor="@color/dark_deep"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/abc_dp_10"
+                    android:layout_marginLeft="@dimen/abc_dp_15"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/abc_dp_10"
                     android:layout_marginTop="@dimen/abc_dp_n_10"
+                    android:background="@color/white"
+                    android:paddingLeft="@dimen/abc_dp_5"
+                    android:paddingRight="@dimen/abc_dp_5"
                     android:text="@string/tv_price"
                     />
             </RelativeLayout>
@@ -385,6 +402,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/btn_sell"
             app:layout_constraintTop_toBottomOf="@id/ll_right"
+            android:layout_marginTop="@dimen/abc_dp_8"
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="买入"
@@ -396,7 +414,7 @@
             android:layout_height="@dimen/abc_dp_70"
             app:layout_constraintLeft_toRightOf="@id/btn_buy"
             app:layout_constraintRight_toLeftOf="@id/btn_close"
-            app:layout_constraintTop_toBottomOf="@id/ll_right"
+            app:layout_constraintTop_toTopOf="@id/btn_buy"
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="卖出"
@@ -407,7 +425,7 @@
             android:layout_height="@dimen/abc_dp_70"
             app:layout_constraintLeft_toRightOf="@id/btn_sell"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_right"
+            app:layout_constraintTop_toTopOf="@id/btn_buy"
             android:layout_marginRight="@dimen/abc_dp_5"
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"

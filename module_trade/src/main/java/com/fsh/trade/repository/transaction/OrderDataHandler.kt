@@ -65,6 +65,8 @@ class OrderDataHandler : IOrderHandler{
 
     override fun handleRtnOrder(rtn: RtnOrder) {
         dealRspOrderFieldData(rtn.rspField)
+        orderLiveData.postValue(ArrayList(orderDataContainer.values))
+        withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values))
     }
     override fun handleRspOrderInsert(rsp: RspOrderInsert) {
         if(rsp.rspInfoField.errorID != 0 && !Omits.isOmit(rsp.rspInfoField.errorID)){

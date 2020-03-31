@@ -14,4 +14,23 @@
     <string name="menu_position">持仓</string>
     <string name="menu_with_draw">挂单</string>
     <string name="tv_currencyid">币种</string>
+    <string name="key_1">1</string>
+    <string name="key_2">2</string>
+    <string name="key_3">3</string>
+    <string name="key_4">4</string>
+    <string name="key_5">5</string>
+    <string name="key_6">6</string>
+    <string name="key_7">7</string>
+    <string name="key_8">8</string>
+    <string name="key_9">9</string>
+    <string name="key_0">0</string>
+    <string name="key_del">.</string>
+    <string name="key_add">+</string>
+    <string name="key_sub">-</string>
+    <string name="key_price_queue">排队</string>
+    <string name="key_price_opponent">对手</string>
+    <string name="key_price_market">市价</string>
+    <string name="key_price_limit">限价</string>
+    <string name="key_clear">清空</string>
+
 </resources>

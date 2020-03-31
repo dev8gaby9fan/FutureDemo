@@ -2,7 +2,6 @@ package com.fsh.trade.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.fsh.common.base.BaseViewModel
 import com.fsh.trade.bean.InstrumentPosition
 import com.fsh.trade.bean.RspOrderField

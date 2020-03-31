@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="@dimen/abc_dp_2"
+    android:keyWidth="17%p"
+    android:keyHeight="@dimen/abc_dp_40"
+    android:verticalGap="@dimen/abc_dp_2">
+    <Row>
+        <Key
+            android:codes="49"
+            android:keyEdgeFlags="left"
+            android:keyLabel="@string/key_1" />
+        <Key
+            android:codes="50"
+            android:keyLabel="@string/key_2" />
+        <Key
+            android:codes="51"
+            android:keyLabel="@string/key_3" />
+        <Key
+            android:codes="@integer/key_add"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right"
+            android:keyLabel="@string/key_add" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="52"
+            android:keyEdgeFlags="left"
+            android:keyLabel="@string/key_4" />
+        <Key
+            android:codes="53"
+            android:keyLabel="@string/key_5" />
+        <Key
+            android:codes="54"
+            android:keyLabel="@string/key_6" />
+    </Row>
+
+    <Row>
+        <Key
+            android:codes="55"
+            android:keyEdgeFlags="left"
+            android:keyLabel="@string/key_7" />
+        <Key
+            android:codes="56"
+            android:keyLabel="@string/key_8" />
+        <Key
+            android:codes="57"
+            android:keyLabel="@string/key_9" />
+        <Key
+            android:codes="@integer/key_sub"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right"
+            android:keyLabel="@string/key_sub" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="@integer/key_clear"
+            android:keyEdgeFlags="left"
+            android:keyLabel="@string/key_clear" />
+        <Key
+            android:codes="48"
+            android:keyLabel="@string/key_0" />
+        <Key
+            android:codes="@integer/key_delete"
+            android:keyIcon="@drawable/ic_back" />
+    </Row>
+</Keyboard>
