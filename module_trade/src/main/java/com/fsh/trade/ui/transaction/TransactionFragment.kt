@@ -2,7 +2,6 @@ package com.fsh.trade.ui.transaction
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import com.fsh.common.base.BaseFragment
@@ -14,10 +13,7 @@ import com.fsh.trade.bean.RspTradingAccountField
 import com.fsh.trade.model.TransactionInputHelper
 import com.fsh.trade.model.TransactionViewModel
 import com.fsh.trade.ui.account.TradingAccountActivity
-import com.fsh.trade.widget.FutureKeyboardView
-import com.fsh.trade.widget.FutureKeyboardView.Companion.KEYBOARD_TYPE_PRICE
-import com.fsh.trade.widget.FutureKeyboardView.Companion.KEYBOARD_TYPE_VOLUME
-import com.google.android.material.snackbar.Snackbar
+import com.fsh.trade.widget.keyboard.FutureKeyboard
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_transaction.*
 
@@ -25,8 +21,6 @@ class TransactionFragment :BaseFragment(){
     private lateinit var pagerAdapter: CommonFragmentPagerAdapter
     private lateinit var fragmentList:List<BaseRecordFragment<*,*>>
     private lateinit var transactionInputHelper: TransactionInputHelper
-    private lateinit var priceKeyboard:FutureKeyboardView
-    private lateinit var volumeKeyboard:FutureKeyboardView
     var viewModel: TransactionViewModel? = null
 
     override fun layoutRes(): Int = R.layout.fragment_transaction
@@ -79,10 +73,10 @@ class TransactionFragment :BaseFragment(){
 
     private fun initViewEvents(){
         rl_order_price.setOnClickListener {
-            showInputKeyboard(priceKeyboard)
+            showInputKeyboard(FutureKeyboard.KeyboardType.Price)
         }
         rl_volume.setOnClickListener {
-            showInputKeyboard(volumeKeyboard)
+            showInputKeyboard(FutureKeyboard.KeyboardType.Price)
         }
 
         btn_buy.setOnClickListener {
@@ -98,79 +92,18 @@ class TransactionFragment :BaseFragment(){
         }
     }
 
-    private fun showInputKeyboard(keyboardView: FutureKeyboardView?){
-        val ins = transactionInputHelper.getTradeInstrument()
-        if(ins == null){
-            Snackbar.make(tv_account_info,"请选择交易合约",Snackbar.LENGTH_SHORT).show()
-            return
-        }
-        keyboardView?.show(ins,childFragmentManager)
+    private fun showInputKeyboard(type: FutureKeyboard.KeyboardType){
+//        val ins = transactionInputHelper.getTradeInstrument()
+//        if(ins == null){
+//            Snackbar.make(tv_account_info,"请选择交易合约",Snackbar.LENGTH_SHORT).show()
+//            return
+//        }
+        future_keyboard.setKeyboardType(type)
+        future_keyboard.show()
     }
 
     private fun initKeyBoard(){
-        priceKeyboard = FutureKeyboardView(KEYBOARD_TYPE_PRICE).apply {
-            keyDownListener = object : FutureKeyboardView.SimpleOnKeyDownListener(){
-                override fun onNumberKeyDown(num: Int) {
 
-                }
-
-                override fun onAddKeyDown() {
-
-                }
-
-                override fun onSubKeyDown() {
-
-                }
-
-                override fun onDelKeyDown() {
-
-                }
-
-                override fun onDeleteKeyDown() {
-
-                }
-
-                override fun onPriceQueueKeyDown() {
-
-                }
-
-                override fun onPriceOpponentKeyDown() {
-
-                }
-
-                override fun onPriceMarketKeyDown() {
-
-                }
-
-                override fun onPriceLimitKeyDown() {
-
-                }
-            }
-        }
-
-        volumeKeyboard = FutureKeyboardView(KEYBOARD_TYPE_VOLUME).apply {
-            keyDownListener = object : FutureKeyboardView.SimpleOnKeyDownListener(){
-                override fun onNumberKeyDown(num: Int) {
-
-                }
-
-                override fun onAddKeyDown() {
-
-                }
-
-                override fun onSubKeyDown() {
-
-                }
-
-                override fun onDeleteKeyDown() {
-
-                }
-
-                override fun onClearKeyDown() {
-
-                }
-            }
-        }
     }
 
     private fun updateAccountDetails(account:RspTradingAccountField){

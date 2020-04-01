@@ -298,7 +298,7 @@
             android:layout_marginLeft="@dimen/abc_dp_5"
             android:layout_width="0dp"
             android:layout_height="@dimen/abc_dp_50"
-            android:background="@drawable/share_rectangle_with_border"
+            android:background="@drawable/shape_rectangle_with_border"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -338,7 +338,7 @@
                 android:layout_weight="1"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:background="@drawable/share_rectangle_with_border"
+                android:background="@drawable/shape_rectangle_with_border"
                 android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tv_volume_input"
@@ -370,7 +370,7 @@
                 android:clipToPadding="false"
                 android:layout_marginLeft="@dimen/abc_dp_5"
                 android:layout_marginRight="@dimen/abc_dp_5"
-                android:background="@drawable/share_rectangle_with_border"
+                android:background="@drawable/shape_rectangle_with_border"
                 android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tv_order_price_input"
@@ -484,6 +484,16 @@
             app:layout_constraintTop_toBottomOf="@id/nav_layer_trans"
             app:layout_constraintBottom_toBottomOf="parent"
             app:scrollable="false"
+            />
+        <com.fsh.trade.widget.keyboard.FutureKeyboard
+            android:id="@+id/future_keyboard"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/abc_dp_400"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            android:background="@color/quote_white"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,4 +6,13 @@
         <attr name="textColor" format="color"/>
         <attr name="textSize" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="FutureKeyboardView">
+        <!-- 按键背景 -->
+        <attr name="keyDrawable" format="reference"/>
+        <!-- 按键文字大小-->
+        <attr name="keyTextSize" format="dimension"/>
+        <!-- 按键文字颜色 -->
+        <attr name="keyTextColor" format="reference"/>
+    </declare-styleable>
 </resources>

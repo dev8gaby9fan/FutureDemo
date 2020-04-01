@@ -32,8 +32,8 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
     }
     var dismissListener:DialogInterface.OnDismissListener? = null
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setWindowHeight()
         isShowing = true
     }
@@ -46,7 +46,7 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
             }else{
                 Log.w("BaseBottomSheetDialog","layout params null")
             }
-            dialog!!.setCancelable(false)
+            dialog!!.setCancelable(dialogCancelable())
         }
 
         view!!.post {
@@ -63,6 +63,8 @@ abstract class BaseBottomSheetDialog : BottomSheetDialogFragment(){
     open fun getBehaviorPeekHeight():Float = 0.4f
 
     open fun enableBottomSheetBehavior():Boolean = true
+
+    open fun dialogCancelable():Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,

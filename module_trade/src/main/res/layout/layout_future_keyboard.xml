@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fsh.trade.widget.keyboard.FutureKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/future_keyboard"
+    android:orientation="vertical"
+    app:keyTextColor="@color/dark_light"
+    app:keyTextSize="@dimen/abc_sp_16"
+    app:keyDrawable="@drawable/shape_rectangle_with_border"
+    android:keyBackground="@color/white"
+    />
