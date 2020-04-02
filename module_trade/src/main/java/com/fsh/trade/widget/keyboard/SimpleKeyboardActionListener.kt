@@ -1,6 +1,7 @@
 package com.fsh.trade.widget.keyboard
 
 import android.inputmethodservice.KeyboardView
+import android.util.Log
 
 class SimpleKeyboardActionListener() : KeyboardView.OnKeyboardActionListener{
     override fun swipeRight() {
@@ -22,6 +23,7 @@ class SimpleKeyboardActionListener() : KeyboardView.OnKeyboardActionListener{
     }
 
     override fun onKey(code: Int, keyCodes: IntArray?) {
+        Log.d("SimpleKeyboardListener","onKey $code $keyCodes")
         when (code) {
             in 48..57 -> futureKeyboardListener?.onNumberKeyDown(code.toChar().toString().toInt())
             10001 -> futureKeyboardListener?.onAddKeyDown()

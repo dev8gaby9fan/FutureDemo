@@ -488,7 +488,7 @@
         <com.fsh.trade.widget.keyboard.FutureKeyboard
             android:id="@+id/future_keyboard"
             android:layout_width="0dp"
-            android:layout_height="@dimen/abc_dp_400"
+            android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

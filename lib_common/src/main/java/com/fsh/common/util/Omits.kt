@@ -12,14 +12,14 @@ package com.fsh.common.util
 
 object Omits {
 
-   const val OmitString = ""
+    const val OmitString = ""
     val OmitStringArray = arrayOfNulls<String>(0)
     val OmitInt = Integer.MIN_VALUE
-    val OmitDouble = java.lang.Double.MIN_VALUE
-    val OmitLong = java.lang.Long.MIN_VALUE
-    val OmitFloat = java.lang.Float.MIN_VALUE
+    const val OmitDouble = java.lang.Double.MIN_VALUE
+    const val OmitLong = java.lang.Long.MIN_VALUE
+    const val OmitFloat = java.lang.Float.MIN_VALUE
     val OmitBytes = ByteArray(0)
-    val OmitPrice = "--"//空价格
+    const val OmitPrice = "--"//空价格
 
     fun isOmit(nValue: Int): Boolean {
         return nValue == OmitInt

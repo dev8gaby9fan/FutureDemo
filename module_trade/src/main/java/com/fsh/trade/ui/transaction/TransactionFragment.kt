@@ -76,7 +76,7 @@ class TransactionFragment :BaseFragment(){
             showInputKeyboard(FutureKeyboard.KeyboardType.Price)
         }
         rl_volume.setOnClickListener {
-            showInputKeyboard(FutureKeyboard.KeyboardType.Price)
+            showInputKeyboard(FutureKeyboard.KeyboardType.Volume)
         }
 
         btn_buy.setOnClickListener {
@@ -98,8 +98,7 @@ class TransactionFragment :BaseFragment(){
 //            Snackbar.make(tv_account_info,"请选择交易合约",Snackbar.LENGTH_SHORT).show()
 //            return
 //        }
-        future_keyboard.setKeyboardType(type)
-        future_keyboard.show()
+        future_keyboard.show(type)
     }
 
     private fun initKeyBoard(){

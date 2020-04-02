@@ -14,6 +14,7 @@ class FutureKeyboardView : KeyboardView{
     private var keyDrawable:Drawable? = null
     private var paint:Paint? = null
     private val rect:Rect = Rect()
+    private var distance:Int =0
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs,0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : this(
         context,
@@ -40,9 +41,11 @@ class FutureKeyboardView : KeyboardView{
         val keyTextColor = styledAttrs?.getColor(R.styleable.FutureKeyboardView_keyTextColor,
             context?.getColor(R.color.dark_light))
         styledAttrs?.recycle()
+        distance = context!!.resources.getDimensionPixelSize(R.dimen.abc_dp_10)
         paint = Paint().apply {
             textSize = keyTextSize!!.toFloat()
             isAntiAlias = true
+            textAlign = Paint.Align.CENTER
             color = keyTextColor!!
         }
     }
@@ -52,7 +55,7 @@ class FutureKeyboardView : KeyboardView{
             canvas?.save()
             var offsetY = 0
             if(key.y == 0){
-                offsetY = 2
+                offsetY = 4
             }
             val drawY = offsetY + key.y
             if(keyDrawable != null){
@@ -66,7 +69,7 @@ class FutureKeyboardView : KeyboardView{
                 keyDrawable?.bounds = rect
                 keyDrawable?.draw(canvas!!)
             }
-            if(!Omits.isOmit(key.label.toString())){
+            if(!Omits.isOmit(key.label?.toString())){
                 canvas?.drawText(key.label.toString(),
                     (key.x+key.width/2).toFloat(),drawY+(key.height+ paint?.textSize!! - paint?.descent()!!)/2,
                     paint!!

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:horizontalGap="@dimen/abc_dp_2"
     android:keyWidth="25%p"
-    android:keyHeight="25%p"
-    android:verticalGap="@dimen/abc_dp_2">
+    android:keyHeight="@dimen/abc_dp_60">
     <Row>
         <Key
             android:codes="49"
@@ -19,6 +17,7 @@
             android:codes="@integer/key_add"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
+            android:keyHeight="@dimen/abc_dp_120"
             android:keyLabel="@string/key_add" />
     </Row>
     <Row>
@@ -49,6 +48,7 @@
             android:codes="@integer/key_sub"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
+            android:keyHeight="@dimen/abc_dp_120"
             android:keyLabel="@string/key_sub" />
     </Row>
     <Row>

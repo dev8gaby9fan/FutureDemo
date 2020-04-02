@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:horizontalGap="@dimen/abc_dp_2"
-    android:keyWidth="24%p"
-    android:keyHeight="@dimen/abc_dp_40"
-    android:verticalGap="20%p">
+    android:keyWidth="25%p"
+    android:keyHeight="@dimen/abc_dp_60">
     <Row>
         <Key
             android:codes="@integer/key_price_queue"
@@ -35,7 +33,7 @@
             android:codes="@integer/key_add"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
-            android:keyHeight="@dimen/abc_dp_80"
+            android:keyHeight="@dimen/abc_dp_120"
             android:keyLabel="@string/key_add" />
     </Row>
     <Row>
@@ -66,7 +64,7 @@
             android:codes="@integer/key_sub"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
-            android:keyHeight="@dimen/abc_dp_80"
+            android:keyHeight="@dimen/abc_dp_120"
             android:keyLabel="@string/key_sub" />
     </Row>
     <Row>
