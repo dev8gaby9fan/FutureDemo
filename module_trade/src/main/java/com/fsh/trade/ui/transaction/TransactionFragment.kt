@@ -14,6 +14,7 @@ import com.fsh.trade.model.TransactionInputHelper
 import com.fsh.trade.model.TransactionViewModel
 import com.fsh.trade.ui.account.TradingAccountActivity
 import com.fsh.trade.widget.keyboard.FutureKeyboard
+import com.fsh.trade.widget.keyboard.SimpleFutureKeyboardListener
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_transaction.*
 
@@ -50,13 +51,9 @@ class TransactionFragment :BaseFragment(){
         nav_layer_trans.let {
             it.setupWithViewPager(view_pager)
             it.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
-                override fun onTabReselected(tab: TabLayout.Tab?) {
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
 
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     view_pager.currentItem = tab?.position!!
@@ -90,6 +87,7 @@ class TransactionFragment :BaseFragment(){
         btn_close.setOnClickListener {
 
         }
+        future_keyboard.setFutureKeyboardListener(transactionInputHelper)
     }
 
     private fun showInputKeyboard(type: FutureKeyboard.KeyboardType){
@@ -98,6 +96,7 @@ class TransactionFragment :BaseFragment(){
 //            Snackbar.make(tv_account_info,"请选择交易合约",Snackbar.LENGTH_SHORT).show()
 //            return
 //        }
+        transactionInputHelper.changeInputType(type)
         future_keyboard.show(type)
     }
 
