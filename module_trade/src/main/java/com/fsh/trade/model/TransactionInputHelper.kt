@@ -15,6 +15,7 @@ import com.fsh.trade.util.VerifyUtil
 import com.fsh.trade.widget.keyboard.FutureKeyboard
 import com.fsh.trade.widget.keyboard.SimpleFutureKeyboardListener
 import java.math.BigDecimal
+import java.util.regex.Pattern
 import kotlin.math.max
 
 class TransactionInputHelper(private val priceInput: TextView, private val volumeInput: TextView) :
@@ -23,8 +24,10 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
         const val DEFAULT_ORDRE_VOLUME = 1
         const val PRICE_MAX_VALUE_LEN = 9
         const val VOLUME_MAX_VALUE_LEN = 4
+        private const val PATTERN_NUM = "([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)|([1-9]\\d*)"
         val NUM_ONE = BigDecimal("1").toDouble()
         val NUM_N_ONE = BigDecimal("-1").toDouble()
+        val numPattern = Pattern.compile(PATTERN_NUM)
     }
 
     private var instrument: InstrumentInfo? = null
@@ -156,7 +159,7 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 }
             }
             SupportTransactionOrderPrice.Limit -> {
-                if (Omits.isOmit(tradePrice) || !tradePrice.isDigitsOnly()) {
+                if (Omits.isOmit(tradePrice) || !numPattern.matcher(tradePrice).matches()) {
                     if (quoteEntity == null || Omits.isOmit(quoteEntity?.last_price)) {
                         0.0
                     } else {
@@ -190,7 +193,8 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
     }
 
     private fun handleNumberInput(num: Int, inputField: TextView, maxLen: Int) {
-        if (isBeginInput || TextUtils.isEmpty(inputField.text) || Omits.isOmit(inputField.text.toString()) || inputField.text.toString() == "0") {
+        if (isBeginInput || TextUtils.isEmpty(inputField.text) || Omits.isOmit(inputField.text.toString())
+            || inputField.text.toString() == "0" || !numPattern.matcher(inputField.text).matches()) {
             inputField.text = num.toString()
             isBeginInput = false
         } else if (inputField.length() < maxLen) {
@@ -202,23 +206,28 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      * 加号输入
      */
     override fun onAddKeyDown() {
-        if(inputType == FutureKeyboard.KeyboardType.Price){
-            handleAddInput(priceInput,NUM_ONE, PRICE_MAX_VALUE_LEN,NUM_ONE)
-        }else{
+        if (inputType == FutureKeyboard.KeyboardType.Price) {
+            handleAddInput(priceInput, NUM_ONE, PRICE_MAX_VALUE_LEN, NUM_ONE)
+        } else {
             handleAddInput(volumeInput, NUM_ONE, VOLUME_MAX_VALUE_LEN, NUM_ONE)
         }
     }
 
-    private fun handleAddInput(inputField:TextView,addValue:Double,maxLen: Int,formatNum:Double){
-        if(Omits.isOmit(inputField.text?.toString())){
-            inputField.text = NumberUtils.formatNum(addValue,formatNum)
-        }else{
+    private fun handleAddInput(
+        inputField: TextView,
+        addValue: Double,
+        maxLen: Int,
+        formatNum: Double
+    ) {
+        if (Omits.isOmit(inputField.text?.toString()) || (!numPattern.matcher(inputField.text).matches() && "0" != inputField.text?.toString())) {
+            inputField.text = NumberUtils.formatNum(addValue, formatNum)
+        } else {
 
-            var addResult = NumberUtils.add(addValue.toString(),inputField.text.toString())
-            addResult = NumberUtils.formatNum(addResult,formatNum.toString())
-            if(addResult.length > maxLen || BigDecimal(addResult).toDouble() <= 0){
+            var addResult = NumberUtils.add(addValue.toString(), inputField.text.toString())
+            addResult = NumberUtils.formatNum(addResult, formatNum.toString())
+            if (addResult.length > maxLen || BigDecimal(addResult).toDouble() <= 0) {
                 inputField.text = "0"
-            }else{
+            } else {
                 inputField.text = addResult
             }
         }
@@ -228,9 +237,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      * 减号输入
      */
     override fun onSubKeyDown() {
-        if(inputType == FutureKeyboard.KeyboardType.Price){
-            handleAddInput(priceInput,NUM_N_ONE, PRICE_MAX_VALUE_LEN,NUM_ONE)
-        }else{
+        if (inputType == FutureKeyboard.KeyboardType.Price) {
+            handleAddInput(priceInput, NUM_N_ONE, PRICE_MAX_VALUE_LEN, NUM_ONE)
+        } else {
             handleAddInput(volumeInput, NUM_N_ONE, VOLUME_MAX_VALUE_LEN, NUM_ONE)
         }
     }
@@ -240,13 +249,14 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onDelKeyDown() {
         //如果输入的不是价格，就不处理了
-        if(inputType != FutureKeyboard.KeyboardType.Price){
+        if (inputType != FutureKeyboard.KeyboardType.Price) {
             return
         }
-        if(Omits.isOmit(priceInput.text?.toString()) || priceInput.text.toString() == "0"){
+        if (Omits.isOmit(priceInput.text?.toString()) || priceInput.text.toString() == "0"
+            || !numPattern.matcher(priceInput.text).matches()) {
             priceInput.text = "0."
-        }else{
-            if(!priceInput.text.contains(Regex("\\."))){
+        } else {
+            if (!priceInput.text.contains(Regex("\\."))) {
                 priceInput.append(".")
             }
         }
@@ -275,9 +285,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
 
     private fun handleDeleteInput(inputField: TextView) {
         //没有内容或者只有一个数值时，直接设置为0
-        if (TextUtils.isEmpty(inputField.text) || inputField.length() == 1 || Omits.isOmit(
-                inputField.text.toString()
-            )
+        if (TextUtils.isEmpty(inputField.text) || inputField.length() == 1
+            || Omits.isOmit(inputField.text.toString())
+            || !numPattern.matcher(priceInput.text).matches()
         ) {
             inputField.text = "0"
             isBeginInput = true
@@ -291,28 +301,32 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      * 限价按钮输入
      */
     override fun onPriceLimitKeyDown() {
-
+        isBeginInput = false
+        changePriceType(SupportTransactionOrderPrice.Limit)
     }
 
     /**
      * 市场价输入
      */
     override fun onPriceMarketKeyDown() {
-
+        isBeginInput = true
+        changePriceType(SupportTransactionOrderPrice.Market)
     }
 
     /**
      * 对手价输入
      */
     override fun onPriceOpponentKeyDown() {
-
+        isBeginInput = true
+        changePriceType(SupportTransactionOrderPrice.Opponent)
     }
 
     /**
      * 排队价输入
      */
     override fun onPriceQueueKeyDown() {
-
+        isBeginInput = true
+        changePriceType(SupportTransactionOrderPrice.Queue)
     }
 }
 

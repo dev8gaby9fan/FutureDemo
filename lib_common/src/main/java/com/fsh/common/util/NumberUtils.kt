@@ -12,7 +12,7 @@ object NumberUtils {
             return num.toString()
         }
         val patternStr = pattern.toString()
-        if(!patternStr.matches(Regex.fromLiteral("([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)"))){
+        if(!patternStr.matches(Regex.fromLiteral("([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)|(0\\.)"))){
             return String.format("%d",num.toInt())
         }
         val digitCount = patternStr.split(Regex.fromLiteral("\\."))[1].length

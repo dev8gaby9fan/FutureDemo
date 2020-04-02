@@ -21,7 +21,7 @@ class VerifyUtil {
                     + "|[1-9][0-9]|[0-9])):[1-9]\\d+")
         private const val PATTERN_URL_ADD = ""
         private const val PATTERN_PASS_WORD = "[0-9A-Za-z]{5,18}"
-        private const val PATTERN_NUM = "([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)"
+        const val PATTERN_NUM = "([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)"
     }
 
     fun isBrokerID(input:CharSequence):VerifyUtil{
