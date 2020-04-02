@@ -1,4 +1,4 @@
-package com.fsh.trade.widget
+package com.fsh.trade.widget.order
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,16 +9,21 @@ import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.util.Omits
 import com.fsh.common.util.SizeUtils
 import com.fsh.trade.R
+import com.google.android.material.snackbar.Snackbar
+import java.lang.IllegalArgumentException
 
 
-class OrderButton : View {
+abstract class OrderButton : View {
     private val textPaint:Paint
     private var orderPrice:String = Omits.OmitPrice
     private var orderText:String = Omits.OmitString
     private var lastClickTime:Long = Omits.OmitLong
+    protected var orderInstrument:InstrumentInfo? = null
+    val combOffset:Int
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     @SuppressLint("ResourceType")
@@ -34,6 +39,7 @@ class OrderButton : View {
         orderText = typedArray?.getString(R.styleable.OrderButton_orderText) ?: Omits.OmitString
         val textColor = typedArray?.getColor(R.styleable.OrderButton_textColor,context.resources.getColor(R.color.dark_deep)) ?:context!!.resources.getColor(R.color.dark_deep)
         val textSize = typedArray?.getDimensionPixelSize(R.styleable.OrderButton_textSize,SizeUtils.dp2px(14)) ?:SizeUtils.dp2px(14)
+        combOffset = typedArray?.getInt(R.styleable.OrderButton_combOffset,FLAG_BUY) ?: FLAG_BUY
         typedArray?.recycle()
 
         textPaint = Paint()
@@ -82,6 +88,21 @@ class OrderButton : View {
         postInvalidate()
     }
 
+    /**
+     * 检查报单参数
+     */
+    @Throws(IllegalArgumentException::class)
+    abstract fun checkOrderParams()
+
+    /**
+     * 开仓
+     */
+    abstract fun orderInsert()
+
+    fun setInstrument(ins:InstrumentInfo?){
+        orderInstrument = ins
+    }
+
     override fun performClick(): Boolean {
         val currentTime = System.currentTimeMillis()
         if(!Omits.isOmit(lastClickTime) && currentTime - lastClickTime < 500){
@@ -90,5 +111,21 @@ class OrderButton : View {
             lastClickTime = currentTime
         }
         return super.performClick()
+    }
+
+    protected fun handleClickEvent(){
+        try{
+            checkOrderParams()
+        }catch (e:IllegalArgumentException){
+            Snackbar.make(this,e.message?:"报单参数有误",Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        //TODO 这里显示报单提示窗，然后确认报单
+    }
+
+    companion object{
+        const val FLAG_BUY = 48
+        const val FLAG_SELL = 49
+        const val FLAG_CLOSE = 50
     }
 }

@@ -395,7 +395,7 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <com.fsh.trade.widget.OrderButton
+        <com.fsh.trade.widget.order.OpenPositionOrderButton
             android:id="@+id/btn_buy"
             android:layout_width="0dp"
             android:layout_height="@dimen/abc_dp_70"
@@ -406,9 +406,10 @@
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="买入"
+            app:combOffset="buy"
             android:background="@color/colorPrimary"
             />
-        <com.fsh.trade.widget.OrderButton
+        <com.fsh.trade.widget.order.OpenPositionOrderButton
             android:id="@+id/btn_sell"
             android:layout_width="0dp"
             android:layout_height="@dimen/abc_dp_70"
@@ -418,8 +419,9 @@
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="卖出"
+            app:combOffset="sell"
             />
-        <com.fsh.trade.widget.OrderButton
+        <com.fsh.trade.widget.order.ClosePositionOrderButton
             android:id="@+id/btn_close"
             android:layout_width="0dp"
             android:layout_height="@dimen/abc_dp_70"
@@ -430,6 +432,7 @@
             android:layout_marginLeft="@dimen/abc_dp_5"
             app:orderPrice="178"
             app:orderText="平仓"
+            app:combOffset="close"
             android:background="@color/colorPrimary"
             />
         <com.google.android.material.tabs.TabLayout
