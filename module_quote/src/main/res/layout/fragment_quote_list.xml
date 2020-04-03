@@ -7,6 +7,6 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:context="com.fsh.quote.ui.main.QuoteListFragment">
+    tools:context="com.future.quote.ui.main.QuoteListFragment">
 
 </androidx.recyclerview.widget.RecyclerView>
