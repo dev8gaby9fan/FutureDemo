@@ -2,9 +2,14 @@
 <resources>
     <!-- 开平标志 -->
     <attr name="combOffset" format="enum">
+        <enum name="open" value="48"/>
+        <enum name="close" value="49"/>
+        <enum name="closeToday" value="51"/>
+        <enum name="closeYesterday" value="52"/>
+    </attr>
+    <attr name="direction" format="enum">
         <enum name="buy" value="48"/>
         <enum name="sell" value="49"/>
-        <enum name="close" value="50"/>
     </attr>
     <declare-styleable name="OrderButton">
         <attr name="orderPrice" format="string"/>
@@ -12,6 +17,7 @@
         <attr name="textColor" format="color"/>
         <attr name="textSize" format="dimension"/>
         <attr name="combOffset"/>
+        <attr name="direction"/>
     </declare-styleable>
 
     <declare-styleable name="FutureKeyboardView">

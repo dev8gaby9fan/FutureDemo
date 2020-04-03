@@ -18,7 +18,7 @@
             android:layout_gravity="end"/>
     </LinearLayout>
 
-    <com.fsh.trade.widget.keyboard.FutureKeyboardView
+    <com.future.trade.widget.keyboard.FutureKeyboardView
         android:id="@+id/future_keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

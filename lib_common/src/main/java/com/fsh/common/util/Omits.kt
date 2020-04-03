@@ -37,8 +37,8 @@ object Omits {
         return fValue == OmitFloat
     }
 
-    fun isOmit(dValue: Double): Boolean {
-        return dValue == OmitDouble
+    fun isOmit(dValue: Double?): Boolean {
+        return dValue == null || dValue == OmitDouble
     }
 
     fun isOmit(byValue: ByteArray?): Boolean {

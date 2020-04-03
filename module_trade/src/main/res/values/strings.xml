@@ -50,6 +50,16 @@
     <string name="tv_spec_product_close_profit">特殊产品平仓盈亏</string>
     <string name="tv_refresh">刷新</string>
     <string name="tv_account_info" formatted="false">%1s(%2s)</string>
+    <string name="notice_not_login">您还未登录交易账号，请登录</string>
+    <string name="notice_no_instrument">请选择交易合约</string>
+    <string name="notice_price_error">请输入正确的价格</string>
+    <string name="notice_price_less_than_lower_limit">委托价格不能低于跌停价</string>
+    <string name="notice_price_great_than_lower_limit">委托价格不能超过跌停价</string>
+    <string name="notice_market_price_fail">非上期\能源市价单价格必须为0</string>
+    <string name="notice_volume_error">请输入正确的手数</string>
+    <string name="tv_order_insert_notice">下单/改单操作确认</string>
+    <string name="tv_cancel">取消</string>
+    <string name="tv_ensure">确定</string>
     <string-array name="tab_trans">
         <item>持仓</item>
         <item>挂单</item>
