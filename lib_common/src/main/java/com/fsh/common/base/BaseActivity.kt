@@ -45,7 +45,7 @@ abstract class BaseActivity : AppCompatActivity(){
      * 状态栏颜色
      */
     @ColorRes
-    fun getStatusBarColorRes():Int = R.color.colorPrimary
+    open fun getStatusBarColorRes():Int = R.color.colorPrimary
 
     override fun onDestroy() {
         ActivityManager.remove(this)

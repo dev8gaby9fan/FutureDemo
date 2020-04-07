@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/nav_quote"
+        android:title="@string/menu_nav_quote"
+        android:icon="@drawable/bg_icon_quote"
+        app:showAsAction="always"
+        />
+    <item android:id="@+id/nav_trade"
+        android:title="@string/menu_nav_trade"
+        android:icon="@drawable/bg_icon_trade"
+        app:showAsAction="always"
+        />
+</menu>

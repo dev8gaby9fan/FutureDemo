@@ -7,10 +7,12 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.ext.addChildFragment
 import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
+import com.fsh.common.model.ArouterPath
 import com.future.quote.R
 import com.future.quote.event.BaseEvent
 import com.future.quote.service.QuoteInfoMgr
@@ -27,6 +29,7 @@ import kotlinx.android.synthetic.main.fragment_quote_main.*
  * description: 行情主界面
  */
 
+@Route(path = ArouterPath.PAGE_QUOTE_MAIN)
 class QuoteMainFragment : BaseFragment(),MenuEventListener{
     override fun layoutRes(): Int = R.layout.fragment_quote
     private lateinit var quoteMainViewModel:QuoteMainViewModel
