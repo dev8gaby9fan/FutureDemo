@@ -51,10 +51,11 @@ open class BaseApplication : Application(),Thread.UncaughtExceptionHandler{
     }
 
     private fun initArouter(){
-        if(BuildConfig.DEBUG){
-            ARouter.openDebug()
-            ARouter.openLog()
-        }
+//        if(BuildConfig.DEBUG){
+//
+//        }
+        ARouter.openDebug()
+        ARouter.openLog()
         ARouter.init(this)
     }
 

@@ -4,7 +4,9 @@
     package="com.future.main">
 
     <application tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.MainActivity"
+            android:exported="false"
+            />
         <activity android:name=".ui.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

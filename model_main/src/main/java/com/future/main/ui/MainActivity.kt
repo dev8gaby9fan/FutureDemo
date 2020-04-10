@@ -25,8 +25,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initPageList(){
-        pageList.add(ARouterUtils.getARouteComponent(ArouterPath.PAGE_QUOTE_MAIN))
-        pageList.add(ARouterUtils.getARouteComponent(ArouterPath.PAGE_TRADE_MAIN))
+        val quoteFragment = ARouterUtils.getARouteComponent<BaseFragment>(ArouterPath.PAGE_QUOTE_MAIN)
+        val tradeFragment = ARouterUtils.getARouteComponent<BaseFragment>(ArouterPath.PAGE_TRADE_MAIN)
+        if(quoteFragment != null && tradeFragment != null){
+            pageList.add(quoteFragment)
+            pageList.add(tradeFragment)
+
+        }
     }
 
     private fun initViews(){
@@ -42,6 +47,20 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+        fgt_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {}
+
+            override fun onPageSelected(position: Int) {
+                nav_view.menu.getItem(position).isChecked = true
+            }
+
+        })
     }
 
 }

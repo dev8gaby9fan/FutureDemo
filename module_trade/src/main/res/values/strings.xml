@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">module_trade</string>
-    <string name="title_activity_trade_login" tools:ignore="ExtraTranslation">Sign in</string>
+    <string name="title_activity_trade_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">登录</string>
@@ -25,10 +25,10 @@
     <string name="tv_price">价格</string>
     <string name="menu_order">委托</string>
     <string name="menu_trade">成交</string>
-    <string name="tv_balance">今权益</string>
+    <string name="tv_today_balance">今权益</string>
     <string name="tv_with_draw_quota">今可取</string>
     <string name="tv_available">今可用</string>
-    <string name="tv_profit">盈亏</string>
+    <string name="tv_profits">盈亏</string>
     <string name="tv_pos_profit">未结盈亏</string>
     <string name="tv_margin">保证金</string>
     <string name="tv_frozen_margin">冻结保证金</string>

@@ -49,7 +49,7 @@ android {
             }
         }
     }
-
+    resourcePrefix "quote_"
 }
 
 dependencies {

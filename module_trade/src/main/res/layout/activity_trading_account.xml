@@ -75,7 +75,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:text="@string/tv_balance"
+                    android:text="@string/tv_today_balance"
                     android:textSize="@dimen/abc_sp_14"
                     android:gravity="center_vertical"
                     />
@@ -157,7 +157,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:text="@string/tv_profit"
+                    android:text="@string/tv_profits"
                     android:textSize="@dimen/abc_sp_14"
                     android:gravity="center_vertical"
                     />
