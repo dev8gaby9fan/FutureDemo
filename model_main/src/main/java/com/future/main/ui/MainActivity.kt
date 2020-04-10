@@ -1,12 +1,11 @@
 package com.future.main.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
-import com.fsh.common.model.ArouterPath
+import com.fsh.common.model.ARouterPath
 import com.fsh.common.util.ARouterUtils
 import com.future.main.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,8 +24,8 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initPageList(){
-        val quoteFragment = ARouterUtils.getARouteComponent<BaseFragment>(ArouterPath.PAGE_QUOTE_MAIN)
-        val tradeFragment = ARouterUtils.getARouteComponent<BaseFragment>(ArouterPath.PAGE_TRADE_MAIN)
+        val quoteFragment = ARouterUtils.getARouteComponent<BaseFragment>(ARouterPath.Page.PAGE_QUOTE_MAIN)
+        val tradeFragment = ARouterUtils.getARouteComponent<BaseFragment>(ARouterPath.Page.PAGE_TRADE_MAIN)
         if(quoteFragment != null && tradeFragment != null){
             pageList.add(quoteFragment)
             pageList.add(tradeFragment)

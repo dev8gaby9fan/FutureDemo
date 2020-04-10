@@ -2,8 +2,7 @@ package com.future.quote.service
 
 import android.content.Context
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
-import com.fsh.common.model.ArouterPath
+import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.provider.QuoteService
@@ -18,7 +17,7 @@ import io.reactivex.Observable
  * description: TODO there need some info to descript current java file
  *
  */
-@Route(path = ArouterPath.SERVICE_QUOTE)
+@Route(path = ARouterPath.Service.SERVICE_QUOTE)
 class QuoteServiceImpl : QuoteService{
     override fun getQuoteByInstrument(instrumentId: String?):QuoteEntity? =
         QuoteInfoMgr.mgr.getQuoteEntity(instrumentId)

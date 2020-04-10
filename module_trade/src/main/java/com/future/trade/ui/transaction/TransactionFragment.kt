@@ -8,7 +8,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
-import com.fsh.common.model.ArouterPath
+import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
 import com.future.trade.R
 import com.future.trade.bean.RspTradingAccountField
@@ -17,14 +17,13 @@ import com.future.trade.model.TransactionViewModel
 import com.future.trade.ui.account.TradingAccountActivity
 import com.future.trade.widget.dialog.OrderInsertNoticeDialog
 import com.future.trade.widget.keyboard.FutureKeyboard
-import com.future.trade.widget.keyboard.SimpleFutureKeyboardListener
 import com.future.trade.widget.order.OrderButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_transaction.*
 import java.lang.IllegalArgumentException
 
-@Route(path=ArouterPath.PAGE_TRADE_MAIN)
+@Route(path=ARouterPath.Page.PAGE_TRADE_MAIN)
 class TransactionFragment :BaseFragment(){
     private lateinit var pagerAdapter: CommonFragmentPagerAdapter
     private lateinit var fragmentList:List<BaseRecordFragment<*,*>>

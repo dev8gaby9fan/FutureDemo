@@ -12,7 +12,7 @@ import com.fsh.common.base.BaseFragment
 import com.fsh.common.ext.addChildFragment
 import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
-import com.fsh.common.model.ArouterPath
+import com.fsh.common.model.ARouterPath
 import com.future.quote.R
 import com.future.quote.event.BaseEvent
 import com.future.quote.service.QuoteInfoMgr
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_quote_main.*
  * description: 行情主界面
  */
 
-@Route(path = ArouterPath.PAGE_QUOTE_MAIN)
+@Route(path = ARouterPath.Page.PAGE_QUOTE_MAIN)
 class QuoteMainFragment : BaseFragment(),MenuEventListener{
     override fun layoutRes(): Int = R.layout.fragment_quote
     private lateinit var quoteMainViewModel:QuoteMainViewModel
@@ -43,7 +43,7 @@ class QuoteMainFragment : BaseFragment(),MenuEventListener{
 
     private fun initViews(){
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        var toggle = ActionBarDrawerToggle(activity,drawer,toolbar,R.string.drawer_open,R.string.drawer_close)
+        val toggle = ActionBarDrawerToggle(activity,drawer,toolbar,R.string.drawer_open,R.string.drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         var drawerMenuFragment = findFragmentById(R.id.fl_quote_menu)
