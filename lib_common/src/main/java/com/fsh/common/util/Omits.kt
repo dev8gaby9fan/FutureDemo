@@ -6,7 +6,7 @@ package com.fsh.common.util
  * author: devFan
  * email:  devfanshan@gmail.com
  * date: 2020/3/12
- * description: TODO there need some info to descript current java file
+ * description: 定义基本数据类型的初始化常量
  *
  */
 
@@ -20,6 +20,7 @@ object Omits {
     const val OmitFloat = java.lang.Float.MIN_VALUE
     val OmitBytes = ByteArray(0)
     const val OmitPrice = "--"//空价格
+    const val OmitPrice1 = "-"//天勤没有价格时的空字符串
 
     fun isOmit(nValue: Int): Boolean {
         return nValue == OmitInt
@@ -30,7 +31,7 @@ object Omits {
     }
 
     fun isOmit(sValue: String?): Boolean {
-        return sValue == null || OmitString == sValue || sValue == OmitPrice
+        return sValue == null || OmitString == sValue || sValue == OmitPrice || sValue == OmitPrice1
     }
 
     fun isOmit(fValue: Float): Boolean {

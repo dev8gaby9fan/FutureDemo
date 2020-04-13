@@ -176,7 +176,7 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
         for (insId in jsonObj.keySet()) {
             if(!jsonObj.get(insId).isJsonObject){
                 Log.d("QuoteParser","parseQuoteReturn ${jsonObj.get(insId)}")
-                return
+                continue
             }
             val quoteDataObj = jsonObj.get(insId).asJsonObject
             val quoteEntity = QuoteEntity(insId)

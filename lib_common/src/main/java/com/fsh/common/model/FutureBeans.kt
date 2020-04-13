@@ -1,6 +1,7 @@
 package com.fsh.common.model
 
 import android.os.Parcelable
+import com.fsh.common.R
 import com.fsh.common.util.Omits
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -156,6 +157,8 @@ data class QuoteEntity(var instrument_id:String) : Parcelable{
     var datetime:String = Omits.OmitPrice
     var updown:String = Omits.OmitPrice
     var updown_ratio:String = Omits.OmitPrice
+    //自定义的字符串
+    var quoteTextColor:Int = R.color.quote_white
 
     fun updateQuoteEntity(quoteEntity: QuoteEntity){
         if(!Omits.isOmit(quoteEntity.ask_price10)){
@@ -331,9 +334,14 @@ data class QuoteEntity(var instrument_id:String) : Parcelable{
         }
         if(!Omits.isOmit(last_price) && !Omits.isOmit(pre_settlement)){
             var lastP = BigDecimal(last_price)
-           var preS = BigDecimal(pre_settlement)
+            var preS = BigDecimal(pre_settlement)
             updown = lastP.subtract(preS).toString()
             updown_ratio  = String.format("%.2f%%",lastP.subtract(preS).divide(preS,BigDecimal.ROUND_HALF_UP).toDouble())
+            if(updown.toDouble() > 0){
+                quoteTextColor = R.color.quote_red
+            }else if(updown.toDouble() < 0){
+                quoteTextColor = R.color.quote_green
+            }
         }
     }
 }

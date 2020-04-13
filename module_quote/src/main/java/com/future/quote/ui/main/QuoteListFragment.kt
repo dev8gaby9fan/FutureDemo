@@ -47,6 +47,7 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
     private var insMap: HashMap<String, Pair<Int, InstrumentInfo>> = HashMap(50)
     private lateinit var viewModel: QuoteListViewModel
     private val disposables: CompositeDisposable = CompositeDisposable()
+    private var isCanUpdateDate:Boolean = true
     override fun layoutRes(): Int = R.layout.fragment_quote_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,8 +70,9 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         quote_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                isCanUpdateDate = newState == RecyclerView.SCROLL_STATE_IDLE
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    subscribeQuote()
+                    subscribeQuote()
                 }
             }
         })
@@ -90,6 +92,11 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         disposables.add(viewModel.quoteDataEvent.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                Log.d("QuoteListFragment","quote update ${it.instrument_id} $isCanUpdateDate")
+                //列表滚动中，不刷新列表数据
+                if(!isCanUpdateDate){
+                    return@subscribe
+                }
                 val pair = insMap[it.instrument_id]
                 if (pair != null && quote_list.scrollState == RecyclerView.SCROLL_STATE_IDLE && !quote_list.isComputingLayout) {
                     adapter.notifyItemRangeChanged(pair.first, 1)
@@ -126,8 +133,9 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             insMap[ins.id] = Pair(index, ins)
         }
         adapter.notifyDataSetChanged()
+        quote_list.scrollToPosition(0)
         if(!viewModel.connectSocket()){
-            subscribeQuote()
+//            subscribeQuote()
         }
     }
 
@@ -155,6 +163,10 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             setQuoteTextToTextView(holder.item.tv_ins_updown_ratio,quoteEntity?.updown_ratio,ins.priceTick,false)
             setQuoteTextToTextView(holder.item.tv_ins_vol,quoteEntity?.amount,"1")
             setQuoteTextToTextView(holder.item.tv_ins_pre_io,quoteEntity?.pre_open_interest,ins.priceTick)
+            val quoteTextColor = quoteEntity?.quoteTextColor ?: R.color.quote_white
+            holder.item.tv_ins_price.setTextColor(resources.getColor(quoteTextColor))
+            holder.item.tv_ins_updown.setTextColor(resources.getColor(quoteTextColor))
+            holder.item.tv_ins_updown_ratio.setTextColor(resources.getColor(quoteTextColor))
         }
 
         private fun setQuoteTextToTextView(textView:TextView,quoteProperty:String?,priceTick:String?,format:Boolean = true){
