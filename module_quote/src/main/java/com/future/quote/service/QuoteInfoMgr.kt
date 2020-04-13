@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class QuoteInfoMgr {
     //5个交易所
-    private var exchangeMap:ConcurrentHashMap<String,ExchangeInfo> = ConcurrentHashMap(5)
-    private var quoteMap:ConcurrentHashMap<String,QuoteEntity> = ConcurrentHashMap(100)
+    private val exchangeMap:ConcurrentHashMap<String,ExchangeInfo> = ConcurrentHashMap(5)
+    private val quoteMap:ConcurrentHashMap<String,QuoteEntity> = ConcurrentHashMap(100)
     companion object{
         val mgr:QuoteInfoMgr by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED){
             QuoteInfoMgr()

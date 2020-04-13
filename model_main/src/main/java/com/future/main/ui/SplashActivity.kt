@@ -9,6 +9,8 @@ import com.future.main.R
 class SplashActivity : BaseActivity() {
     override fun layoutRes(): Int = R.layout.activity_splash
 
+    override fun getStatusBarColorRes(): Int = android.R.color.transparent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.postDelayed({

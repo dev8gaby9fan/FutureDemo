@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseActivity() {
     override fun layoutRes(): Int = R.layout.activity_main
 
-    override fun getStatusBarColorRes(): Int = android.R.color.transparent
+    override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
 
     private val pageList:ArrayList<BaseFragment> = ArrayList(4)
 
@@ -29,14 +29,11 @@ class MainActivity : BaseActivity() {
         if(quoteFragment != null && tradeFragment != null){
             pageList.add(quoteFragment)
             pageList.add(tradeFragment)
-
         }
     }
 
     private fun initViews(){
-        val adapter = CommonFragmentPagerAdapter(supportFragmentManager,pageList)
-        fgt_container.adapter = adapter
-        nav_view.setOnNavigationItemReselectedListener {
+        nav_view.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_quote ->{
                     fgt_container.currentItem = 0
@@ -45,6 +42,7 @@ class MainActivity : BaseActivity() {
                     fgt_container.currentItem = 1
                 }
             }
+            true
         }
         fgt_container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
@@ -58,8 +56,9 @@ class MainActivity : BaseActivity() {
             override fun onPageSelected(position: Int) {
                 nav_view.menu.getItem(position).isChecked = true
             }
-
         })
+        val adapter = CommonFragmentPagerAdapter(supportFragmentManager,pageList)
+        fgt_container.adapter = adapter
     }
 
 }

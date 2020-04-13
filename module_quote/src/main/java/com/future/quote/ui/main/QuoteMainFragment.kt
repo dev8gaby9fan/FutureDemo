@@ -1,14 +1,12 @@
 package com.future.quote.ui.main
 
-import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.fsh.common.base.BaseFragment
+import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.addChildFragment
 import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
@@ -30,13 +28,15 @@ import kotlinx.android.synthetic.main.fragment_quote_main.*
  */
 
 @Route(path = ARouterPath.Page.PAGE_QUOTE_MAIN)
-class QuoteMainFragment : BaseFragment(),MenuEventListener{
+class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
+
+
     override fun layoutRes(): Int = R.layout.fragment_quote
     private lateinit var quoteMainViewModel:QuoteMainViewModel
     private lateinit var menuFragment: IDrawerMenuFragment
     private lateinit var contentFragment: IContentFragment
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+
+    override fun lazyLoading() {
         initViews()
         initDatas()
     }

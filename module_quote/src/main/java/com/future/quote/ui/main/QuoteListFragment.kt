@@ -104,6 +104,10 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         val layoutMangaer: LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
         val startPosition = layoutMangaer.findFirstCompletelyVisibleItemPosition()
         val endPosition = layoutMangaer.findLastCompletelyVisibleItemPosition() + 1
+        if(startPosition < 0){
+            Log.d("QuoteListFragment","from index $startPosition less zero,can't get start position")
+            return
+        }
         var indIdList: String = ""
         insList.subList(startPosition, endPosition).map { ins -> "${ins.id}," }
             .forEach {

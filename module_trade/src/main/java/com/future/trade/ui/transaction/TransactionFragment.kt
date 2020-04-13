@@ -2,10 +2,12 @@ package com.future.trade.ui.transaction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fsh.common.base.BaseFragment
+import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.model.ARouterPath
@@ -24,7 +26,9 @@ import kotlinx.android.synthetic.main.fragment_transaction.*
 import java.lang.IllegalArgumentException
 
 @Route(path=ARouterPath.Page.PAGE_TRADE_MAIN)
-class TransactionFragment :BaseFragment(){
+class TransactionFragment :BaseLazyFragment(){
+
+
     private lateinit var pagerAdapter: CommonFragmentPagerAdapter
     private lateinit var fragmentList:List<BaseRecordFragment<*,*>>
     private lateinit var transactionInputHelper: TransactionInputHelper
@@ -34,11 +38,9 @@ class TransactionFragment :BaseFragment(){
 
     override fun layoutRes(): Int = R.layout.fragment_transaction
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        orderIns = InstrumentInfo("测试合约","IF2004","CFFEX","IF")
+    override fun lazyLoading() {
+        Log.d("LazyFragment","TransactionFragment lazyLoading")
         transactionInputHelper = TransactionInputHelper(tv_order_price_input,tv_volume_input)
-        transactionInputHelper.setTradeInstrument(orderIns!!)
         initViews()
         initViewEvents()
     }
