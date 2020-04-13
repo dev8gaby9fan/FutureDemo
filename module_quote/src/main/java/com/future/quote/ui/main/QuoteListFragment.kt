@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.ext.OnItemTouchEventListener
 import com.fsh.common.ext.RecyclerViewItemClickListener
 import com.fsh.common.ext.viewModelOf
+import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
-import com.fsh.common.model.QuoteEntity
+import com.fsh.common.provider.MainService
+import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
 import com.fsh.common.websocket.FWebSocket
@@ -61,9 +64,7 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         quote_list.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VISIBLE))
         quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,
             object : OnItemTouchEventListener {
-                override fun onClick(position: Int) {
-//                    subscribeQuote()
-                }
+                override fun onClick(position: Int) = handleItemClick(position)
 
                 override fun onLongClick(position: Int) {}
             }))
@@ -77,6 +78,21 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             }
         })
         quote_list.adapter = adapter
+    }
+    //行情列表Item点击处理
+    private fun handleItemClick(pos:Int){
+        val tradeService = ARouterUtils.getTradeService()
+        tradeService.setTradeIns(insList[pos])
+        //没有登录就跳转到登录界面
+        if(!tradeService.isTradingLogin()){
+            ARouter.getInstance()
+                .build(ARouterPath.Page.PAGE_TRADE_LOGIN)
+                .navigation(context)
+        }else{
+            //切换到交易界面
+            ARouterUtils.getMainService()
+                .switchTabPage(MainService.PAGE_TRADE)
+        }
     }
 
     private fun initDatas() {
@@ -100,19 +116,15 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
                 val pair = insMap[it.instrument_id]
                 if (pair != null && quote_list.scrollState == RecyclerView.SCROLL_STATE_IDLE && !quote_list.isComputingLayout) {
                     adapter.notifyItemRangeChanged(pair.first, 1)
-                    Log.d(
-                        "QuoteListFragment",
-                        "notify item changed ${pair.first}-${pair.second}"
-                    )
                 }
 
             })
     }
 
     private fun subscribeQuote() {
-        val layoutMangaer: LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
-        val startPosition = layoutMangaer.findFirstCompletelyVisibleItemPosition()
-        val endPosition = layoutMangaer.findLastCompletelyVisibleItemPosition() + 1
+        val layoutManager: LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
+        val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val endPosition = layoutManager.findLastCompletelyVisibleItemPosition() + 1
         if(startPosition < 0){
             Log.d("QuoteListFragment","from index $startPosition less zero,can't get start position")
             return
@@ -133,9 +145,9 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             insMap[ins.id] = Pair(index, ins)
         }
         adapter.notifyDataSetChanged()
-        quote_list.scrollToPosition(0)
-        if(!viewModel.connectSocket()){
-//            subscribeQuote()
+        //如果是WebSocket连接成功，就直接将RecyclerView滚动到第一条
+        if(!viewModel.needConnectSocket()){
+            quote_list.scrollToPosition(0)
         }
     }
 

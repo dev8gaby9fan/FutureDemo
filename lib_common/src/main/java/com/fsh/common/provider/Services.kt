@@ -1,5 +1,6 @@
 package com.fsh.common.provider
 
+import androidx.lifecycle.LiveData
 import com.alibaba.android.arouter.facade.template.IProvider
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
@@ -40,4 +41,21 @@ interface TradeService : IProvider{
      * 是否有账号登录
      */
     fun isTradingLogin():Boolean
+}
+
+interface MainService : IProvider{
+    companion object{
+        const val PAGE_QUOTE = 0
+        const val PAGE_TRADE = 1
+    }
+
+    /**
+     * 切换界面
+     */
+    fun switchTabPage(index:Int)
+
+    /**
+     * 监听切换操作
+     */
+    fun getSwitchPageLiveData():LiveData<Int>
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.model.ARouterPath
+import com.fsh.common.provider.MainService
 import com.fsh.common.provider.QuoteService
 import com.fsh.common.provider.TradeService
 
@@ -18,4 +19,6 @@ object ARouterUtils {
     fun getQuoteService():QuoteService = getARouteComponent(ARouterPath.Service.SERVICE_QUOTE)
 
     fun getTradeService():TradeService = getARouteComponent(ARouterPath.Service.SERVICE_TRADE)
+
+    fun getMainService():MainService = getARouteComponent(ARouterPath.Service.SERVICE_MAIN)
 }

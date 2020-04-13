@@ -2,7 +2,9 @@ package com.future.main.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.base.BaseFragment
@@ -13,6 +15,7 @@ import com.fsh.common.util.BottomNavigationViewHelper
 import com.future.main.R
 import kotlinx.android.synthetic.main.activity_main.*
 
+@Route(path = ARouterPath.Page.PAGE_MAIN)
 class MainActivity : BaseActivity() {
     override fun layoutRes(): Int = R.layout.activity_main
     override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
@@ -22,6 +25,10 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         initPageList()
         initViews()
+        ARouterUtils.getMainService()
+            .getSwitchPageLiveData().observe(this, Observer {
+                fgt_container.currentItem = it
+            })
         isCreated = true
     }
 
@@ -79,5 +86,4 @@ class MainActivity : BaseActivity() {
         val adapter = CommonFragmentPagerAdapter(supportFragmentManager, pageList)
         fgt_container.adapter = adapter
     }
-
 }

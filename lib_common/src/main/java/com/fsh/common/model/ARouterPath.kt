@@ -23,6 +23,8 @@ class ARouterPath {
 
             //交易
             const val PAGE_TRADE_MAIN = "/trade/main"
+            //主界面
+            const val PAGE_MAIN = "/main/main"
 //            //持仓
 //            const val PAGE_TRADE_POSITION = "/trade/position"
 //            //委托
@@ -41,6 +43,8 @@ class ARouterPath {
             const val SERVICE_QUOTE = "/quote/service"
 
             const val SERVICE_TRADE = "/trade/service"
+
+            const val SERVICE_MAIN = "/main/service"
         }
     }
 
