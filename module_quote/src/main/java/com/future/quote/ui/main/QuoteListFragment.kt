@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,6 +18,7 @@ import com.fsh.common.ext.RecyclerViewItemClickListener
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
+import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
 import com.fsh.common.websocket.FWebSocket
 import com.future.quote.R
@@ -59,7 +61,7 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,
             object : OnItemTouchEventListener {
                 override fun onClick(position: Int) {
-                    subscribeQuote()
+//                    subscribeQuote()
                 }
 
                 override fun onLongClick(position: Int) {}
@@ -68,7 +70,7 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeQuote()
+//                    subscribeQuote()
                 }
             }
         })
@@ -146,16 +148,26 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
             val ins = insList[position]
             holder.item.tv_ins_name.text = ins.name
             holder.item.tv_ins_short_id.text = ins.shortInsId
-            //TODO RecyclerView的行情显示有紊乱
-            val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.id) ?: return
-            holder.item.tv_ins_price.text = quoteEntity.last_price
-            holder.item.tv_ins_pre_settlement.text = quoteEntity.pre_settlement
-            holder.item.tv_ins_updown.text = quoteEntity.updown
-            holder.item.tv_ins_updown_ratio.text = quoteEntity.updown_ratio
-            holder.item.tv_ins_vol.text = quoteEntity.amount
-            holder.item.tv_ins_pre_io.text = quoteEntity.pre_open_interest
+            val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.id)
+            setQuoteTextToTextView(holder.item.tv_ins_price,quoteEntity?.last_price,ins.priceTick)
+            setQuoteTextToTextView(holder.item.tv_ins_pre_settlement,quoteEntity?.pre_settlement,ins.priceTick)
+            setQuoteTextToTextView(holder.item.tv_ins_updown,quoteEntity?.updown,ins.priceTick)
+            setQuoteTextToTextView(holder.item.tv_ins_updown_ratio,quoteEntity?.updown_ratio,ins.priceTick,false)
+            setQuoteTextToTextView(holder.item.tv_ins_vol,quoteEntity?.amount,"1")
+            setQuoteTextToTextView(holder.item.tv_ins_pre_io,quoteEntity?.pre_open_interest,ins.priceTick)
         }
 
+        private fun setQuoteTextToTextView(textView:TextView,quoteProperty:String?,priceTick:String?,format:Boolean = true){
+            if(!Omits.isOmit(quoteProperty)){
+                if(format){
+                    textView.text = NumberUtils.formatNum(quoteProperty,priceTick)
+                }else{
+                    textView.text = quoteProperty
+                }
+            }else{
+                textView.text = Omits.OmitPrice
+            }
+        }
     }
 }
 

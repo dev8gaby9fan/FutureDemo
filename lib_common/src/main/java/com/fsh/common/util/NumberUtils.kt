@@ -20,7 +20,8 @@ object NumberUtils {
     }
 
     fun formatNum(num:String?, pattern:String?):String{
-        return formatNum(BigDecimal(num).toDouble(),BigDecimal(pattern).toDouble())
+        return formatNum(BigDecimal(num).toDouble(),
+            BigDecimal(pattern).toDouble())
     }
 
     fun add(num1:Double,num2:Double):String{
