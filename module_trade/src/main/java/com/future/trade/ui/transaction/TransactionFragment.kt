@@ -12,11 +12,13 @@ import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
+import com.fsh.common.util.ARouterUtils
 import com.future.trade.R
 import com.future.trade.bean.RspTradingAccountField
 import com.future.trade.model.TransactionInputHelper
 import com.future.trade.model.TransactionViewModel
 import com.future.trade.ui.account.TradingAccountActivity
+import com.future.trade.ui.login.TradeLoginActivity
 import com.future.trade.widget.dialog.OrderInsertNoticeDialog
 import com.future.trade.widget.keyboard.FutureKeyboard
 import com.future.trade.widget.order.OrderButton
@@ -37,6 +39,14 @@ class TransactionFragment :BaseLazyFragment(){
     var viewModel: TransactionViewModel? = null
 
     override fun layoutRes(): Int = R.layout.fragment_transaction
+
+    override fun onVisible() {
+        val tradeService = ARouterUtils.getTradeService()
+        //没有登录就跳转到登录界面
+        if(!tradeService.isTradingLogin()){
+            startActivity(Intent(context, TradeLoginActivity::class.java))
+        }
+    }
 
     override fun lazyLoading() {
         Log.d("LazyFragment","TransactionFragment lazyLoading")

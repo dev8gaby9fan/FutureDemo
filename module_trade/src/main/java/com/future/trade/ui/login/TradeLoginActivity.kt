@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.ext.viewModelOf
+import com.fsh.common.model.ARouterPath
 import com.future.trade.R
 import com.future.trade.bean.BrokerConfig
 import com.future.trade.bean.TradeAccountConfig
@@ -24,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_trade_login.*
 import java.lang.Exception
 
+@Route(path = ARouterPath.Page.PAGE_TRADE_LOGIN)
 class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickListener,SettlementInfoDialog.Callback {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var brokerConfigViewModel: BrokerConfigViewModel
@@ -173,6 +176,10 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
         selectedBroker = broker
         broker_spinner.text = selectedBroker!!.brokerName
     }
+
+//    override fun onBackPressed() {
+//        //Nothing to do,不允许返回，只有登录成功才能返回
+//    }
 
     companion object {
         const val TAG_ADD = "brokerAdd"

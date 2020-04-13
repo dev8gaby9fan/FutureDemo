@@ -82,6 +82,10 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         orderReqId.set(0)
     }
 
+    fun isUserLogined():Boolean{
+        return currentUser.get() != null
+    }
+
     fun onUserLogout(){
         currentUser.compareAndSet(currentUser.get(),null)
     }

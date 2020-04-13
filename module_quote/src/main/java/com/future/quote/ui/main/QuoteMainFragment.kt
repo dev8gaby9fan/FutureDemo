@@ -11,6 +11,7 @@ import com.fsh.common.ext.addChildFragment
 import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.model.ARouterPath
+import com.fsh.common.util.ARouterUtils
 import com.future.quote.R
 import com.future.quote.event.BaseEvent
 import com.future.quote.service.QuoteInfoMgr
@@ -37,6 +38,8 @@ class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
     private lateinit var contentFragment: IContentFragment
 
     override fun lazyLoading() {
+        val tradeService = ARouterUtils.getTradeService()
+        Log.d("QuoteMainFragment","lazyLoading $tradeService")
         initViews()
         initDatas()
     }
@@ -62,9 +65,13 @@ class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
     }
 
     private fun initDatas(){
+        setLoadingCancelable(false)
+        setLoadingDialogMessage("正在加载合约数据")
+        showLoadingDialog()
         quoteMainViewModel = viewModelOf<QuoteMainViewModel>().value
         quoteMainViewModel.insEvent.observe(this, Observer<BaseEvent> {
             handleLoadInsResp(it)
+            dismissLoading()
         })
     }
 

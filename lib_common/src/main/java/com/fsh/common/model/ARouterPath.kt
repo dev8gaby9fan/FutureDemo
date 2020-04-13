@@ -38,9 +38,9 @@ class ARouterPath {
 
     class Service{
         companion object{
-            const val SERVICE_QUOTE = "/service/quote"
+            const val SERVICE_QUOTE = "/quote/service"
 
-            const val SERVICE_TRADE = "/service/trade"
+            const val SERVICE_TRADE = "/trade/service"
         }
     }
 
