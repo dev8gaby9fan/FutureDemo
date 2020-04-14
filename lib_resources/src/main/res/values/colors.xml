@@ -12,4 +12,6 @@
     <color name="white">#ffffffff</color>
     <color name="dark_deep">#141414</color>
     <color name="dark_light">#262626</color>
+
+    <color name="color_divider">#444242</color>
 </resources>

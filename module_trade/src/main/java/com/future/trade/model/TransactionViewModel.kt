@@ -3,11 +3,15 @@ package com.future.trade.model
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.fsh.common.base.BaseViewModel
+import com.fsh.common.model.QuoteEntity
+import com.fsh.common.util.ARouterUtils
 import com.future.trade.bean.*
 import com.future.trade.repository.TradeApiProvider
 import com.future.trade.repository.tradeapi.*
 import com.future.trade.repository.transaction.ITransactionRepository
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     private var isQueriedOrder:Boolean = false
@@ -18,6 +22,7 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     val positionLiveData:LiveData<List<InstrumentPosition>> = transactionRepository.positionLiveData
     val tradeLiveData:LiveData<List<RspTradeField>> = transactionRepository.tradeLiveData
     val tradingAccountLiveData:LiveData<RspTradingAccountField> = transactionRepository.tradingAccountLiveData
+    val quoteData: Observable<QuoteEntity> = ARouterUtils.getQuoteService().getSubscribeQuoteObservable()
     init {
         repository = TradeApiProvider.providerCTPTradeApi().apply {
             disposable.add(getTradeEventObserver().subscribe {
@@ -35,7 +40,7 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     }
 
     private fun handleRspUserLogout(rsp: RspUserLogout){
-        //TODO 这里需要将对应的
+        //TODO 这里需要将对应的列表数据清空
         repository?.onUserLogout()
     }
 
@@ -78,7 +83,15 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     /**
      * 撤单
      */
-    fun reqOrderAction(){
+    fun reqOrderAction(field:CTPInputOrderActionField){
+        repository?.reqOrderAction(field)
+    }
 
+    /**
+     * 订阅单独的行情
+     */
+    fun subscribeQuote(insId:String){
+        val quoteService = ARouterUtils.getQuoteService()
+        quoteService.subscribeQuote(insId,true)
     }
 }

@@ -56,12 +56,12 @@ class MainActivity : BaseActivity() {
                 R.id.nav_trade -> {
                     //如果没有登录，就直接
                     if (!ARouterUtils.getTradeService().isTradingLogin()) {
-//                        BottomNavigationViewHelper.selectItemByIndex(nav_view,0)
                         ARouter.getInstance()
                             .build(ARouterPath.Page.PAGE_TRADE_LOGIN)
                             .navigation(this@MainActivity)
-                        nav_view.findViewById<View>(R.id.nav_quote).performClick()
-//                        nav_view.selectedItemId = R.id.nav_quote
+                        nav_view.postDelayed({
+                            nav_view.selectedItemId = R.id.nav_quote
+                        },200)
                     } else {
                         fgt_container.currentItem = 1
                     }

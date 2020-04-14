@@ -2,23 +2,22 @@ package com.future.trade.model
 
 import android.text.TextUtils
 import android.widget.TextView
-import androidx.core.text.isDigitsOnly
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.provider.QuoteService
 import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
-import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.ExchangeType
-import com.future.trade.util.VerifyUtil
 import com.future.trade.widget.keyboard.FutureKeyboard
 import com.future.trade.widget.keyboard.SimpleFutureKeyboardListener
+import com.future.trade.widget.order.OrderButton
 import java.math.BigDecimal
 import java.util.regex.Pattern
-import kotlin.math.max
 
-class TransactionInputHelper(private val priceInput: TextView, private val volumeInput: TextView) :
+class TransactionInputHelper(private val priceInput: TextView, private val volumeInput: TextView,
+                             private val buyButton:OrderButton,private val sellButton:OrderButton,
+                             private val closeButton:OrderButton) :
     SimpleFutureKeyboardListener() {
     companion object {
         const val DEFAULT_ORDRE_VOLUME = 1
@@ -46,12 +45,33 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
         this.instrument = ins
         this.tradeVolume = DEFAULT_ORDRE_VOLUME
         tradePrice = Omits.OmitPrice
-        updateTradePrice(quoteService?.getQuoteByInstrument(ins.shortInsId))
+        onQuoteUpdate(quoteService?.getQuoteByInstrument(ins.id))
         priceInput.text = tradePrice
         volumeInput.text = tradeVolume.toString()
     }
 
-    fun updateTradePrice(quoteEntity: QuoteEntity?) {
+    fun onQuoteUpdate(quoteEntity: QuoteEntity?){
+        updateTradePrice(quoteEntity)
+        setOrderButtonText(quoteEntity)
+    }
+
+    fun changePriceType(type: SupportTransactionOrderPrice) {
+        if (instrument == null) {
+            return
+        }
+        priceType = type
+        updateTradePrice(quoteService?.getQuoteByInstrument(instrument?.id))
+        priceInput.post {
+            priceInput.text = tradePrice
+        }
+    }
+
+    fun changeTradeVolume(volume: Int) {
+        tradeVolume = volume
+        volumeInput.text = tradeVolume.toString()
+    }
+
+    private fun updateTradePrice(quoteEntity: QuoteEntity?) {
         if (quoteEntity == null) {
             return
         }
@@ -65,30 +85,22 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
             priceInput.text = tradePrice
         }
     }
-
-    fun changePriceType(type: SupportTransactionOrderPrice) {
-        if (instrument == null) {
-            return
-        }
-        priceType = type
-        updateTradePrice(quoteService?.getQuoteByInstrument(instrument?.shortInsId))
-        priceInput.post {
-            priceInput.text = tradePrice
-        }
-    }
-
-    fun changeTradeVolume(volume: Int) {
-        tradeVolume = volume
-        volumeInput.text = tradeVolume.toString()
-    }
-
     /**
      * 获取委托价格
      *   根据开平方向和价格模式
      */
-    fun getOrderPrice(direction: CTPDirection): Double {
-        val quoteEntity = quoteService?.getQuoteByInstrument(instrument?.shortInsId)
-        return when (priceType) {
+    private fun setOrderButtonText(quoteEntity: QuoteEntity?) {
+        if(quoteEntity == null){
+            buyButton.setOrderPriceText(Omits.OmitPrice)
+            sellButton.setOrderPriceText(Omits.OmitPrice)
+            closeButton.setOrderPriceText(Omits.OmitPrice)
+            return
+        }
+        //买方向的价格
+        var buyText = Omits.OmitString
+        //卖方向的价格
+        var sellText = Omits.OmitPrice
+        when (priceType) {
             SupportTransactionOrderPrice.Queue -> {
                 val upLimitPrice: String =
                     NumberUtils.formatNum(quoteEntity?.upper_limit, instrument?.priceTick)
@@ -99,19 +111,16 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 // 买方向用卖价，卖方向用买价 涨停无卖价，直接就使用涨停价
                 if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity?.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
                         quoteEntity?.last_price
-                    ))
-                ) {
-                    lastPrice.toDouble()
+                    ))) {
+                    buyText = lastPrice
+                    sellText = lastPrice
                 } else {
                     val askPrice =
                         NumberUtils.formatNum(quoteEntity?.ask_price1, instrument?.priceTick)
                     val bidPrice =
                         NumberUtils.formatNum(quoteEntity?.bid_price1, instrument?.priceTick)
-                    if (direction == CTPDirection.Buy) {
-                        if (Omits.isOmit(bidPrice)) 0.0 else bidPrice.toDouble()
-                    } else {
-                        if (Omits.isOmit(askPrice)) 0.0 else askPrice.toDouble()
-                    }
+                    buyText = bidPrice
+                    sellText = askPrice
                 }
             }
             //对手价
@@ -125,51 +134,53 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 // 买方向用卖价，卖方向用买价 涨停无卖价，直接就使用涨停价
                 if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity?.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
                         quoteEntity?.last_price
-                    ))
-                ) {
-                    lastPrice.toDouble()
+                    ))) {
+                    buyText = lastPrice
+                    sellText = lastPrice
                 } else {
                     val askPrice =
                         NumberUtils.formatNum(quoteEntity?.ask_price1, instrument?.priceTick)
                     val bidPrice =
                         NumberUtils.formatNum(quoteEntity?.bid_price1, instrument?.priceTick)
-                    if (direction == CTPDirection.Buy) {
-                        if (Omits.isOmit(askPrice)) 0.0 else askPrice.toDouble()
-                    } else {
-                        if (Omits.isOmit(bidPrice)) 0.0 else bidPrice.toDouble()
-                    }
+                    buyText = askPrice
+                    sellText = bidPrice
                 }
             }
             SupportTransactionOrderPrice.Market -> {
-                val type = ExchangeType.from(instrument?.eid) ?: return 0.0
-                if (quoteEntity == null || Omits.isOmit(quoteEntity.highest)
-                    || Omits.isOmit(quoteEntity.lower_limit)
-                ) {
-                    0.0
-                }
+                val type = ExchangeType.from(instrument?.eid) ?: return
                 //上期能源所不支持市价单，用涨跌停去搞
                 if (type == ExchangeType.INE || type == ExchangeType.SHFE) {
                     //没有获取到涨跌停，就搞一个0
                     if (Omits.isOmit(quoteEntity?.upper_limit) || Omits.isOmit(quoteEntity?.lower_limit)) {
-                        0.0
+                        buyText = "0"
+                        sellText = "0"
+                    }else{
+                        buyText = quoteEntity!!.upper_limit
+                        sellText = quoteEntity!!.lower_limit
                     }
-                    if (direction == CTPDirection.Buy) quoteEntity!!.upper_limit.toDouble() else quoteEntity!!.lower_limit.toDouble()
                 } else {
-                    0.0
+                    buyText = "0"
+                    sellText = "0"
                 }
             }
             SupportTransactionOrderPrice.Limit -> {
                 if (Omits.isOmit(tradePrice) || !numPattern.matcher(tradePrice).matches()) {
                     if (quoteEntity == null || Omits.isOmit(quoteEntity?.last_price)) {
-                        0.0
+                        buyText = "0"
+                        sellText = "0"
                     } else {
-                        quoteEntity.last_price.toDouble()
+                        buyText = quoteEntity.last_price
+                        sellText = quoteEntity.last_price
                     }
                 } else {
-                    tradePrice.toDouble()
+                    buyText = tradePrice
+                    sellText = tradePrice
                 }
             }
         }
+        buyButton.setOrderPriceText(buyText)
+        sellButton.setOrderPriceText(sellText)
+        closeButton.setOrderPriceText(buyText)
     }
 
     fun getOrderPriceType():SupportTransactionOrderPrice = priceType

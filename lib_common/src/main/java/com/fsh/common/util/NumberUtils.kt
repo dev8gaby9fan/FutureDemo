@@ -20,6 +20,12 @@ object NumberUtils {
     }
 
     fun formatNum(num:String?, pattern:String?):String{
+        if(Omits.isOmit(num)){
+            return Omits.OmitPrice
+        }
+        if(Omits.isOmit(pattern)){
+            return num?: Omits.OmitPrice
+        }
         return formatNum(BigDecimal(num).toDouble(),
             BigDecimal(pattern).toDouble())
     }

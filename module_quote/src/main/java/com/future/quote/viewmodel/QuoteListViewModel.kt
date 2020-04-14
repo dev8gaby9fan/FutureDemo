@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.fsh.common.base.BaseViewModel
 import com.fsh.common.model.QuoteEntity
-import com.future.quote.data.SubscribeQuoteFrame
 import com.future.quote.repository.QuoteRepositoryProvider
 import com.future.quote.repository.QuoteSocketRepository
 import io.reactivex.subjects.Subject
@@ -29,7 +28,7 @@ class QuoteListViewModel : BaseViewModel<QuoteSocketRepository>(){
     }
 
     fun subscribeQuote(insId:String){
-        repository?.sendMessage(SubscribeQuoteFrame(insId))
+        repository?.subscribeQuote(insId)
     }
 
     fun needConnectSocket():Boolean{

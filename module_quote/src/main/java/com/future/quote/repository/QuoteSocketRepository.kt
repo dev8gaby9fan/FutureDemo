@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.repository.BaseRepository
 import com.fsh.common.retrofit.RetrofitUtils
+import com.fsh.common.util.Omits
 import com.fsh.common.websocket.*
 import com.future.quote.BuildConfig
 import com.future.quote.data.PeekMessageFrame
+import com.future.quote.data.SubscribeQuoteFrame
 import com.future.quote.data.WebSocketTextFrame
 import com.future.quote.service.DataParser
 import com.future.quote.service.WebSocketFrameParser
@@ -20,6 +22,7 @@ import io.reactivex.subjects.Subject
 import okio.ByteString
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Created by devFan
@@ -40,6 +43,7 @@ class QuoteSocketRepository : BaseRepository {
     }
     val statusData:LiveData<Int> = _statusData
     val quoteData = _quoteData
+    private var preSubscribedQuoteFrame:AtomicReference<SubscribeQuoteFrame> = AtomicReference(SubscribeQuoteFrame(Omits.OmitString))
     private val webSocket: FWebSocket by lazy {
         FWebSocket().apply {
             okHttpClient = RetrofitUtils.okHttpClient
@@ -78,13 +82,31 @@ class QuoteSocketRepository : BaseRepository {
 
     private fun handleStatusMsg(msg: FWebSocketStatusMsg) {
         Log.e("QuoteSocketRepository","status msg ${msg.status}")
+        if(msg.status == FWebSocket.STATUS_CONNECTED && !Omits.isOmit(preSubscribedQuoteFrame.get().ins_list)){
+            sendMessage(preSubscribedQuoteFrame.get())
+        }
         socketStatus = msg.status
         _statusData.postValue(msg.status)
     }
 
     fun sendMessage(webSocketFrame:WebSocketTextFrame){
         webSocket.sendMessage(webSocketFrame)
-        Log.d("QuoteSocketRepository","send message [${webSocketFrame.toJsonString()}]")
+    }
+
+    /**
+     * isAppend 是否是叠加订阅操作,如果不是就不订阅之前已经订阅过的合约行情
+     */
+    fun subscribeQuote(insList:String,isAppend:Boolean = false){
+        var frame = SubscribeQuoteFrame(insList)
+        if(isAppend){
+            var subscribeIns = if(!Omits.isOmit(preSubscribedQuoteFrame.get().ins_list)) "${preSubscribedQuoteFrame.get().ins_list};$insList"
+                              else insList
+            //去除重复订阅的合约
+            subscribeIns = subscribeIns.split(";").distinctBy { it }.joinToString(";")
+            frame = SubscribeQuoteFrame(subscribeIns)
+        }
+        sendMessage(frame)
+        preSubscribedQuoteFrame.set(frame)
     }
 
     fun isSocketConnected():Boolean = socketStatus == FWebSocket.STATUS_CONNECTED

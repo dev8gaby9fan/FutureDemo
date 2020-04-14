@@ -12,11 +12,17 @@ abstract class BaseLazyFragment : BaseFragment(){
         }
         if(!isHidden){
             onVisible()
+        }else{
+            onInVisible()
         }
     }
 
     //界面可见
     open fun onVisible(){
+
+    }
+    //界面不可见
+    open fun onInVisible(){
 
     }
 

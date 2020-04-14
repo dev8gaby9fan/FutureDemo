@@ -98,11 +98,6 @@ abstract class OrderButton : View {
         postInvalidate()
     }
 
-    fun setOrderButtonText(buttonText:String){
-        orderPrice = buttonText
-        postInvalidate()
-    }
-
     /**
      * 检查报单参数
      */

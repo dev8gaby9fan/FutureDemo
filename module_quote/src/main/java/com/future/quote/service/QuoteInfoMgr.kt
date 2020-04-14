@@ -70,13 +70,14 @@ class QuoteInfoMgr {
         return list
     }
 
-    fun storeQuote(quoteEntity:QuoteEntity){
+    fun storeQuote(quoteEntity:QuoteEntity):QuoteEntity{
         var storeQuote = quoteMap[quoteEntity.instrument_id]
         if(storeQuote == null){
             storeQuote = QuoteEntity(quoteEntity.instrument_id)
             quoteMap[quoteEntity.instrument_id] = storeQuote
         }
         storeQuote.updateQuoteEntity(quoteEntity)
+        return storeQuote
     }
 
     fun getQuoteEntity(insId:String?):QuoteEntity?{

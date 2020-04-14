@@ -185,9 +185,8 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
                 field.isAccessible = true
                 field.set(quoteEntity, quoteDataObj.optString(property))
             }
-            //TODO 这里QuoteInfoMgr storeQuote
-            QuoteInfoMgr.mgr.storeQuote(quoteEntity)
-            quoteLieData.onNext(quoteEntity)
+            val storeQuote = QuoteInfoMgr.mgr.storeQuote(quoteEntity)
+            quoteLieData.onNext(storeQuote)
         }
     }
 

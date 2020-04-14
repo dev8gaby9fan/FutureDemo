@@ -21,7 +21,12 @@ interface QuoteService : IProvider{
      * 订阅行情
      * insList为null的时候，取消行情订阅
      */
-    fun subscribeQuote(insList:List<String>?):Observable<QuoteEntity>
+    fun subscribeQuote(insList:String,isAppend:Boolean =false)
+
+    /**
+     * 观察行情更新
+     */
+    fun getSubscribeQuoteObservable():Observable<QuoteEntity>
 
     /**
      * 搜索行情
@@ -41,6 +46,11 @@ interface TradeService : IProvider{
      * 是否有账号登录
      */
     fun isTradingLogin():Boolean
+
+    /**
+     * 获取设置交易的合约数据LiveData对象
+     */
+    fun getTradeInsLiveData():LiveData<InstrumentInfo>
 }
 
 interface MainService : IProvider{

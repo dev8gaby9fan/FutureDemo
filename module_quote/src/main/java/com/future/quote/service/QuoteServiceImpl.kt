@@ -6,6 +6,8 @@ import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.provider.QuoteService
+import com.future.quote.data.SubscribeQuoteFrame
+import com.future.quote.repository.QuoteRepositoryProvider
 import io.reactivex.Observable
 
 /**
@@ -14,11 +16,17 @@ import io.reactivex.Observable
  * author: devFan
  * email:  devfanshan@gmail.com
  * date: 2020/3/10
- * description: TODO there need some info to descript current java file
+ * description: 行情模块对外提供数据服务
  *
  */
 @Route(path = ARouterPath.Service.SERVICE_QUOTE)
 class QuoteServiceImpl : QuoteService{
+
+
+    override fun getSubscribeQuoteObservable(): Observable<QuoteEntity> =
+        QuoteRepositoryProvider.providerSocketRepository().quoteData
+
+
     override fun getQuoteByInstrument(instrumentId: String?):QuoteEntity? =
         QuoteInfoMgr.mgr.getQuoteEntity(instrumentId)
 
@@ -30,10 +38,7 @@ class QuoteServiceImpl : QuoteService{
         TODO()
     }
 
-
-
-    override fun subscribeQuote(insList: List<String>?): Observable<QuoteEntity> {
-        TODO()
+    override fun subscribeQuote(insList: String, isAppend: Boolean) {
+        QuoteRepositoryProvider.providerSocketRepository().subscribeQuote(insList,isAppend)
     }
-
 }

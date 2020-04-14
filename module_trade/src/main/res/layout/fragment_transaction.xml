@@ -301,6 +301,7 @@
             android:background="@drawable/shape_rectangle_with_border"
             >
             <TextView
+                android:id="@+id/tv_order_ins_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

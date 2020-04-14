@@ -13,7 +13,7 @@ import com.future.trade.repository.TradeApiProvider
 @Route(path = ARouterPath.Service.SERVICE_TRADE)
 class TradeServiceImpl : TradeService{
     private var _tradeInsLiveData:MutableLiveData<InstrumentInfo> = MutableLiveData()
-    val tradeInsLiveData:LiveData<InstrumentInfo> = _tradeInsLiveData
+
     init {
         Log.d("TradeServiceImpl","init")
     }
@@ -32,4 +32,6 @@ class TradeServiceImpl : TradeService{
      */
     override fun isTradingLogin(): Boolean =
         TradeApiProvider.providerCTPTradeApi().isUserLogined()
+
+    override fun getTradeInsLiveData(): LiveData<InstrumentInfo> = _tradeInsLiveData
 }

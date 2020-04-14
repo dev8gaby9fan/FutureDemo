@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseFragment
+import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.OnItemTouchEventListener
 import com.fsh.common.ext.RecyclerViewItemClickListener
 import com.fsh.common.ext.viewModelOf
@@ -43,8 +44,7 @@ import kotlinx.android.synthetic.main.layout_item_quote.view.*
  *
  */
 
-class QuoteListFragment : BaseFragment(), IContentFragment {
-
+class QuoteListFragment : BaseLazyFragment(), IContentFragment {
     private var adapter: QuoteItemAdapter = QuoteItemAdapter()
     private var insList: ArrayList<InstrumentInfo> = ArrayList()
     private var insMap: HashMap<String, Pair<Int, InstrumentInfo>> = HashMap(50)
@@ -53,15 +53,24 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
     private var isCanUpdateDate:Boolean = true
     override fun layoutRes(): Int = R.layout.fragment_quote_list
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun lazyLoading() {
         initViews()
         initDatas()
     }
 
+    override fun onVisible() {
+        isCanUpdateDate = true
+    }
+
+    override fun onInVisible() {
+        isCanUpdateDate = false
+    }
+
     private fun initViews() {
-        quote_list.itemAnimator = DefaultItemAnimator()
-        quote_list.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VISIBLE))
+        quote_list.itemAnimator = null
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayout.VISIBLE)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_common_divider))
+        quote_list.addItemDecoration(dividerItemDecoration)
         quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,
             object : OnItemTouchEventListener {
                 override fun onClick(position: Int) = handleItemClick(position)
@@ -99,7 +108,6 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         viewModel = viewModelOf<QuoteListViewModel>().value
         //WebSocket连接状态
         viewModel.socketStatusEvent.observe(this, Observer {
-            Log.d("QuoteListFragment", "received socket status event it")
             if (it == FWebSocket.STATUS_CONNECTED) {
                 subscribeQuote()
             }
@@ -108,7 +116,6 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         disposables.add(viewModel.quoteDataEvent.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                Log.d("QuoteListFragment","quote update ${it.instrument_id} $isCanUpdateDate")
                 //列表滚动中，不刷新列表数据
                 if(!isCanUpdateDate){
                     return@subscribe
@@ -182,6 +189,10 @@ class QuoteListFragment : BaseFragment(), IContentFragment {
         }
 
         private fun setQuoteTextToTextView(textView:TextView,quoteProperty:String?,priceTick:String?,format:Boolean = true){
+            //行情没有发生变化，不刷新TextView
+            if(textView.text == quoteProperty){
+                return
+            }
             if(!Omits.isOmit(quoteProperty)){
                 if(format){
                     textView.text = NumberUtils.formatNum(quoteProperty,priceTick)

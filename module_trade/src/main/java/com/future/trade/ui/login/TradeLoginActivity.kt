@@ -46,9 +46,7 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
     private fun initData() {
         loginViewModel = viewModelOf<LoginViewModel>().value
         brokerConfigViewModel = viewModelOf<BrokerConfigViewModel>().value
-        Log.d("TradeLoginActivity", "onCreate ${filesDir.absolutePath} ${dataDir.absolutePath}")
         brokerConfigViewModel.allBrokerLiveData.observe(this, Observer {
-            Log.d("TradeLoginActivity", "received broker list from db ${it.size}")
             if (it.isNotEmpty()) {
                 updateSeletedBroker(it[0])
             }
@@ -85,7 +83,6 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
             }
             TradeLoginFlowType.RspSettlementInfo->{
                 val tradeEvent = event.event as RspQrySettlementEvent
-                Log.d("TradeLoginActivity","received rspSettlementInfo ${tradeEvent.rsp.rspField?.settlementID}")
                 //结算单响应数据
                 settlementInfoDialog.setSettlementInfo(tradeEvent.rsp.rspField?.content?:"没有数据")
                 settlementInfoDialog.show(supportFragmentManager,TAG_SETTLEMENT)
@@ -105,7 +102,6 @@ class TradeLoginActivity : BaseActivity(), BrokerConfigPicker.OnBrokerItemClickL
     }
     private fun onLoginSuccess(){
         finish()
-        startActivity(Intent(this,TransactionActivity::class.java))
     }
 
     private fun initViews() {
