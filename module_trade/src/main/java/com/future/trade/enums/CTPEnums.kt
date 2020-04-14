@@ -314,13 +314,15 @@ enum class CTPForceCloseReasonType(val code: Char, val text: String) {
 enum class ExchangeType(
     val exchangeID: String,
     val exchangeName: String,
+    val isYdPos:Boolean,
+    val isHedgePos:Boolean,
     val clazzType: Class<out InstrumentPosition>
 ) {
-    CFFEX("CFFEX", "中金所", StandardInstrumentPosition::class.java),
-    DCE("DCE", "大商所", StandardInstrumentPosition::class.java),
-    CZCE("CZCE", "郑商所", CZCEInstrumentPosition::class.java),
-    SHFE("SHFE", "上期所", YTDInstrumentPosition::class.java),
-    INE("INE", "能源所", YTDInstrumentPosition::class.java);
+    CFFEX("CFFEX", "中金所", false,true,StandardInstrumentPosition::class.java),
+    DCE("DCE", "大商所", false,true,StandardInstrumentPosition::class.java),
+    CZCE("CZCE", "郑商所", false,false,CZCEInstrumentPosition::class.java),
+    SHFE("SHFE", "上期所", true,true,YTDInstrumentPosition::class.java),
+    INE("INE", "能源所", true,true,YTDInstrumentPosition::class.java);
 
     fun getInstrumentInstance(): InstrumentPosition {
         return clazzType.newInstance()
