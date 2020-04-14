@@ -25,7 +25,10 @@ enum class CTPOrderStatusType(
     ACTION('5', "撤单", "已全部撤单", true),
     Unkonwn('a', "未知", "--", false),
     NOT_EXECUTE('b', "尚未触发", "预埋单等未达到触发下单条件，客户端还未执行下单动作", false),
-    EXECUTED('c', "已触发", "预埋单等已达到触发下单条件，客户端执行下单动作", true);
+    EXECUTED('c', "已触发", "预埋单等已达到触发下单条件，客户端执行下单动作", true),
+    //自定义状态
+    STATUS_CUSTOME_SEND('9',"已发送","已发送",false),
+    ;
 
     companion object {
         private val allStatus: HashMap<Char, CTPOrderStatusType> = HashMap()

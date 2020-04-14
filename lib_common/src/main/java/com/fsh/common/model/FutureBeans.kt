@@ -78,7 +78,6 @@ data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:S
     var margin:String? = null
     var commission:String? = null
     var mmsa:String? = null
-    var shortInsId:String?=null
 
     //组合合约字段
     var leg1symbol:String? = null
@@ -89,6 +88,14 @@ data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:S
     var optionclass:String? = null
     var strikeprice:String? = null
     var underlyingmultiple:String? = null
+    //CTP 合约ID格式
+    var ctpInstrumentId:String = Omits.OmitString
+    //CTP 合约格式的交易所信息
+    var ctpExchangeId:String = Omits.OmitString
+    //是否是主力合约
+    var isMainIns:Boolean = false
+    //主力合约ID
+    var mainInsId:String = Omits.OmitString
 }
 
 /**

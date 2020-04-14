@@ -165,12 +165,21 @@ class TransactionFragment :BaseLazyFragment(){
     }
 
     private fun switchOrderIns(ins:InstrumentInfo){
-        orderIns = ins
-        transactionInputHelper.setTradeInstrument(ins)
-        viewModel?.subscribeQuote(ins.id)
-        tv_order_ins_name.text = ins.name
         val quoteService = ARouterUtils.getQuoteService()
-        val quoteEntity = quoteService.getQuoteByInstrument(ins.id)
+        var needToBindIns = ins
+        //主力合约，就找到它真实的合约
+        if(ins.isMainIns){
+            val instrument = quoteService.getInstrumentById(ins.mainInsId)
+            if(instrument != null){
+                needToBindIns = instrument
+            }
+        }
+        orderIns = needToBindIns
+        transactionInputHelper.setTradeInstrument(needToBindIns)
+        viewModel?.subscribeQuote(needToBindIns.id)
+        tv_order_ins_name.text = needToBindIns.name
+
+        val quoteEntity = quoteService.getQuoteByInstrument(needToBindIns.id)
         if(quoteEntity != null){
             handleQuoteUpdate(quoteEntity)
         }

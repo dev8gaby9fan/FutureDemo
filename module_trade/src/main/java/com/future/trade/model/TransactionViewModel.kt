@@ -28,6 +28,8 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
             disposable.add(getTradeEventObserver().subscribe {
                 when(it){
                     is RspQryOrderEvent -> transactionRepository.handleRspQryOrderEvent(it)
+                    is RspOrderInsertEvent -> transactionRepository.handleRspOrderInsertEvent(it)
+                    is RspOrderActionEvent -> transactionRepository.handleRspOrderActionEvent(it)
                     is RtnOrderEvent -> transactionRepository.handleRtnOrderEvent(it)
                     is RspQryTradeEvent -> transactionRepository.handleRspQryTradeEvent(it)
                     is RtnTradeEvent -> transactionRepository.handleRtnTradeEvent(it)

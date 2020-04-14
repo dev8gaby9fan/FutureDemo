@@ -133,7 +133,7 @@ abstract class OrderButton : View {
                 throw IllegalArgumentException(resources.getString(R.string.notice_market_price_fail))
             }
         }
-        val quoteEntity = ARouterUtils.getQuoteService().getQuoteByInstrument(orderInstrument?.shortInsId)
+        val quoteEntity = ARouterUtils.getQuoteService().getQuoteByInstrument(orderInstrument?.id)
         if(quoteEntity != null){
             val upLimitPrice = quoteEntity!!.upper_limit
             val lowLimit = quoteEntity!!.lower_limit
@@ -182,7 +182,7 @@ abstract class OrderButton : View {
     fun createOrderField(volume:Int): IOrderInsertField {
         val tradeAPI = TradeApiProvider.providerCTPTradeApi()
         val currentUser = tradeAPI.getCurrentUser()!!
-        val field = CTPOrderInsertField(currentUser.brokerID,currentUser.userID,orderInstrument!!.id,
+        val field = CTPOrderInsertField(currentUser.brokerID,currentUser.userID,orderInstrument!!.ctpInstrumentId,
             tradeAPI.getOrderRefId().toString(),currentUser.userID,CTPOrderPriceType.LimitPrice,direction,combOffset,
             CTPHedgeType.Speculation,orderPrice.toDouble(),volume,
             CTPTimeConditionType.IOC,Omits.OmitString,CTPVolumeConditionType.AV,1,

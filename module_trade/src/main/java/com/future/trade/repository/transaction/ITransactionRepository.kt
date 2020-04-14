@@ -2,10 +2,7 @@ package com.future.trade.repository.transaction
 
 import androidx.lifecycle.LiveData
 import com.fsh.common.repository.BaseRepository
-import com.future.trade.bean.InstrumentPosition
-import com.future.trade.bean.RspOrderField
-import com.future.trade.bean.RspTradeField
-import com.future.trade.bean.RspTradingAccountField
+import com.future.trade.bean.*
 import com.future.trade.repository.tradeapi.*
 
 interface ITransactionRepository : BaseRepository {
@@ -23,6 +20,16 @@ interface ITransactionRepository : BaseRepository {
      * 委托回报
      */
     fun handleRtnOrderEvent(event: RtnOrderEvent)
+
+    /**
+     * 报单响应
+     */
+    fun handleRspOrderInsertEvent(event: RspOrderInsertEvent)
+
+    /**
+     * 撤单响应
+     */
+    fun handleRspOrderActionEvent(event: RspOrderActionEvent)
 
     /**
      * 查询成交响应

@@ -63,8 +63,13 @@ class FWebSocketClientMgr{
     }
 
     fun close(){
-        val client = connectionMap.remove(lastClient?.getClientHashCode())
-        client?.close()
+        val clientKey = lastClient?.getClientHashCode()
+        if(clientKey != null){
+            val client = connectionMap.remove(clientKey
+            )
+            client?.close()
+        }
+
         connectionMap.forEach {
             if(it.value.isConnected()){
                 it.value.close()

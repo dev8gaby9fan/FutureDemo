@@ -133,7 +133,7 @@ class RspOrderField(var brokerID: String,var investorID: String,var instrumentID
      * 判断内容是否发生变化
      */
     override fun compare(obj : RspOrderField): Boolean {
-        return (obj.investorID == investorID && obj.instrumentID == instrumentID && obj.frontID == frontID && obj.sessionID == sessionID && obj.orderRef == orderRef && obj.volumeTraded == volumeTraded && obj.volumeTotalOriginal == volumeTotalOriginal)
+        return (obj.investorID == investorID && obj.instrumentID == instrumentID && obj.frontID == frontID && obj.sessionID == sessionID && obj.orderRef == orderRef && obj.volumeTraded == volumeTraded && obj.volumeTotalOriginal == volumeTotalOriginal && obj.orderStatus == orderStatus)
     }
 
     /**

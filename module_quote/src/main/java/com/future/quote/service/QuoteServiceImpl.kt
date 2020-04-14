@@ -22,7 +22,6 @@ import io.reactivex.Observable
 @Route(path = ARouterPath.Service.SERVICE_QUOTE)
 class QuoteServiceImpl : QuoteService{
 
-
     override fun getSubscribeQuoteObservable(): Observable<QuoteEntity> =
         QuoteRepositoryProvider.providerSocketRepository().quoteData
 
@@ -41,4 +40,7 @@ class QuoteServiceImpl : QuoteService{
     override fun subscribeQuote(insList: String, isAppend: Boolean) {
         QuoteRepositoryProvider.providerSocketRepository().subscribeQuote(insList,isAppend)
     }
+
+    override fun getInstrumentById(insId: String): InstrumentInfo? =
+        QuoteInfoMgr.mgr.getInstrument(insId)
 }

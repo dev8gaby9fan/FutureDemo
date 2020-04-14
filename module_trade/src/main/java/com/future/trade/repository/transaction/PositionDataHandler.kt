@@ -18,6 +18,16 @@ interface IPositionDataHandler : BaseDataHandler<InstrumentPosition> {
     fun handleRtnOrder(rtn: RtnOrder)
 
     /**
+     * 报单响应
+     */
+    fun handleRspOrderInsert(rsp:RspOrderInsert)
+
+    /**
+     * 撤单响应
+     */
+    fun handleRspOrderAction(rsp:RspOrderAction)
+
+    /**
      * 处理成交回报
      */
     fun handleRtnTrade(rtn: RtnTrade)
@@ -29,6 +39,8 @@ interface IPositionDataHandler : BaseDataHandler<InstrumentPosition> {
 }
 
 class PositionDataHandler : IPositionDataHandler {
+
+
     private val posLiveDat: MutableLiveData<List<InstrumentPosition>> = MutableLiveData()
     //初始化容器大小为20,key为合约ID-持仓方向
     private val positionCollection:ArrayMap<String,InstrumentPosition> = ArrayMap(20)
@@ -48,6 +60,15 @@ class PositionDataHandler : IPositionDataHandler {
         handleRspOrderField(rtn.rspField)
         posLiveDat.postValue(ArrayList(positionCollection.values))
     }
+
+    override fun handleRspOrderInsert(rsp: RspOrderInsert) {
+
+    }
+
+    override fun handleRspOrderAction(rsp: RspOrderAction) {
+
+    }
+
 
     private fun handleRspOrderField(field:RspOrderField){
         //开仓的委托不管，不用计算

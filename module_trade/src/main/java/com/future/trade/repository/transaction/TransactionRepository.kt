@@ -35,6 +35,15 @@ class TransactionRepository : ITransactionRepository {
         //持仓也需要处理委托响应，计算仓位冻结手数
         positionDataHandler.handleRtnOrder(event.rtn)
     }
+    override fun handleRspOrderInsertEvent(event: RspOrderInsertEvent) {
+        orderDataHandler.handleRspOrderInsert(event.rsp)
+        positionDataHandler.handleRspOrderInsert(event.rsp)
+    }
+
+    override fun handleRspOrderActionEvent(event: RspOrderActionEvent) {
+        orderDataHandler.handleRspOrderAction(event.rsp)
+        positionDataHandler.handleRspOrderAction(event.rsp)
+    }
 
     override fun handleRspQryTradeEvent(event: RspQryTradeEvent) {
         tradeDataHandler.handleRspQryTrade(event.rsp)

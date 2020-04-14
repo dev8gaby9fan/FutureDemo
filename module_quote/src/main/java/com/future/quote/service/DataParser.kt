@@ -19,7 +19,7 @@ import java.lang.Exception
  * author: devFan
  * email:  devfanshan@gmail.com
  * date: 2020/3/11
- * description: TODO there need some info to descript current java file
+ * description: 数据解析
  *
  */
 
@@ -87,7 +87,6 @@ class InstrumentParser : DataParser<Int> {
             instrument.classType = classN
             instrument.eid = exchId
             instrument.pid = productId
-            instrument.shortInsId = if("FUTURE_CONT" == classN)underlying_symbol else simInsId
             instrument.volumeMultiple = volumeMultiple
             instrument.priceTick = priceTick
             instrument.priceDecs = priceDecs
@@ -100,6 +99,28 @@ class InstrumentParser : DataParser<Int> {
             instrument.expireTime = subObj.optString("expire_datetime")
             instrument.maxMarketOrderVolume = subObj.optString("max_market_order_volume")
             instrument.maxLimitOrderVolume = subObj.optString("max_limit_order_volume")
+
+            when(classN){
+                //期货普通合约格式
+                "FUTURE" -> {
+                    instrument.isMainIns = false
+                    instrument.ctpExchangeId = exchId
+                    instrument.ctpInstrumentId = subObj.optString("ins_id")
+                    //快期主力合约格式：KQ.m@CFFEX.IF,这里代表这个品种的主力合约ID
+                    instrument.mainInsId = "KQ.m@$exchId.$productId"
+                }
+                //主力合约
+                "FUTURE_CONT" -> {
+                    instrument.isMainIns = true
+                    //快期主力合约的underlying_symbol格式为: CFFEX.IF2001
+                    val splitSymbole = underlying_symbol.split(Regex("\\."))
+                    instrument.ctpExchangeId = splitSymbole[0]
+                    instrument.ctpInstrumentId = splitSymbole[1]
+                    //主力合约对应的真实合约
+                    instrument.mainInsId = underlying_symbol
+                }
+            }
+
             //指数，主力，期货
             QuoteInfoMgr.mgr.addInstrument(instrument)
             //组合合约

@@ -45,9 +45,15 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
         this.instrument = ins
         this.tradeVolume = DEFAULT_ORDRE_VOLUME
         tradePrice = Omits.OmitPrice
+        //价格模式默认为对手价
+        priceType = SupportTransactionOrderPrice.Opponent
+        buyButton.setTransactionInfo(ins,priceType)
+        sellButton.setTransactionInfo(ins,priceType)
+        closeButton.setTransactionInfo(ins,priceType)
         onQuoteUpdate(quoteService?.getQuoteByInstrument(ins.id))
         priceInput.text = tradePrice
         volumeInput.text = tradeVolume.toString()
+
     }
 
     fun onQuoteUpdate(quoteEntity: QuoteEntity?){

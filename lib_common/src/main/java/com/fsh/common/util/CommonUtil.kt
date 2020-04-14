@@ -14,4 +14,11 @@ import com.fsh.common.base.BaseApplication
 
 object CommonUtil {
     var application:BaseApplication? = null
+
+    fun getAppId():String{
+        if(application == null){
+            return "com.fsh.future"
+        }
+        return application!!.packageName
+    }
 }

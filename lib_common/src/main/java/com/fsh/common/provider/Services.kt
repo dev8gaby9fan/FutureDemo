@@ -34,6 +34,11 @@ interface QuoteService : IProvider{
     fun searchInstruments(searchKey:String):Observable<List<InstrumentInfo>>
 
     fun getQuoteByInstrument(instrumentId:String?):QuoteEntity?
+    /**
+     * 根据合约ID找到合约信息
+     * 这里的ID是快期的合约格式
+     */
+    fun getInstrumentById(insId:String):InstrumentInfo?
 }
 
 interface TradeService : IProvider{

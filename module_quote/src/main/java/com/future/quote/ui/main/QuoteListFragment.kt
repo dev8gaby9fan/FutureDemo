@@ -136,11 +136,8 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
             Log.d("QuoteListFragment","from index $startPosition less zero,can't get start position")
             return
         }
-        var indIdList: String = ""
-        insList.subList(startPosition, endPosition).map { ins -> "${ins.id}," }
-            .forEach {
-                indIdList = indIdList.plus(it)
-            }
+        val indIdList: String =  insList.subList(startPosition, endPosition)
+            .joinToString(","){it.id}
         viewModel.subscribeQuote(indIdList)
     }
 
@@ -174,7 +171,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         override fun onBindViewHolder(holder: QuoteItem, position: Int) {
             val ins = insList[position]
             holder.item.tv_ins_name.text = ins.name
-            holder.item.tv_ins_short_id.text = ins.shortInsId
+            holder.item.tv_ins_short_id.text = ins.ctpInstrumentId
             val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.id)
             setQuoteTextToTextView(holder.item.tv_ins_price,quoteEntity?.last_price,ins.priceTick)
             setQuoteTextToTextView(holder.item.tv_ins_pre_settlement,quoteEntity?.pre_settlement,ins.priceTick)

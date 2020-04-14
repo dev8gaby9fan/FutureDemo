@@ -99,12 +99,13 @@ class QuoteSocketRepository : BaseRepository {
     fun subscribeQuote(insList:String,isAppend:Boolean = false){
         var frame = SubscribeQuoteFrame(insList)
         if(isAppend){
-            var subscribeIns = if(!Omits.isOmit(preSubscribedQuoteFrame.get().ins_list)) "${preSubscribedQuoteFrame.get().ins_list};$insList"
+            var subscribeIns = if(!Omits.isOmit(preSubscribedQuoteFrame.get().ins_list)) "${preSubscribedQuoteFrame.get().ins_list},$insList"
                               else insList
             //去除重复订阅的合约
-            subscribeIns = subscribeIns.split(";").distinctBy { it }.joinToString(";")
+            subscribeIns = subscribeIns.split(",").distinctBy { it }.joinToString(",")
             frame = SubscribeQuoteFrame(subscribeIns)
         }
+        Log.d("QuoteSocketRepository","subscribeQuote ${frame.ins_list}")
         sendMessage(frame)
         preSubscribedQuoteFrame.set(frame)
     }
