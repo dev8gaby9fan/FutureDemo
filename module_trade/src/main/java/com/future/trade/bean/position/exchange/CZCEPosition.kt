@@ -1,6 +1,7 @@
 package com.future.trade.bean.position.exchange
 
 import com.future.trade.bean.RspQryOrder
+import com.future.trade.bean.RtnOrder
 import com.future.trade.bean.position.ExchangePosition
 
 /**
@@ -24,6 +25,20 @@ class CZCEPosition :ExchangePosition(){
         }
         if(!result.second){
             result = tdHedgePos.onRspQryOrder(rsp)
+        }
+        return result
+    }
+
+    override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
+        var result = ydSpecPos.onRtnOrder(rtn)
+        if(!result.second){
+            result = tdSpecPos.onRtnOrder(rtn)
+        }
+        if(!result.second){
+            result = ydHedgePos.onRtnOrder(rtn)
+        }
+        if(!result.second){
+            result = tdHedgePos.onRtnOrder(rtn)
         }
         return result
     }

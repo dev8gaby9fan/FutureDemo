@@ -3,6 +3,7 @@ package com.future.trade.bean.position
 import com.fsh.common.util.Omits
 import com.future.trade.bean.RspPositionDetailField
 import com.future.trade.bean.RspQryOrder
+import com.future.trade.bean.RtnOrder
 import com.future.trade.enums.CTPDirection
 
 /**
@@ -39,6 +40,16 @@ class DirectionPosition : SimplePosition() {
             exchangePosition = ExchangePosition.newInstance(rsp.exchangeID)
         }
         exchangePosition?.onRspPositionDetail(rsp)
+    }
+
+    override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
+        if(dir == null){
+            dir = CTPDirection.from(rtn.rspField.direction)
+        }
+        if(exchangePosition == null){
+            return Pair(rtn,false)
+        }
+        return exchangePosition!!.onRtnOrder(rtn)
     }
 
     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {

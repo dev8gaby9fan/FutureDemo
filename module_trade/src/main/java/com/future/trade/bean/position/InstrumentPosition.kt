@@ -40,7 +40,16 @@ class InstrumentPosition : SimplePosition(){
     }
 
     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //开仓行为不处理
+        if(rtn.rspField.combOffsetFlag == CTPCombOffsetFlag.Open.text){
+            return Pair(rtn,false)
+        }
+        //卖平仓的委托，需要多仓处理
+        return if(rtn.rspField.direction == CTPDirection.Sell.direction){
+            longPosition.onRtnOrder(rtn)
+        }else{
+            shortPosition.onRtnOrder(rtn)
+        }
     }
 
     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {

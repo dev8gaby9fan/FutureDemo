@@ -3,6 +3,7 @@ package com.future.trade.bean.position
 import com.future.trade.bean.RspOrderField
 import com.future.trade.bean.RspPositionDetailField
 import com.future.trade.bean.RspQryOrder
+import com.future.trade.bean.RtnOrder
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.HashMap
@@ -70,7 +71,19 @@ class PositionDetailTable : Comparator<String>{
     }
 
     fun onRspQryOrder(rsp: RspQryOrder):Pair<RspQryOrder,Boolean>{
-        val field = rsp.rspField!!
+        val returnField = handleRspOrderField(rsp.rspField!!)
+        rsp.rspField = returnField.first
+        return Pair(rsp,returnField.second)
+    }
+
+    fun onRtnOrder(rtn:RtnOrder):Pair<RtnOrder,Boolean>{
+        val returnField = handleRspOrderField(rtn.rspField)
+        rtn.rspField = returnField.first
+        return Pair(rtn,returnField.second)
+    }
+
+    private fun handleRspOrderField(rspOrderField: RspOrderField):Pair<RspOrderField,Boolean>{
+        val field = rspOrderField
         val orderKey = field.frontID.toString() + field.sessionID.toString() + field.orderRef + field.instrumentID
         if(orderMap.containsKey(orderKey)){
             val pre = orderMap[orderKey]!!
@@ -98,7 +111,7 @@ class PositionDetailTable : Comparator<String>{
             frozenVolume += currentOrderFrozenVol
         }
         orderMap[orderKey] = storeField
-        return Pair(rsp,currentOrderFrozenVol == needToFrozen)
+        return Pair(rspOrderField,currentOrderFrozenVol == needToFrozen)
     }
 
     fun contains(key:String):Boolean = map.contains(key)
