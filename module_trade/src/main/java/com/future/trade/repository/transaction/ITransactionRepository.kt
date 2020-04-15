@@ -3,13 +3,14 @@ package com.future.trade.repository.transaction
 import androidx.lifecycle.LiveData
 import com.fsh.common.repository.BaseRepository
 import com.future.trade.bean.*
+import com.future.trade.bean.position.Position
 import com.future.trade.repository.tradeapi.*
 
 interface ITransactionRepository : BaseRepository {
     val orderLiveData:LiveData<List<RspOrderField>>
     val withDrawLiveData:LiveData<List<RspOrderField>>
     val tradeLiveData:LiveData<List<RspTradeField>>
-    val positionLiveData:LiveData<List<InstrumentPosition>>
+    val positionLiveData:LiveData<List<Position>>
     val tradingAccountLiveData:LiveData<RspTradingAccountField>
     /**
      * 查询委托响应

@@ -6,6 +6,8 @@ import com.fsh.common.base.BaseViewModel
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.util.ARouterUtils
 import com.future.trade.bean.*
+import com.future.trade.bean.position.DirectionPosition
+import com.future.trade.bean.position.Position
 import com.future.trade.repository.TradeApiProvider
 import com.future.trade.repository.tradeapi.*
 import com.future.trade.repository.transaction.ITransactionRepository
@@ -19,7 +21,7 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     private val transactionRepository:ITransactionRepository = TradeApiProvider.providerTransactionRepository()
     val orderLiveData:LiveData<List<RspOrderField>> = transactionRepository.orderLiveData
     val withDrawOrderLiveData:LiveData<List<RspOrderField>> = transactionRepository.withDrawLiveData
-    val positionLiveData:LiveData<List<InstrumentPosition>> = transactionRepository.positionLiveData
+    val positionLiveData:LiveData<List<Position>> = transactionRepository.positionLiveData
     val tradeLiveData:LiveData<List<RspTradeField>> = transactionRepository.tradeLiveData
     val tradingAccountLiveData:LiveData<RspTradingAccountField> = transactionRepository.tradingAccountLiveData
     val quoteData: Observable<QuoteEntity> = ARouterUtils.getQuoteService().getSubscribeQuoteObservable()

@@ -67,7 +67,7 @@ class QuoteSocketRepository : BaseRepository {
     }
 
     private fun handleTextMsg(text: String) {
-        Log.e("QuoteSocketRepository","text msg $text")
+//        Log.e("QuoteSocketRepository","text msg $text")
         webSocketFrameParser.parse(JsonParser().parse(text).asJsonObject)
         sendMessage(PeekMessageFrame())
     }

@@ -1,9 +1,9 @@
 package com.future.trade.enums
 
-import com.future.trade.bean.CZCEInstrumentPosition
-import com.future.trade.bean.InstrumentPosition
-import com.future.trade.bean.StandardInstrumentPosition
-import com.future.trade.bean.YTDInstrumentPosition
+import com.future.trade.bean.position.ExchangePosition
+import com.future.trade.bean.position.exchange.CZCEPosition
+import com.future.trade.bean.position.exchange.SHFEINEPosition
+import com.future.trade.bean.position.exchange.StandardPosition
 
 /**
  * 报单状态
@@ -316,15 +316,15 @@ enum class ExchangeType(
     val exchangeName: String,
     val isYdPos:Boolean,
     val isHedgePos:Boolean,
-    val clazzType: Class<out InstrumentPosition>
+    val clazzType: Class<out ExchangePosition>
 ) {
-    CFFEX("CFFEX", "中金所", false,true,StandardInstrumentPosition::class.java),
-    DCE("DCE", "大商所", false,true,StandardInstrumentPosition::class.java),
-    CZCE("CZCE", "郑商所", false,false,CZCEInstrumentPosition::class.java),
-    SHFE("SHFE", "上期所", true,true,YTDInstrumentPosition::class.java),
-    INE("INE", "能源所", true,true,YTDInstrumentPosition::class.java);
+    CFFEX("CFFEX", "中金所", false,true,StandardPosition::class.java),
+    DCE("DCE", "大商所", false,true,StandardPosition::class.java),
+    CZCE("CZCE", "郑商所", false,false,CZCEPosition::class.java),
+    SHFE("SHFE", "上期所", true,true,SHFEINEPosition::class.java),
+    INE("INE", "能源所", true,true,SHFEINEPosition::class.java);
 
-    fun getInstrumentInstance(): InstrumentPosition {
+    fun newExchangePositionInstance(): ExchangePosition {
         return clazzType.newInstance()
     }
 
