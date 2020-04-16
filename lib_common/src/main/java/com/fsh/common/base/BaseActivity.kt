@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
@@ -25,6 +26,7 @@ import com.fsh.common.widget.LoadingDialog
 abstract class BaseActivity : AppCompatActivity(){
     private val loadingDialog: LoadingDialog = LoadingDialog()
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = window
