@@ -1,6 +1,7 @@
 package com.future.trade.repository.transaction
 
 import android.util.ArrayMap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fsh.common.util.Omits
@@ -9,6 +10,7 @@ import com.future.trade.bean.position.DirectionPosition
 import com.future.trade.bean.position.InstrumentPosition
 import com.future.trade.bean.position.Position
 import com.future.trade.enums.CTPCombOffsetFlag
+import java.util.concurrent.ConcurrentHashMap
 
 interface IPositionDataHandler : BaseDataHandler<Position> {
     /**
@@ -24,12 +26,12 @@ interface IPositionDataHandler : BaseDataHandler<Position> {
     /**
      * 报单响应
      */
-    fun handleRspOrderInsert(rsp:RspOrderInsert)
+    fun handleRspOrderInsert(rsp: RspOrderInsert)
 
     /**
      * 撤单响应
      */
-    fun handleRspOrderAction(rsp:RspOrderAction)
+    fun handleRspOrderAction(rsp: RspOrderAction)
 
     /**
      * 处理成交回报
@@ -46,41 +48,43 @@ class PositionDataHandler : IPositionDataHandler {
     //网外发的数据按合约+持仓方向显示
     private val posLiveDat: MutableLiveData<List<Position>> = MutableLiveData()
     //初始化容器大小为20,key为合约ID-持仓方向
-    private val positionCollection:ArrayMap<String,InstrumentPosition> = ArrayMap(20)
+    private val positionCollection: ConcurrentHashMap<String, InstrumentPosition> =
+        ConcurrentHashMap(20)
+
     override fun getLiveData(): LiveData<List<Position>> = posLiveDat
 
     override fun handleRspQryOrder(rsp: RspQryOrder) {
         //查询成功了，直接处理
-//        if(rsp.rspField != null && rsp.rspInfoField.errorID == 0){
-//            handleRspOrderField(rsp.rspField!!)
-//        }
-//        if(rsp.bIsLast){
-//            posLiveDat.postValue(ArrayList(positionCollection.values))
-//        }
+        if (rsp.rspField != null && !Omits.isOmit(rsp.rspField?.orderRef)) {
+            val insPosition = positionCollection[rsp.rspField!!.instrumentID]
+            insPosition?.onRspQryOrder(rsp)
+            //这里如果是有委托数据，就返回持仓数据
+            if (rsp.bIsLast) {
+                posLiveDat.postValue(ArrayList(positionCollection.values))
+            }
+        }
     }
 
     override fun handleRtnOrder(rtn: RtnOrder) {
-//        handleRspOrderField(rtn.rspField)
-//        posLiveDat.postValue(ArrayList(positionCollection.values))
+        val insPosition = positionCollection[rtn.rspField.instrumentID]
+        val handleResult = insPosition?.onRtnOrder(rtn)
+        //这里持仓有变化，才发数据出去
+        if(handleResult != null && handleResult.second){
+            posLiveDat.postValue(ArrayList(positionCollection.values))
+        }
     }
 
     override fun handleRspOrderInsert(rsp: RspOrderInsert) {
-
+        val insPos = positionCollection[rsp.rspField?.instrumentID]
+        val result = insPos?.onRspOrderInsert(rsp)
+        //这里是有处理才把数据发送给界面
+        if(result != null && result.second){
+            posLiveDat.postValue(ArrayList(positionCollection.values))
+        }
     }
 
     override fun handleRspOrderAction(rsp: RspOrderAction) {
 
-    }
-
-
-    private fun handleRspOrderField(field:RspOrderField){
-//        //开仓的委托不管，不用计算
-//        if(CTPCombOffsetFlag.from(field.combOffsetFlag[0]) == CTPCombOffsetFlag.Open){
-//            return
-//        }
-//        //没有持仓去处理委托就不管了，可能仓位被平掉了
-//        val position: InstrumentPosition? = positionCollection[field.instrumentID] ?: return
-//        position?.handleRspOrderField(field)
     }
 
     override fun handleRtnTrade(rtn: RtnTrade) {
@@ -94,18 +98,19 @@ class PositionDataHandler : IPositionDataHandler {
     }
 
     override fun handleRspQryPositionDetail(rsp: RspQryPositionDetail) {
-        if(rsp.rspField != null && !Omits.isOmit(rsp.rspField?.tradeID)){
+        Log.d("PositionDataHandler","handleRspQryPositionDetail --> ${rsp.rspField?.tradeID}")
+        if (rsp.rspField != null && !Omits.isOmit(rsp.rspField?.tradeID)) {
             val positionKey = "${rsp.rspField?.instrumentID}"
             var position = positionCollection[positionKey]
-            if(position == null){
+            if (position == null) {
                 position = InstrumentPosition()
                 positionCollection[positionKey] = position
             }
             position.onRspPositionDetail(rsp.rspField!!)
         }
         //处理到最后一条数据了，将处理好的数据发到界面上显示
-        if(rsp.bIsLast){
-            val result:MutableList<Position> = ArrayList()
+        if (rsp.bIsLast) {
+            val result: MutableList<Position> = ArrayList()
             positionCollection.values.map {
                 val list = ArrayList<Position>()
                 if (it.longPosition.getPosition() > 0) {
@@ -118,6 +123,7 @@ class PositionDataHandler : IPositionDataHandler {
             }.forEach {
                 result.addAll(it)
             }
+            Log.d("PositionDataHandler","result length --> ${result.size}")
             posLiveDat.postValue(ArrayList(result))
         }
     }

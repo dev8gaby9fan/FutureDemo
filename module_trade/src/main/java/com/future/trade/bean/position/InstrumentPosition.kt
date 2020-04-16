@@ -53,7 +53,19 @@ class InstrumentPosition : SimplePosition(){
     }
 
     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //数据内容没有，不处理
+        if(rsp.rspField == null || Omits.isOmit(rsp.rspField?.orderRef)){
+            return Pair(rsp,false)
+        }
+        //开仓委托响应 不处理
+        if(rsp.rspField?.combOffsetFlag == CTPCombOffsetFlag.Open.text){
+            return Pair(rsp,false)
+        }
+        return if(rsp.rspField?.direction == CTPDirection.Buy.direction){
+            shortPosition.onRspOrderInsert(rsp)
+        }else{
+            longPosition.onRspOrderInsert(rsp)
+        }
     }
 
     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {

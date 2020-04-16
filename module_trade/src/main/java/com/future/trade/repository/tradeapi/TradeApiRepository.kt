@@ -1,8 +1,13 @@
 package com.future.trade.repository.tradeapi
 
+import android.util.Log
 import com.fsh.common.repository.BaseRepository
 import com.future.trade.bean.*
+import com.future.trade.repository.TradeApiProvider
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import java.util.concurrent.atomic.AtomicInteger
@@ -19,12 +24,30 @@ import java.util.concurrent.atomic.AtomicReference
  */
 
 abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepository{
+    val transactionRepository = TradeApiProvider.providerTransactionRepository()
     private val tradeEventPublish:Subject<TradeEvent> = PublishSubject.create()
     private val currentUser: AtomicReference<RspUserLoginField> = AtomicReference()
     private val orderRef:AtomicInteger = AtomicInteger(0)
     private val orderReqId:AtomicInteger = AtomicInteger(0)
+    private val disposables = CompositeDisposable()
     init {
         tradeApiSource.registerSubject(tradeEventPublish)
+        disposables.add(tradeEventPublish.subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                Log.d("TradeApiRepository","received ${it.eventType.name}")
+                when(it){
+                    is RspQryOrderEvent -> transactionRepository.handleRspQryOrderEvent(it)
+                    is RspOrderInsertEvent -> transactionRepository.handleRspOrderInsertEvent(it)
+                    is RspOrderActionEvent -> transactionRepository.handleRspOrderActionEvent(it)
+                    is RtnOrderEvent -> transactionRepository.handleRtnOrderEvent(it)
+                    is RspQryTradeEvent -> transactionRepository.handleRspQryTradeEvent(it)
+                    is RtnTradeEvent -> transactionRepository.handleRtnTradeEvent(it)
+                    is RspQryPositionDetailEvent -> transactionRepository.handleRspQryPositionDetailEvent(it)
+                    is RspQryTradingAccountEvent -> transactionRepository.handleRspQryTradingAccountEvent(it)
+                    is RspUserLogoutEvent -> {}
+                }
+            })
     }
     fun reqAuthenticate(){
         tradeApiSource.reqAuthenticate()

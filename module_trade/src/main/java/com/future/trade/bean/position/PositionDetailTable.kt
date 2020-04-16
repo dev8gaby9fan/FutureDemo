@@ -1,9 +1,6 @@
 package com.future.trade.bean.position
 
-import com.future.trade.bean.RspOrderField
-import com.future.trade.bean.RspPositionDetailField
-import com.future.trade.bean.RspQryOrder
-import com.future.trade.bean.RtnOrder
+import com.future.trade.bean.*
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.HashMap
@@ -80,6 +77,11 @@ class PositionDetailTable : Comparator<String>{
         val returnField = handleRspOrderField(rtn.rspField)
         rtn.rspField = returnField.first
         return Pair(rtn,returnField.second)
+    }
+
+    fun onRspOrderInsert(rsp:RspOrderInsert):Pair<RspOrderInsert,Boolean>{
+
+        return Pair(rsp,false)
     }
 
     private fun handleRspOrderField(rspOrderField: RspOrderField):Pair<RspOrderField,Boolean>{

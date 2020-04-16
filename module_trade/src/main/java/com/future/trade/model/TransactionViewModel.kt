@@ -18,29 +18,25 @@ import java.util.*
 class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     private var isQueriedOrder:Boolean = false
     private val disposable:CompositeDisposable = CompositeDisposable()
-    private val transactionRepository:ITransactionRepository = TradeApiProvider.providerTransactionRepository()
-    val orderLiveData:LiveData<List<RspOrderField>> = transactionRepository.orderLiveData
-    val withDrawOrderLiveData:LiveData<List<RspOrderField>> = transactionRepository.withDrawLiveData
-    val positionLiveData:LiveData<List<Position>> = transactionRepository.positionLiveData
-    val tradeLiveData:LiveData<List<RspTradeField>> = transactionRepository.tradeLiveData
-    val tradingAccountLiveData:LiveData<RspTradingAccountField> = transactionRepository.tradingAccountLiveData
+    val orderLiveData:LiveData<List<RspOrderField>>
+    val withDrawOrderLiveData:LiveData<List<RspOrderField>>
+    val positionLiveData:LiveData<List<Position>>
+    val tradeLiveData:LiveData<List<RspTradeField>>
+    val tradingAccountLiveData:LiveData<RspTradingAccountField>
     val quoteData: Observable<QuoteEntity> = ARouterUtils.getQuoteService().getSubscribeQuoteObservable()
     init {
         repository = TradeApiProvider.providerCTPTradeApi().apply {
             disposable.add(getTradeEventObserver().subscribe {
                 when(it){
-                    is RspQryOrderEvent -> transactionRepository.handleRspQryOrderEvent(it)
-                    is RspOrderInsertEvent -> transactionRepository.handleRspOrderInsertEvent(it)
-                    is RspOrderActionEvent -> transactionRepository.handleRspOrderActionEvent(it)
-                    is RtnOrderEvent -> transactionRepository.handleRtnOrderEvent(it)
-                    is RspQryTradeEvent -> transactionRepository.handleRspQryTradeEvent(it)
-                    is RtnTradeEvent -> transactionRepository.handleRtnTradeEvent(it)
-                    is RspQryPositionDetailEvent -> transactionRepository.handleRspQryPositionDetailEvent(it)
-                    is RspQryTradingAccountEvent -> transactionRepository.handleRspQryTradingAccountEvent(it)
                     is RspUserLogoutEvent -> handleRspUserLogout(it.rsp)
                 }
             })
         }
+        orderLiveData = repository!!.transactionRepository.orderLiveData
+        withDrawOrderLiveData = repository!!.transactionRepository.withDrawLiveData
+        positionLiveData = repository!!.transactionRepository.positionLiveData
+        tradeLiveData = repository!!.transactionRepository.tradeLiveData
+        tradingAccountLiveData = repository!!.transactionRepository.tradingAccountLiveData
     }
 
     private fun handleRspUserLogout(rsp: RspUserLogout){

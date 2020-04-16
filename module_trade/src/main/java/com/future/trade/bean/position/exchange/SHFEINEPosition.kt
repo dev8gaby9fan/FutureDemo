@@ -1,5 +1,6 @@
 package com.future.trade.bean.position.exchange
 
+import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
 import com.future.trade.bean.position.ExchangePosition
@@ -49,6 +50,25 @@ class SHFEINEPosition : ExchangePosition(){
             specTable.onRtnOrder(rtn)
         }else{
             hedgeTable.onRtnOrder(rtn)
+        }
+    }
+
+    /**
+     * 处理报单响应
+     */
+    override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
+        return if(rsp.rspField?.combOffsetFlag == CTPCombOffsetFlag.CloseToday.text){
+            handleRspOrderInsertByHedge(tdSpecPos,tdHedgePos,rsp)
+        }else{
+            handleRspOrderInsertByHedge(ydSpecPos,ydHedgePos,rsp)
+        }
+    }
+
+    private fun handleRspOrderInsertByHedge(specTable: PositionDetailTable,hedgeTable: PositionDetailTable,rsp:RspOrderInsert):Pair<RspOrderInsert,Boolean>{
+        return if(rsp.rspField?.combHedgeFlag == CTPHedgeType.Speculation.text){
+            specTable.onRspOrderInsert(rsp)
+        }else{
+            hedgeTable.onRspOrderInsert(rsp)
         }
     }
 }

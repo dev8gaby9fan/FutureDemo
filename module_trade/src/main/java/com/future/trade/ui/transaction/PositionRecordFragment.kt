@@ -1,6 +1,7 @@
 package com.future.trade.ui.transaction
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -28,6 +29,7 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
     override fun lazyLoading() {
         viewModel?.reqQryPositionDetail()
         viewModel?.positionLiveData?.observe(this, Observer {
+            Log.d("PositionRecordFragment","position list ${it.size}")
             updateDataList(it)
         })
     }

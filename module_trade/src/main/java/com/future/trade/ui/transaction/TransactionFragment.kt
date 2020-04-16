@@ -70,7 +70,6 @@ class TransactionFragment :BaseLazyFragment(){
                 updateAccountDetails(it)
             })
         }
-
         val titleList = resources.getStringArray(R.array.tab_trans).toMutableList()
         fragmentList = getRecordFragmentList()
         pagerAdapter = CommonFragmentPagerAdapter(childFragmentManager,fragmentList,titleList)

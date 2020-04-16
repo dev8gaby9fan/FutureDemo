@@ -1,5 +1,6 @@
 package com.future.trade.bean.position.exchange
 
+import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
 import com.future.trade.bean.position.ExchangePosition
@@ -39,6 +40,23 @@ class CZCEPosition :ExchangePosition(){
         }
         if(!result.second){
             result = tdHedgePos.onRtnOrder(rtn)
+        }
+        return result
+    }
+
+    /**
+     * 处理报单响应
+     */
+    override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
+        var result = tdHedgePos.onRspOrderInsert(rsp)
+        if(!result.second){
+            result = ydSpecPos.onRspOrderInsert(rsp)
+        }
+        if(!result.second){
+            result = tdSpecPos.onRspOrderInsert(rsp)
+        }
+        if(!result.second){
+            result = ydSpecPos.onRspOrderInsert(rsp)
         }
         return result
     }

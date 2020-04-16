@@ -8,8 +8,10 @@ import com.future.trade.bean.*
 import com.sfit.ctp.thosttraderapi.*
 import com.sfit.ctp.thosttraderapi.CThostFtdcReqUserLoginField
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.log
 
 
 /**
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * CTP API每秒只能请求一次服务，不能请求太快
  */
 
-class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
+class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueue.DataHandler{
     private var tradeEventPublish: Subject<TradeEvent>? = null
     override fun registerSubject(publish: Subject<TradeEvent>) {
         tradeEventPublish = publish
@@ -34,7 +36,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
     private var broker: BrokerConfig? = null
     private val nRequestIDFactor: AtomicInteger = AtomicInteger(0)
     private val isTradeApiInited:AtomicBoolean = AtomicBoolean(false)
-
+    private val sendReqQueue = CTPTradeApiSendMsgQueue(this)
     //柜台连接成功
     override fun OnFrontConnected() {
         super.OnFrontConnected()
@@ -244,6 +246,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         p3: Boolean
     ) {
         super.OnRspQryInvestorPositionDetail(p0, p1, p2, p3)
+        Log.d("CTPTradeApi","OnRspQryInvestorPositionDetail")
         tradeEventPublish?.onNext(RspQryPositionDetailEvent(RspQryPositionDetail(RspPositionDetailField.fromCTPAPI(p0),
             RspInfoField.fromCTPAPIRsp(p1),p3)))
     }
@@ -258,6 +261,26 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
         super.OnRspOrderInsert(p0, p1, p2, p3)
         tradeEventPublish?.onNext(RspOrderInsertEvent(RspOrderInsert(RspOrderInsertField.fromCTPAPI(p0),
             RspInfoField.fromCTPAPIRsp(p1),p3)))
+    }
+
+    override fun handleDataWhenInterrupted(list: List<CTPRequestFrame<*>>) {
+        for(frame in list){
+            handleData(frame)
+        }
+    }
+
+    override fun handleData(data: CTPRequestFrame<*>) {
+        when(data.frameType){
+            CTPRequestFrameType.UserLogout -> tradeApi?.ReqUserLogout(data.frame as CThostFtdcUserLogoutField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.ConfirmSettlement -> tradeApi?.ReqSettlementInfoConfirm(data.frame as CThostFtdcSettlementInfoConfirmField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryOrder -> tradeApi?.ReqQryOrder(data.frame as CThostFtdcQryOrderField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryTrade -> tradeApi?.ReqQryTrade(data.frame as CThostFtdcQryTradeField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryPositionDetail -> tradeApi?.ReqQryInvestorPositionDetail(data.frame as CThostFtdcQryInvestorPositionDetailField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryTradingAccount -> tradeApi?.ReqQryTradingAccount(data.frame as CThostFtdcQryTradingAccountField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.OrderInsert -> tradeApi?.ReqOrderInsert(data.frame as CThostFtdcInputOrderField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.OrderAction -> tradeApi?.ReqOrderAction(data.frame as CThostFtdcInputOrderActionField?,nRequestIDFactor.getAndIncrement())
+        }
+        Log.d("CTPTradeApi","[${broker?.brokerId} , ${account?.investorId}] send ${data.frameType}")
     }
 
     /**
@@ -304,8 +327,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             brokerID = broker?.brokerId
             userID = account?.investorId
         }
-        tradeApi?.ReqUserLogout(logoutField, nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","[${account?.investorId}] req user logout")
+        sendReqQueue.put(CTPUserLogoutFrame(logoutField))
     }
 
     override fun reqQryConfirmSettlement() {
@@ -326,8 +348,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             confirmDate = DateUtils.formatNow1()
             confirmTime = DateUtils.formatNow3()
         }
-        tradeApi?.ReqSettlementInfoConfirm(reqField, nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","[${account?.investorId}] req confirm settlement")
+        sendReqQueue.put(CTPConfirmSettlement(reqField))
     }
 
 
@@ -336,8 +357,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             brokerID = broker?.brokerId
             investorID = account?.investorId
         }
-        tradeApi?.ReqQryOrder(refField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqQryOrder ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPQryOrder(refField))
     }
 
     override fun reqQryTrade() {
@@ -345,8 +365,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             brokerID = broker?.brokerId
             investorID = account?.investorId
         }
-        tradeApi?.ReqQryTrade(reqField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqQryTrade ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPQryTrade(reqField))
     }
 
     override fun reqQryTradingAccount() {
@@ -355,8 +374,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             accountID = account?.investorId
             brokerID = broker?.brokerId
         }
-        tradeApi?.ReqQryTradingAccount(reqField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqQryTradingAccount ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPQryTradingAccount(reqField))
     }
 
     override fun reqQryPositionDetail() {
@@ -364,25 +382,22 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi() {
             brokerID = broker?.brokerId
             investorID = account?.investorId
         }
-        tradeApi?.ReqQryInvestorPositionDetail(reqField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqQryPositionDetail ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPQryPositionDetail(reqField))
     }
 
     override fun reqOrderInsert(order:IOrderInsertField) {
         val reqField = order.toCThostFtdcInputOrderField()
-        tradeApi?.ReqOrderInsert(reqField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqOrderInsert ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPOrderInsert(reqField))
     }
 
     override fun reqOrderAction(action:IInputOrderActionField) {
         val reqField = action.toCThostFtdcInputOrderActionField()
         tradeApi?.ReqOrderAction(reqField,nRequestIDFactor.getAndIncrement())
-        Log.d("CTPTradeApi","reqOrderAction ${broker?.brokerId} ${account?.investorId}")
+        sendReqQueue.put(CTPOrderAction(reqField))
     }
 
     companion object {
         private const val CODE_SUCCESS = 0
-
         init {
             try {
                 System.loadLibrary("thosttraderapi")

@@ -1,6 +1,7 @@
 package com.future.trade.bean.position
 
 import com.fsh.common.util.Omits
+import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspPositionDetailField
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
@@ -54,6 +55,13 @@ class DirectionPosition : SimplePosition() {
 
     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {
         return exchangePosition?.onRspQryOrder(rsp) ?: Pair(rsp,false)
+    }
+
+    override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
+        if(exchangePosition == null){
+            return Pair(rsp,false)
+        }
+        return exchangePosition!!.onRspOrderInsert(rsp)
     }
 
 
