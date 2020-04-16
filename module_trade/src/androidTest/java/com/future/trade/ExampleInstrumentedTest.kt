@@ -3,6 +3,7 @@ package com.future.trade
 import androidx.core.text.isDigitsOnly
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.fsh.common.util.NumberUtils
 import com.future.trade.util.VerifyUtil
 
 import org.junit.Test
@@ -27,14 +28,5 @@ class ExampleInstrumentedTest {
 
     @Test
     fun test(){
-        println("=====>"+Pattern.matches(VerifyUtil.PATTERN_NUM,"1982."))
-//        println("=====>"+Pattern.matches(VerifyUtil.PATTERN_NUM,"1982.12"))
-//        println("=====>"+Pattern.matches(VerifyUtil.PATTERN_NUM,"1982.1"))
-//        val s1 = "129.112"
-//        val s2 = "129.000"
-//        val s3 = "129."
-//        println("=====>129.112.isDigitsOnly${s1.isDigitsOnly()}")
-//        println("=====>129.000.isDigitsOnly${s2.isDigitsOnly()}")
-//        println("=====>129..isDigitsOnly${s3.isDigitsOnly()}")
     }
 }

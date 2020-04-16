@@ -159,11 +159,6 @@ abstract class OrderButton : View {
         }
     }
 
-
-    fun setInstrument(ins:InstrumentInfo?){
-        orderInstrument = ins
-    }
-
     override fun performClick(): Boolean {
         val currentTime = System.currentTimeMillis()
         if(!Omits.isOmit(lastClickTime) && currentTime - lastClickTime < 500){
