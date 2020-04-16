@@ -3,6 +3,7 @@ package com.future.trade.bean.position.exchange
 import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
+import com.future.trade.bean.RtnTrade
 import com.future.trade.bean.position.ExchangePosition
 
 /**
@@ -15,7 +16,6 @@ import com.future.trade.bean.position.ExchangePosition
  * 平 5手  还剩 0手
  */
 class CZCEPosition :ExchangePosition(){
-
     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {
         var result = ydSpecPos.onRspQryOrder(rsp)
         if(!result.second){
@@ -57,6 +57,21 @@ class CZCEPosition :ExchangePosition(){
         }
         if(!result.second){
             result = ydSpecPos.onRspOrderInsert(rsp)
+        }
+        return result
+    }
+
+    override fun onRtnTradeClosePosition(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        //平仓的时候，直接先平投机再平套保,先昨仓，后今仓
+        var result = ydSpecPos.closePositionByRtnTrade(rtn)
+        if(!result.second){
+            result = tdSpecPos.closePositionByRtnTrade(rtn)
+        }
+        if(!result.second){
+            result = ydHedgePos.closePositionByRtnTrade(rtn)
+        }
+        if(!result.second){
+            result = tdHedgePos.closePositionByRtnTrade(rtn)
         }
         return result
     }

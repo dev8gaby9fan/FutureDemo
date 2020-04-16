@@ -35,6 +35,8 @@ class TradeDataHandler : ITradeDataHandler {
 
     override fun handleRtnQryTrade(rtn: RtnTrade) {
         handleRspTradeField(rtn.rspField)
+        //新增的成交明细需要返回给界面上
+        liveData.postValue(getTradeDataList())
     }
 
     override fun handleRspQryTrade(rsp: RspQryTrade) {

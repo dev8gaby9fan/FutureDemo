@@ -18,6 +18,34 @@ class DirectionPosition : SimplePosition() {
         return exchangePosition?.getPosition() ?: 0
     }
 
+    override fun getAvailable(): Int {
+        return exchangePosition?.getAvailable() ?: 0
+    }
+
+    override fun getSpecPosition(): Int {
+        return exchangePosition?.getSpecPosition()?:0
+    }
+
+    override fun getHedgePosition(): Int {
+        return exchangePosition?.getHedgePosition() ?: 0
+    }
+
+    override fun getOpenCost(): Double {
+        return exchangePosition?.getOpenCost() ?: 0.0
+    }
+
+    override fun getPositionCost(): Double {
+        return exchangePosition?.getPositionCost() ?: 0.0
+    }
+
+    override fun getPositionProfit(): Double {
+        return exchangePosition?.getPositionProfit() ?: 0.0
+    }
+
+    override fun getOpenPositionProfit(): Double {
+        return exchangePosition?.getOpenPositionProfit() ?: 0.0
+    }
+
     override fun getExchangeId(): String {
         return exchangePosition?.getExchangeId() ?: Omits.OmitPrice
     }

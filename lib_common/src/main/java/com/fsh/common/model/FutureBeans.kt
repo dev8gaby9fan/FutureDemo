@@ -64,7 +64,7 @@ data class ProductInfo(var name:String,var id:String,var eid:String) : Parcelabl
 @Parcelize
 data class InstrumentInfo(var name:String,var id:String,var eid:String,var pid:String) : Parcelable{
     var classType:String? = null
-    var volumeMultiple:Int? = null
+    var volumeMultiple:Int = 1
     var priceTick:String? = null
     var priceDecs:String? = null
     var sortkey:Int = Omits.OmitInt

@@ -1,5 +1,6 @@
 package com.future.trade.bean.position
 
+import com.fsh.common.util.ARouterUtils
 import com.future.trade.bean.*
 import java.util.*
 import kotlin.Comparator
@@ -65,6 +66,37 @@ class PositionDetailTable : Comparator<String>{
             openCost -= pos.openPrice
         }
         return pos
+    }
+
+    fun closePositionByRtnTrade(rtn:RtnTrade):Pair<RtnTrade,Boolean>{
+        if(map.isEmpty()){
+            return Pair(rtn,false)
+        }
+        //需要平掉的仓位
+        var needToClose = rtn.rspField.volume
+        val iterator = map.iterator()
+        while (iterator.hasNext()){
+            val mapItemEntity = iterator.next()
+            if(mapItemEntity.value.volume < needToClose){
+                iterator.remove()
+                needToClose -= mapItemEntity.value.volume
+            }else{
+                needToClose = 0
+                mapItemEntity.value.volume -= needToClose
+                break
+            }
+        }
+        //这里获取合约的时候，合约ID格式是快期合约格式
+        val instrument = ARouterUtils.getQuoteService().getInstrumentById("${rtn.rspField.exchangeID}.${rtn.rspField.instrumentID}")
+        val closedVolume = rtn.rspField.volume - needToClose
+        //改容器还剩下多少仓位
+        posVolume -= closedVolume
+        //还需要将持仓成本减去 成交回报，都是今仓，所以这里的价格都用开仓价格计算
+        posCost -= closedVolume * rtn.rspField.price * instrument!!.volumeMultiple
+        posCost -= closedVolume * rtn.rspField.price * instrument.volumeMultiple
+        //需要进一步平的仓位
+        rtn.rspField.volume = needToClose
+        return Pair(rtn,needToClose == 0)
     }
 
     fun onRspQryOrder(rsp: RspQryOrder):Pair<RspQryOrder,Boolean>{

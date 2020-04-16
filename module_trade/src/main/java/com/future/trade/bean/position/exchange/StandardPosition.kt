@@ -3,6 +3,7 @@ package com.future.trade.bean.position.exchange
 import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
+import com.future.trade.bean.RtnTrade
 import com.future.trade.bean.position.ExchangePosition
 import com.future.trade.bean.position.PositionDetailTable
 import com.future.trade.enums.CTPHedgeType
@@ -64,7 +65,26 @@ class StandardPosition : ExchangePosition(){
         return result
     }
 
+    /**
+     * 平仓的成交回报处理
+     */
+    override fun onRtnTradeClosePosition(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        //平仓，先开先平，优先平昨仓
+        return if(rtn.rspField.hedgeFlag == CTPHedgeType.Speculation.code){
+            closePositionByRtnTrade(rtn,ydSpecPos,tdSpecPos)
+        }else{
+            closePositionByRtnTrade(rtn,ydHedgePos,tdHedgePos)
+        }
+    }
 
+    private fun closePositionByRtnTrade(rtn:RtnTrade,ydTable: PositionDetailTable,tdTable: PositionDetailTable): Pair<RtnTrade, Boolean>{
+        //昨仓没有平完的 ,今仓继续平
+        var result = ydTable.closePositionByRtnTrade(rtn)
+        if(!result.second){
+            result = tdTable.closePositionByRtnTrade(result.first)
+        }
+        return result
+    }
 
 
 }

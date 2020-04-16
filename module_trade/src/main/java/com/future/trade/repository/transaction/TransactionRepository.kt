@@ -53,7 +53,7 @@ class TransactionRepository : ITransactionRepository {
     override fun handleRtnTradeEvent(event: RtnTradeEvent) {
         tradeDataHandler.handleRtnQryTrade(event.rtn)
         //持仓也需要处理成交回报，计算仓位
-        positionDataHandler.handleRtnTrade(event.rtn)
+        positionDataHandler.handleRtnTrade(event.rtn.clone())
     }
 
     override fun handleRspQryPositionDetailEvent(event: RspQryPositionDetailEvent) {

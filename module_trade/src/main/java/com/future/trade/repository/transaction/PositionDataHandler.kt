@@ -60,7 +60,7 @@ class PositionDataHandler : IPositionDataHandler {
             insPosition?.onRspQryOrder(rsp)
             //这里如果是有委托数据，就返回持仓数据
             if (rsp.bIsLast) {
-                posLiveDat.postValue(ArrayList(positionCollection.values))
+                sendPositionDataToView()
             }
         }
     }
@@ -70,7 +70,7 @@ class PositionDataHandler : IPositionDataHandler {
         val handleResult = insPosition?.onRtnOrder(rtn)
         //这里持仓有变化，才发数据出去
         if(handleResult != null && handleResult.second){
-            posLiveDat.postValue(ArrayList(positionCollection.values))
+            sendPositionDataToView()
         }
     }
 
@@ -79,7 +79,7 @@ class PositionDataHandler : IPositionDataHandler {
         val result = insPos?.onRspOrderInsert(rsp)
         //这里是有处理才把数据发送给界面
         if(result != null && result.second){
-            posLiveDat.postValue(ArrayList(positionCollection.values))
+            sendPositionDataToView()
         }
     }
 
@@ -88,13 +88,24 @@ class PositionDataHandler : IPositionDataHandler {
     }
 
     override fun handleRtnTrade(rtn: RtnTrade) {
-//        var position = positionCollection[rtn.rspField.instrumentID]
-//        if(position == null){
-//            position = InstrumentPosition.createPositionPoJoByExchangeId(rtn.rspField.exchangeID)
-//            positionCollection[rtn.rspField.instrumentID] = position
-//        }
-//        position!!.handleRspTradeField(rtn.rspField)
-//        posLiveDat.postValue(ArrayList(positionCollection.values))
+        var position = positionCollection[rtn.rspField.instrumentID]
+        //开仓,需要新建仓位
+        if(position == null && rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
+            position = InstrumentPosition()
+            positionCollection[rtn.rspField.instrumentID] = position
+            val result = position.onRtnTrade(rtn)
+            if(result.second){
+                sendPositionDataToView()
+            }
+        }else if(position != null && rtn.rspField.offsetFlag != CTPCombOffsetFlag.Open.offset){
+            //平仓
+            val result = position.onRtnTrade(rtn)
+            //没有仓位了，或者是仓位变化了，需要通知界面刷新
+            if(position.getPosition() == 0 || result.second){
+                positionCollection.remove(rtn.rspField.instrumentID)
+                sendPositionDataToView()
+            }
+        }
     }
 
     override fun handleRspQryPositionDetail(rsp: RspQryPositionDetail) {
@@ -107,25 +118,33 @@ class PositionDataHandler : IPositionDataHandler {
                 positionCollection[positionKey] = position
             }
             position.onRspPositionDetail(rsp.rspField!!)
+            //没有仓位就不保存起来了
+            if(position.getPosition() == 0){
+                positionCollection.remove(positionKey)
+            }
         }
         //处理到最后一条数据了，将处理好的数据发到界面上显示
         if (rsp.bIsLast) {
-            val result: MutableList<Position> = ArrayList()
-            positionCollection.values.map {
-                val list = ArrayList<Position>()
-                if (it.longPosition.getPosition() > 0) {
-                    list.add(it.longPosition)
-                }
-                if (it.shortPosition.getPosition() > 0) {
-                    list.add(it.shortPosition)
-                }
-                list
-            }.forEach {
-                result.addAll(it)
-            }
-            Log.d("PositionDataHandler","result length --> ${result.size}")
-            posLiveDat.postValue(ArrayList(result))
+            sendPositionDataToView()
         }
+    }
+
+    private fun sendPositionDataToView(){
+        val result: MutableList<Position> = ArrayList()
+        positionCollection.values.map {
+            val list = ArrayList<Position>()
+            if (it.longPosition.getPosition() > 0) {
+                list.add(it.longPosition)
+            }
+            if (it.shortPosition.getPosition() > 0) {
+                list.add(it.shortPosition)
+            }
+            list
+        }.forEach {
+            result.addAll(it)
+        }
+        Log.d("PositionDataHandler","result length --> ${result.size}")
+        posLiveDat.postValue(ArrayList(result))
     }
 
 }

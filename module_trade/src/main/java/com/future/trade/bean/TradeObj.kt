@@ -214,6 +214,10 @@ class RspTradeField(var brokerID: String,var investorID: String,var instrumentID
         return other.investorID == investorID && other.tradeID == tradeID && other.instrumentID == other.instrumentID
     }
 
+    fun clone():RspTradeField{
+        return RspTradeField(brokerID,investorID,instrumentID,orderRef,userID,exchangeID,tradeID,direction,orderSysID,participantID,clientID,tradingRole,exchangeInstID,offsetFlag,hedgeFlag,price,volume,tradeDate,tradeTime,tradeType,priceSource,traderID,orderLocalID,clearingPartID,businessUnit,sequenceNo,tradingDay,settlementID,brokerOrderSeq,tradeSource,investUnitID)
+    }
+
     companion object{
         fun fromCTPAPI(rsp:CThostFtdcTradeField?):RspTradeField? =
             if(rsp == null) null
@@ -229,7 +233,12 @@ class RspQryTrade(var rspField:RspTradeField?,rspInfo: RspInfoField,bIsLast: Boo
 /**
  * 成交回报
  */
-class RtnTrade(var rspField:RspTradeField)
+class RtnTrade(var rspField:RspTradeField){
+
+    fun clone():RtnTrade{
+        return RtnTrade(rspField.clone())
+    }
+}
 
 /**
  * 持仓明细数据
@@ -239,6 +248,10 @@ data class RspPositionDetailField(var instrumentID: String,var brokerID: String,
         fun fromCTPAPI(rsp:CThostFtdcInvestorPositionDetailField?):RspPositionDetailField? =
             if(rsp == null) null
             else RspPositionDetailField(rsp.instrumentID,rsp.brokerID,rsp.investorID,rsp.hedgeFlag,rsp.direction,rsp.openDate,rsp.tradeID,rsp.volume,rsp.openPrice,rsp.tradingDay,rsp.settlementID,rsp.tradeType,rsp.combInstrumentID,rsp.exchangeID,rsp.closeProfitByDate,rsp.closeProfitByTrade,rsp.positionProfitByDate,rsp.positionProfitByTrade,rsp.margin,rsp.exchMargin,rsp.marginRateByMoney,rsp.marginRateByVolume,rsp.lastSettlementPrice,rsp.settlementPrice,rsp.closeVolume,rsp.closeAmount,rsp.timeFirstVolume,rsp.investUnitID)
+        //从成交明细生成持仓明细
+        fun fromTrade(field:RspTradeField):RspPositionDetailField{
+            return RspPositionDetailField(field.instrumentID, field.brokerID,field.investorID,field.hedgeFlag,field.direction,field.tradingDay,field.tradeID,field.volume,field.price,field.tradingDay,field.settlementID,field.tradeType,field.instrumentID,field.exchangeID,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,field.price,field.price,0,0.0,field.volume,field.investUnitID)
+        }
     }
 }
 

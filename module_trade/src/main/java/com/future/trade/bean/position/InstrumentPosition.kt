@@ -69,7 +69,21 @@ class InstrumentPosition : SimplePosition(){
     }
 
     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //开仓操作，需要新建仓位
+        return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
+            if(rtn.rspField.direction == CTPDirection.Buy.direction){
+                longPosition.onRtnTrade(rtn)
+            }else{
+                shortPosition.onRtnTrade(rtn)
+            }
+        }else{
+            //平仓
+            if(rtn.rspField.direction == CTPDirection.Buy.direction){
+                shortPosition.onRtnTrade(rtn)
+            }else{
+                longPosition.onRtnTrade(rtn)
+            }
+        }
     }
 
     override fun getPosition(): Int {
@@ -80,34 +94,27 @@ class InstrumentPosition : SimplePosition(){
         return shortPosition.getAvailable() + longPosition.getAvailable()
     }
 
-    override fun getSpecPosition(): Int = 0
+    override fun getSpecPosition(): Int {
+        return longPosition.getSpecPosition() + shortPosition.getSpecPosition()
+    }
 
     override fun getHedgePosition(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return longPosition.getHedgePosition() + shortPosition.getHedgePosition()
     }
 
     override fun getOpenCost(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return longPosition.getOpenCost() + shortPosition.getOpenCost()
     }
 
     override fun getPositionCost(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return longPosition.getPositionCost() + shortPosition.getPositionCost()
     }
 
     override fun getPositionProfit(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return longPosition.getPositionProfit() + shortPosition.getPositionProfit()
     }
 
     override fun getOpenPositionProfit(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return longPosition.getOpenPositionProfit() + shortPosition.getOpenPositionProfit()
     }
-
-    override fun getDirection(): CTPDirection {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getHedgeType(): CTPHedgeType {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

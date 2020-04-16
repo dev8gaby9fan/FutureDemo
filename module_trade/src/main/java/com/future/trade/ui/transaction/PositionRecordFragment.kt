@@ -29,7 +29,6 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
     override fun lazyLoading() {
         viewModel?.reqQryPositionDetail()
         viewModel?.positionLiveData?.observe(this, Observer {
-            Log.d("PositionRecordFragment","position list ${it.size}")
             updateDataList(it)
         })
     }

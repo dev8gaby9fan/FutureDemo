@@ -2,6 +2,7 @@ package com.future.trade.bean.position
 
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
+import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.CTPHedgeType
 import com.future.trade.enums.ExchangeType
@@ -194,8 +195,65 @@ abstract class ExchangePosition : SimplePosition(){
         }
     }
 
+    override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.text[0]){
+            onRtnTradeOpenPosition(rtn)
+        }else{//平仓
+            onRtnTradeClosePosition(rtn)
+        }
+    }
+
+    private fun onRtnTradeOpenPosition(rtn: RtnTrade): Pair<RtnTrade, Boolean>{
+        //投机仓位，直接将仓位存储在今投机容器内
+        return if(rtn.rspField.hedgeFlag == CTPHedgeType.Speculation.code){
+            onStorePositionDetailByTrade(rtn,tdSpecPos)
+        }else{
+            onStorePositionDetailByTrade(rtn,tdHedgePos)
+        }
+    }
+
+    private fun onStorePositionDetailByTrade(rtn:RtnTrade,posTable:PositionDetailTable): Pair<RtnTrade, Boolean>{
+        val positionDetail = RspPositionDetailField.fromTrade(rtn.rspField)
+        posTable.putPositionDetail(positionDetail)
+        return Pair(rtn,true)
+}
+
+    abstract fun onRtnTradeClosePosition(rtn: RtnTrade) : Pair<RtnTrade, Boolean>
+
+    /**
+     * ==================================获取属性值得方法===========================================
+     */
+
     override fun getPosition(): Int {
         return tdHedgePos.posVolume + tdSpecPos.posVolume + ydHedgePos.posVolume + ydSpecPos.posVolume
+    }
+
+    override fun getAvailable(): Int {
+        return tdHedgePos.posVolume + tdSpecPos.posVolume + ydHedgePos.posVolume + ydSpecPos.posVolume - (ydHedgePos.frozenVolume + ydSpecPos.frozenVolume + tdSpecPos.frozenVolume + tdHedgePos.frozenVolume)
+    }
+
+    override fun getSpecPosition(): Int {
+        return tdSpecPos.posVolume + ydSpecPos.posVolume
+    }
+
+    override fun getHedgePosition(): Int {
+        return tdHedgePos.posVolume + ydHedgePos.posVolume
+    }
+
+    override fun getOpenCost(): Double {
+        return tdSpecPos.openCost + tdHedgePos.openCost + ydSpecPos.openCost + ydHedgePos.openCost
+    }
+
+    override fun getPositionCost(): Double {
+        return tdSpecPos.posCost + tdHedgePos.posCost + ydSpecPos.posCost + ydHedgePos.posCost
+    }
+
+    override fun getPositionProfit(): Double {
+        return 0.0
+    }
+
+    override fun getOpenPositionProfit(): Double {
+        return 0.0
     }
 
     override fun getInstrumentId(): String {

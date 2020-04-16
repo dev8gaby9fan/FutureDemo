@@ -3,6 +3,7 @@ package com.future.trade.bean.position.exchange
 import com.future.trade.bean.RspOrderInsert
 import com.future.trade.bean.RspQryOrder
 import com.future.trade.bean.RtnOrder
+import com.future.trade.bean.RtnTrade
 import com.future.trade.bean.position.ExchangePosition
 import com.future.trade.bean.position.PositionDetailTable
 import com.future.trade.enums.CTPCombOffsetFlag
@@ -69,6 +70,24 @@ class SHFEINEPosition : ExchangePosition(){
             specTable.onRspOrderInsert(rsp)
         }else{
             hedgeTable.onRspOrderInsert(rsp)
+        }
+    }
+
+    override fun onRtnTradeClosePosition(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        //平今
+        return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.CloseToday.offset){
+            closePositionByHedge(tdSpecPos,tdHedgePos,rtn)
+        }else{
+            //平昨
+            closePositionByHedge(ydSpecPos,ydHedgePos,rtn)
+        }
+    }
+
+    private fun closePositionByHedge(specTable: PositionDetailTable,hedgeTable: PositionDetailTable,rtn:RtnTrade): Pair<RtnTrade, Boolean>{
+        return if(rtn.rspField.hedgeFlag == CTPHedgeType.Speculation.code){
+            specTable.closePositionByRtnTrade(rtn)
+        }else{
+            hedgeTable.closePositionByRtnTrade(rtn)
         }
     }
 }
