@@ -152,7 +152,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         adapter.notifyDataSetChanged()
         //如果是WebSocket连接成功，就直接将RecyclerView滚动到第一条
         if(!viewModel.needConnectSocket()){
-            quote_list.scrollToPosition(0)
+            quote_list.postDelayed({subscribeQuote()},300)
         }
     }
 

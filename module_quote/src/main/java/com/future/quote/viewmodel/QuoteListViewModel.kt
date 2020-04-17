@@ -32,7 +32,6 @@ class QuoteListViewModel : BaseViewModel<QuoteSocketRepository>(){
     }
 
     fun needConnectSocket():Boolean{
-        Log.d("QuoteListViewModel","needConnectSocket ${repository?.isSocketConnected()!!}")
         if(!repository?.isSocketConnected()!!){
             repository?.connectSocket()
             return true

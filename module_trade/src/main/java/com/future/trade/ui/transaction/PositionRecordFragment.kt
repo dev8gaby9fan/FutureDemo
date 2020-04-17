@@ -29,6 +29,9 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
     override fun lazyLoading() {
         viewModel?.reqQryPositionDetail()
         viewModel?.positionLiveData?.observe(this, Observer {
+            if((parentFragment as TransactionFragment).needSetInitPosition() && it.isNotEmpty()){
+                (parentFragment as TransactionFragment).onPositionItemClick(it[0])
+            }
             updateDataList(it)
         })
     }

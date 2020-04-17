@@ -150,7 +150,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
             })
     }
 
-    private fun switchOrderIns(ins:InstrumentInfo){
+    private fun switchOrderIns(ins:InstrumentInfo,pos:Position?=null){
         val quoteService = ARouterUtils.getQuoteService()
         var needToBindIns = ins
         //主力合约，就找到它真实的合约
@@ -161,7 +161,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
             }
         }
         orderIns = needToBindIns
-        transactionInputHelper.setTradeInstrument(needToBindIns)
+        transactionInputHelper.setTradeInstrument(needToBindIns,pos)
         viewModel?.subscribeQuote(needToBindIns.id)
         tv_order_ins_name.text = needToBindIns.name
 
@@ -200,11 +200,15 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         textView.text = NumberUtils.formatNum(quoteProperty,format)
     }
 
+    fun needSetInitPosition():Boolean{
+        return orderIns == null
+    }
+
     fun onPositionItemClick(pos:Position){
         val instrument = ARouterUtils.getQuoteService()
             .getInstrumentById(pos.getExchangeId() + "." + pos.getInstrumentId())
         if(instrument != null){
-            switchOrderIns(instrument)
+            switchOrderIns(instrument,pos)
         }
     }
 
@@ -212,8 +216,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         Log.d("TransactionFragment","onClick $v")
         if(v is OrderButton){
             try{
-                //这里可能是有多个委托，平仓
-                    val filed = v.performOrderInsert(transactionInputHelper.getOrderVolume())
+                val filed = v.performOrderInsert(transactionInputHelper.getOrderVolume())
                 if(filed.size == 1){
                     showOrderNoticeDialog(filed)
                 }else{

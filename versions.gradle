@@ -36,6 +36,7 @@ versions.retrofit="2.7.2"
 versions.cardview="1.0.0"
 versions.annotation="1.1.0"
 versions.room="2.2.3"
+versions.gad="19.1.0"
 
 def androidx=[:]
 androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
@@ -56,6 +57,8 @@ arouter.api="com.alibaba:arouter-api:${versions.arouter}"
 arouter.compiler="com.alibaba:arouter-compiler:${versions.arouter_compiler}"
 
 def material= "com.google.android.material:material:${versions.material}"
+
+def google_ad="com.google.android.gms:play-services-ads:${versions.gad}"
 
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
@@ -97,6 +100,7 @@ deps.gradle="com.android.tools.build:gradle:$versions.gradle"
 deps.okhttp=okhttp
 deps.rxjava=rxjava
 deps.retrofit=retrofit
+deps.google_ad = google_ad
 
 //编译版本
 def build_versions=[:]
