@@ -62,7 +62,8 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         isCanUpdateDate = true
     }
 
-    override fun onInVisible() {
+    override fun onPause() {
+        super.onPause()
         isCanUpdateDate = false
     }
 

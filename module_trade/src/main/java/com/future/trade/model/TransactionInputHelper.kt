@@ -1,6 +1,7 @@
 package com.future.trade.model
 
 import android.text.TextUtils
+import android.util.Log
 import android.widget.TextView
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
@@ -8,24 +9,27 @@ import com.fsh.common.provider.QuoteService
 import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
+import com.future.trade.bean.position.Position
 import com.future.trade.enums.ExchangeType
+import com.future.trade.repository.TradeApiProvider
 import com.future.trade.widget.keyboard.FutureKeyboard
 import com.future.trade.widget.keyboard.SimpleFutureKeyboardListener
+import com.future.trade.widget.order.ClosePositionOrderButton
 import com.future.trade.widget.order.OrderButton
 import java.math.BigDecimal
 import java.util.regex.Pattern
 
 class TransactionInputHelper(private val priceInput: TextView, private val volumeInput: TextView,
                              private val buyButton:OrderButton,private val sellButton:OrderButton,
-                             private val closeButton:OrderButton) :
+                             private val closeButton:ClosePositionOrderButton) :
     SimpleFutureKeyboardListener() {
     companion object {
         const val DEFAULT_ORDRE_VOLUME = 1
         const val PRICE_MAX_VALUE_LEN = 9
         const val VOLUME_MAX_VALUE_LEN = 4
         private const val PATTERN_NUM = "([1-9]\\d*\\.\\d*)|(0\\.\\d*[1-9]\\d*)|([1-9]\\d*)"
-        val NUM_ONE = BigDecimal("1").toDouble()
-        val NUM_N_ONE = BigDecimal("-1").toDouble()
+        val NUM_ONE = BigDecimal("1").toString()
+        val NUM_N_ONE = BigDecimal("-1").toString()
         val numPattern = Pattern.compile(PATTERN_NUM)
     }
 
@@ -41,56 +45,43 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
     //是否是准备开始输入数据，用于刚设置了输入的类型,新输入的数据从0开始
     private var isBeginInput: Boolean = true
 
-    fun setTradeInstrument(ins: InstrumentInfo) {
+    fun setTradeInstrument(ins: InstrumentInfo,pos: Position? = null) {
         this.instrument = ins
         this.tradeVolume = DEFAULT_ORDRE_VOLUME
         tradePrice = Omits.OmitPrice
         //价格模式默认为对手价
-        priceType = SupportTransactionOrderPrice.Opponent
+        changePriceType(SupportTransactionOrderPrice.Opponent)
         buyButton.setTransactionInfo(ins,priceType)
         sellButton.setTransactionInfo(ins,priceType)
-        closeButton.setTransactionInfo(ins,priceType)
+        var settingPos = pos
+        if(settingPos == null){
+            settingPos = TradeApiProvider.providerTransactionRepository().getPositionByInstrumentId(ins.ctpInstrumentId)
+        }
+        closeButton.setTradePosition(settingPos,priceType)
         onQuoteUpdate(quoteService?.getQuoteByInstrument(ins.id))
-        priceInput.text = tradePrice
         volumeInput.text = tradeVolume.toString()
-
     }
 
     fun onQuoteUpdate(quoteEntity: QuoteEntity?){
-        updateTradePrice(quoteEntity)
         setOrderButtonText(quoteEntity)
     }
 
     fun changePriceType(type: SupportTransactionOrderPrice) {
-        if (instrument == null) {
-            return
-        }
         priceType = type
-        updateTradePrice(quoteService?.getQuoteByInstrument(instrument?.id))
-        priceInput.post {
-            priceInput.text = tradePrice
-        }
-    }
-
-    fun changeTradeVolume(volume: Int) {
-        tradeVolume = volume
-        volumeInput.text = tradeVolume.toString()
-    }
-
-    private fun updateTradePrice(quoteEntity: QuoteEntity?) {
-        if (quoteEntity == null) {
-            return
-        }
-        //限价
+        val quote  = quoteService?.getQuoteByInstrument(instrument?.id)
         tradePrice = if (priceType == SupportTransactionOrderPrice.Limit) {
-            NumberUtils.formatNum(quoteEntity.last_price, instrument?.priceTick)
+            if(quote != null){
+                NumberUtils.formatNum(quote.last_price, instrument?.priceTick)
+            }else{
+                "0"
+            }
         } else {
             priceType.text
         }
-        priceInput.post {
-            priceInput.text = tradePrice
-        }
+        priceInput.text = tradePrice
+        onQuoteUpdate(quote)
     }
+
     /**
      * 获取委托价格
      *   根据开平方向和价格模式
@@ -109,22 +100,22 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
         when (priceType) {
             SupportTransactionOrderPrice.Queue -> {
                 val upLimitPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.upper_limit, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.upper_limit, instrument?.priceTick)
                 val lowLimitPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.last_price, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.lower_limit, instrument?.priceTick)
                 val lastPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.last_price, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.last_price, instrument?.priceTick)
                 // 买方向用卖价，卖方向用买价 涨停无卖价，直接就使用涨停价
-                if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity?.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
-                        quoteEntity?.last_price
+                if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
+                        quoteEntity.last_price
                     ))) {
                     buyText = lastPrice
                     sellText = lastPrice
                 } else {
                     val askPrice =
-                        NumberUtils.formatNum(quoteEntity?.ask_price1, instrument?.priceTick)
+                        NumberUtils.formatNum(quoteEntity.ask_price1, instrument?.priceTick)
                     val bidPrice =
-                        NumberUtils.formatNum(quoteEntity?.bid_price1, instrument?.priceTick)
+                        NumberUtils.formatNum(quoteEntity.bid_price1, instrument?.priceTick)
                     buyText = bidPrice
                     sellText = askPrice
                 }
@@ -132,22 +123,25 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
             //对手价
             SupportTransactionOrderPrice.Opponent -> {
                 val upLimitPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.upper_limit, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.upper_limit, instrument?.priceTick)
                 val lowLimitPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.last_price, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.lower_limit, instrument?.priceTick)
                 val lastPrice: String =
-                    NumberUtils.formatNum(quoteEntity?.last_price, instrument?.priceTick)
+                    NumberUtils.formatNum(quoteEntity.last_price, instrument?.priceTick)
+                Log.d("TransactionInputHelper","$lastPrice == $upLimitPrice || $lastPrice == $lowLimitPrice ${(lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
+                    quoteEntity.last_price
+                ))}")
                 // 买方向用卖价，卖方向用买价 涨停无卖价，直接就使用涨停价
-                if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity?.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
-                        quoteEntity?.last_price
+                if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
+                        quoteEntity.last_price
                     ))) {
                     buyText = lastPrice
                     sellText = lastPrice
                 } else {
                     val askPrice =
-                        NumberUtils.formatNum(quoteEntity?.ask_price1, instrument?.priceTick)
+                        NumberUtils.formatNum(quoteEntity.ask_price1, instrument?.priceTick)
                     val bidPrice =
-                        NumberUtils.formatNum(quoteEntity?.bid_price1, instrument?.priceTick)
+                        NumberUtils.formatNum(quoteEntity.bid_price1, instrument?.priceTick)
                     buyText = askPrice
                     sellText = bidPrice
                 }
@@ -157,12 +151,12 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 //上期能源所不支持市价单，用涨跌停去搞
                 if (type == ExchangeType.INE || type == ExchangeType.SHFE) {
                     //没有获取到涨跌停，就搞一个0
-                    if (Omits.isOmit(quoteEntity?.upper_limit) || Omits.isOmit(quoteEntity?.lower_limit)) {
+                    if (Omits.isOmit(quoteEntity.upper_limit) || Omits.isOmit(quoteEntity.lower_limit)) {
                         buyText = "0"
                         sellText = "0"
                     }else{
-                        buyText = quoteEntity!!.upper_limit
-                        sellText = quoteEntity!!.lower_limit
+                        buyText = NumberUtils.formatNum(quoteEntity.upper_limit,instrument?.priceTick)
+                        sellText = NumberUtils.formatNum(quoteEntity.lower_limit,instrument?.priceTick)
                     }
                 } else {
                     buyText = "0"
@@ -175,8 +169,8 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                         buyText = "0"
                         sellText = "0"
                     } else {
-                        buyText = quoteEntity.last_price
-                        sellText = quoteEntity.last_price
+                        buyText = NumberUtils.formatNum(quoteEntity.last_price,instrument?.priceTick)
+                        sellText = NumberUtils.formatNum(quoteEntity.last_price,instrument?.priceTick)
                     }
                 } else {
                     buyText = tradePrice
@@ -205,7 +199,12 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onNumberKeyDown(num: Int) {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
+            if(priceType != SupportTransactionOrderPrice.Limit){
+                priceType = SupportTransactionOrderPrice.Limit
+                isBeginInput = true
+            }
             handleNumberInput(num, priceInput, PRICE_MAX_VALUE_LEN)
+            updateButtonPriceByInput()
         } else {
             handleNumberInput(num, volumeInput, VOLUME_MAX_VALUE_LEN)
         }
@@ -226,7 +225,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onAddKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
-            handleAddInput(priceInput, NUM_ONE, PRICE_MAX_VALUE_LEN, NUM_ONE)
+            val addNum = instrument?.priceTick ?: NUM_ONE
+            handleAddInput(priceInput, addNum, PRICE_MAX_VALUE_LEN, addNum)
+            updateButtonPriceByInput()
         } else {
             handleAddInput(volumeInput, NUM_ONE, VOLUME_MAX_VALUE_LEN, NUM_ONE)
         }
@@ -234,16 +235,16 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
 
     private fun handleAddInput(
         inputField: TextView,
-        addValue: Double,
+        addValue: String,
         maxLen: Int,
-        formatNum: Double
+        formatNum: String
     ) {
         if (Omits.isOmit(inputField.text?.toString()) || (!numPattern.matcher(inputField.text).matches() && "0" != inputField.text?.toString())) {
             inputField.text = NumberUtils.formatNum(addValue, formatNum)
         } else {
 
-            var addResult = NumberUtils.add(addValue.toString(), inputField.text.toString())
-            addResult = NumberUtils.formatNum(addResult, formatNum.toString())
+            var addResult = NumberUtils.add(addValue, inputField.text.toString())
+            addResult = NumberUtils.formatNum(addResult, formatNum)
             if (addResult.length > maxLen || BigDecimal(addResult).toDouble() <= 0) {
                 inputField.text = "0"
             } else {
@@ -257,7 +258,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onSubKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
-            handleAddInput(priceInput, NUM_N_ONE, PRICE_MAX_VALUE_LEN, NUM_ONE)
+            val addNum = BigDecimal(instrument?.priceTick?:NUM_ONE).multiply(BigDecimal(-1)).toString()
+            handleAddInput(priceInput, addNum, PRICE_MAX_VALUE_LEN, instrument?.priceTick?:NUM_ONE)
+            updateButtonPriceByInput()
         } else {
             handleAddInput(volumeInput, NUM_N_ONE, VOLUME_MAX_VALUE_LEN, NUM_ONE)
         }
@@ -297,6 +300,7 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
     override fun onDeleteKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
             handleDeleteInput(priceInput)
+            updateButtonPriceByInput()
         } else {
             handleDeleteInput(volumeInput)
         }
@@ -346,6 +350,15 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
     override fun onPriceQueueKeyDown() {
         isBeginInput = true
         changePriceType(SupportTransactionOrderPrice.Queue)
+    }
+
+    private fun updateButtonPriceByInput(){
+        val price = priceInput.text.toString()
+        tradePrice = price
+        buyButton.setOrderPriceText(price)
+        sellButton.setOrderPriceText(price)
+        closeButton.setOrderPriceText(price)
+
     }
 }
 

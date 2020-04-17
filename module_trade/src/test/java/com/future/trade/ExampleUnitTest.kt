@@ -5,6 +5,7 @@ import com.future.trade.util.VerifyUtil
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.math.BigDecimal
 import java.util.regex.Pattern
 
 /**
@@ -15,28 +16,8 @@ import java.util.regex.Pattern
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        val map = HashMap<Int,Int>()
-        for(index in 0 until 100){
-            map[index] = index
-        }
-//        map.values.asIterable().forEach {
-//            if(it %3 ==0){
-//                map.remove(it)
-//            }
-//        }
-        println("map size ${map.size}")
-//        for(entity in map.entries){
-//            if(entity.key %3 ==0){
-//                map.remove(entity.key)
-//            }
-//        }
-        val iterator = map.iterator()
-        while (iterator.hasNext()){
-            val next = iterator.next()
-            if(next.key %3 ==0){
-                iterator.remove()
-            }
-        }
-        println("map size ${map.size}")
+        val num1 = BigDecimal(1.0).toString()
+        val num2 = BigDecimal("1").toString()
+        println("num1=$num1,num2=$num2")
     }
 }

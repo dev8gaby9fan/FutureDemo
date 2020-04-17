@@ -57,6 +57,7 @@
     <string name="notice_price_great_than_lower_limit">委托价格不能超过跌停价</string>
     <string name="notice_market_price_fail">非上期\能源市价单价格必须为0</string>
     <string name="notice_volume_error">请输入正确的手数</string>
+    <string name="notice_volume_gt_available" formatted="false">平仓手数大于可用[%d > %d]</string>
     <string name="tv_order_insert_notice">下单/改单操作确认</string>
     <string name="tv_order_action_notice">反手/平仓/撤单操作确认</string>
     <string name="tv_cancel">取消</string>

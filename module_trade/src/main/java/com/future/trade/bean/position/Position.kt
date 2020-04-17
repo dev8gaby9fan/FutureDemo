@@ -6,6 +6,7 @@ import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.CTPHedgeType
 import com.future.trade.enums.ExchangeType
+import com.future.trade.model.SupportTransactionOrderPrice
 import com.future.trade.util.DiffComparable
 
 interface PositionDataHandler{
@@ -73,6 +74,8 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
     fun getDirection():CTPDirection
     //投机套保仓位类型
     fun getHedgeType():CTPHedgeType
+    //创建平仓的委托数据
+    fun getCloseOrderFields(volume: Int, priceType: SupportTransactionOrderPrice, limitPrice:Double):List<IOrderInsertField>
 }
 abstract class SimplePosition : Position {
     override fun getInstrumentId(): String {
@@ -167,6 +170,7 @@ abstract class ExchangePosition : SimplePosition(){
 
     private var insId:String? = null
     private var exchId:String? = null
+    private var direction:CTPDirection? = null
     /**
      * 持仓明细处理
      */
@@ -176,6 +180,9 @@ abstract class ExchangePosition : SimplePosition(){
         }
         if(Omits.isOmit(exchId)){
             exchId = rsp.exchangeID
+        }
+        if(direction == null){
+            direction = CTPDirection.from(rsp.direction)
         }
         //今仓
         if(rsp.openDate == rsp.tradingDay){
@@ -220,9 +227,7 @@ abstract class ExchangePosition : SimplePosition(){
 
     abstract fun onRtnTradeClosePosition(rtn: RtnTrade) : Pair<RtnTrade, Boolean>
 
-    /**
-     * ==================================获取属性值得方法===========================================
-     */
+    override fun getDirection(): CTPDirection = direction!!
 
     override fun getPosition(): Int {
         return tdHedgePos.posVolume + tdSpecPos.posVolume + ydHedgePos.posVolume + ydSpecPos.posVolume

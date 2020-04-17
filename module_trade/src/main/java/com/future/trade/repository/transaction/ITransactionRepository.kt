@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.fsh.common.repository.BaseRepository
 import com.future.trade.bean.*
 import com.future.trade.bean.position.Position
+import com.future.trade.enums.CTPDirection
 import com.future.trade.repository.tradeapi.*
 
 interface ITransactionRepository : BaseRepository {
@@ -12,6 +13,11 @@ interface ITransactionRepository : BaseRepository {
     val tradeLiveData:LiveData<List<RspTradeField>>
     val positionLiveData:LiveData<List<Position>>
     val tradingAccountLiveData:LiveData<RspTradingAccountField>
+    /**
+     * 根据合约ID和方向获取持仓
+     */
+    fun getPositionByInstrumentId(instrumentId:String,direction:CTPDirection? = null) : Position?
+
     /**
      * 查询委托响应
      */

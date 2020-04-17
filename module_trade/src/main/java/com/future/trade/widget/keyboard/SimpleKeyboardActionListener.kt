@@ -23,7 +23,6 @@ class SimpleKeyboardActionListener() : KeyboardView.OnKeyboardActionListener{
     }
 
     override fun onKey(code: Int, keyCodes: IntArray?) {
-        Log.d("SimpleKeyboardListener","onKey $code $keyCodes")
         when (code) {
             in 48..57 -> futureKeyboardListener?.onNumberKeyDown(code.toChar().toString().toInt())
             10001 -> futureKeyboardListener?.onAddKeyDown()

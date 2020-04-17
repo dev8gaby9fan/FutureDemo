@@ -1,28 +1,25 @@
 package com.fsh.common.base
 
+import android.util.Log
+
 
 abstract class BaseLazyFragment : BaseFragment(){
     private var isLoaded:Boolean = false
 
     override fun onResume() {
         super.onResume()
+        Log.d("BaseLazyFragment","${javaClass.simpleName} onResume")
         if(!isLoaded && !isHidden){
             lazyLoading()
             isLoaded = true
         }
         if(!isHidden){
             onVisible()
-        }else{
-            onInVisible()
         }
     }
 
     //界面可见
     open fun onVisible(){
-
-    }
-    //界面不可见
-    open fun onInVisible(){
 
     }
 

@@ -1,10 +1,12 @@
 package com.future.trade.ui.transaction
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fsh.common.base.BaseFragment
@@ -15,9 +17,12 @@ import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.util.ARouterUtils
+import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
 import com.future.trade.R
+import com.future.trade.bean.IOrderInsertField
 import com.future.trade.bean.RspTradingAccountField
+import com.future.trade.bean.position.Position
 import com.future.trade.model.TransactionInputHelper
 import com.future.trade.model.TransactionViewModel
 import com.future.trade.ui.account.TradingAccountActivity
@@ -25,6 +30,7 @@ import com.future.trade.ui.login.TradeLoginActivity
 import com.future.trade.widget.dialog.OrderInsertNoticeDialog
 import com.future.trade.widget.keyboard.FutureKeyboard
 import com.future.trade.widget.order.OrderButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,11 +38,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_transaction.*
 import java.lang.IllegalArgumentException
+import java.text.NumberFormat
 
 @Route(path=ARouterPath.Page.PAGE_TRADE_MAIN)
-class TransactionFragment :BaseLazyFragment(){
-
-
+class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     private lateinit var pagerAdapter: CommonFragmentPagerAdapter
     private lateinit var fragmentList:List<BaseRecordFragment<*,*>>
     private lateinit var transactionInputHelper: TransactionInputHelper
@@ -102,26 +107,9 @@ class TransactionFragment :BaseLazyFragment(){
         rl_volume.setOnClickListener {
             showInputKeyboard(FutureKeyboard.KeyboardType.Volume)
         }
-        val orderButtonClickListener = View.OnClickListener{
-            if(it is OrderButton){
-                try{
-                    val filed = it.performOrderInsert(transactionInputHelper.getOrderVolume())
-                    altOrderInsert.listener = object : OrderInsertNoticeDialog.OrderInsertNoticeViewListener{
-                        override fun onInsertClick() {
-                            viewModel?.reqOrderInsert(filed)
-                        }
-                    }
-                    altOrderInsert.showDialog(childFragmentManager,filed.toOrderString())
-                }catch (e:IllegalArgumentException){
-                    Snackbar.make(it,e.message!!,Snackbar.LENGTH_SHORT).show()
-                    return@OnClickListener
-                }
-
-            }
-        }
-        btn_buy.setOnClickListener(orderButtonClickListener)
-        btn_sell.setOnClickListener(orderButtonClickListener)
-        btn_close.setOnClickListener(orderButtonClickListener)
+        btn_buy.setOnClickListener(this)
+        btn_sell.setOnClickListener(this)
+        btn_close.setOnClickListener(this)
         future_keyboard.setFutureKeyboardListener(transactionInputHelper)
     }
 
@@ -139,9 +127,9 @@ class TransactionFragment :BaseLazyFragment(){
     }
 
     private fun updateAccountDetails(account:RspTradingAccountField){
-        tv_balance.text = account.balance.toString()
-        tv_avaliable.text = account.avaliable.toString()
-        tv_profit.text = account.closeProfit.toString()
+        tv_balance.text = NumberUtils.formatNum(account.balance.toString(),"0.01")
+        tv_avaliable.text = NumberUtils.formatNum(account.avaliable.toString(),"0.01")
+        tv_profit.text = NumberUtils.formatNum(account.closeProfit.toString(),"0.01")
         tv_account_info.text = getString(R.string.tv_account_info,account.accountID,account.brokerID)
     }
 
@@ -190,11 +178,11 @@ class TransactionFragment :BaseLazyFragment(){
 
         transactionInputHelper.onQuoteUpdate(quoteEntity)
 
-        setQuoteText(tv_last,quoteEntity.last_price)
+        setQuoteText(tv_last,quoteEntity.last_price,orderIns!!.priceTick!!)
         setQuoteText(tv_now_volume,quoteEntity.open_interest)
-        setQuoteText(tv_ask_price,quoteEntity.ask_price1)
+        setQuoteText(tv_ask_price,quoteEntity.ask_price1,orderIns!!.priceTick!!)
         setQuoteText(tv_ask_volume,quoteEntity.ask_volume1)
-        setQuoteText(tv_bid_price,quoteEntity.bid_price1)
+        setQuoteText(tv_bid_price,quoteEntity.bid_price1,orderIns!!.priceTick!!)
         setQuoteText(tv_bid_volume,quoteEntity.bid_volume1)
 
         tv_last.setTextColor(resources.getColor(quoteEntity.quoteTextColor))
@@ -202,10 +190,80 @@ class TransactionFragment :BaseLazyFragment(){
         tv_bid_price.setTextColor(resources.getColor(quoteEntity.quoteTextColor))
     }
 
-    private fun setQuoteText(textView:TextView,quoteProperty:String?){
+    private fun setQuoteText(textView:TextView,quoteProperty:String?,format:String = "1"){
         if(textView.text == quoteProperty){
             return
         }
-        textView.text = if(Omits.isOmit(quoteProperty)) Omits.OmitPrice else quoteProperty
+        if(Omits.isOmit(quoteProperty)){
+            textView.text = Omits.OmitPrice
+        }
+        textView.text = NumberUtils.formatNum(quoteProperty,format)
     }
+
+    fun onPositionItemClick(pos:Position){
+        val instrument = ARouterUtils.getQuoteService()
+            .getInstrumentById(pos.getExchangeId() + "." + pos.getInstrumentId())
+        if(instrument != null){
+            switchOrderIns(instrument)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        Log.d("TransactionFragment","onClick $v")
+        if(v is OrderButton){
+            try{
+                //这里可能是有多个委托，平仓
+                    val filed = v.performOrderInsert(transactionInputHelper.getOrderVolume())
+                if(filed.size == 1){
+                    showOrderNoticeDialog(filed)
+                }else{
+                    showSelectMutableOrderInsertField(filed)
+                }
+            }catch (e:IllegalArgumentException){
+                Snackbar.make(v,e.message!!,Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showSelectMutableOrderInsertField(fields:List<IOrderInsertField>){
+        val orderNames = ArrayList(fields.map { it.toOrderString() }
+            .toMutableList())
+        val selectedList = ArrayList<IOrderInsertField>()
+        val array = arrayOfNulls<String>(fields.size)
+        orderNames.toArray(array)
+        MaterialAlertDialogBuilder(context)
+            .setTitle("请选择")
+            .setMultiChoiceItems(array, BooleanArray(fields.size)) { _, which, isChecked ->
+                if(isChecked){
+                    selectedList.add(fields[which])
+                }else{
+                    selectedList.remove(fields[which])
+                }
+            }
+            .setPositiveButton("确定") { dialog, _ ->
+                if(selectedList.isEmpty()){
+                    Snackbar.make(requireView(),"请选择需要操作哪些选项",Snackbar.LENGTH_SHORT)
+                    return@setPositiveButton
+                }
+                dialog.dismiss()
+                Log.d("TransactionFragment","选择了哪些？${selectedList.size}")
+                showOrderNoticeDialog(selectedList)
+            }
+            .setNegativeButton("取消") { dialog, _ -> dialog.dismiss()}
+            .show()
+    }
+
+    private fun showOrderNoticeDialog(orderFields:List<IOrderInsertField>){
+        altOrderInsert.listener = object : OrderInsertNoticeDialog.OrderInsertNoticeViewListener{
+                        override fun onInsertClick() {
+                           for(order in orderFields){
+                               viewModel?.reqOrderInsert(order)
+                           }
+                        }
+                    }
+        val message = orderFields.map { it.toOrderString() }
+            .toList().joinToString("\r\n")
+        altOrderInsert.showDialog(childFragmentManager,message)
+    }
+
 }

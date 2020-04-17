@@ -1,19 +1,50 @@
 package com.future.trade.bean.position.exchange
 
-import com.future.trade.bean.RspOrderInsert
-import com.future.trade.bean.RspQryOrder
-import com.future.trade.bean.RtnOrder
-import com.future.trade.bean.RtnTrade
+import com.fsh.common.util.DateUtils
+import com.fsh.common.util.Omits
+import com.future.trade.bean.*
 import com.future.trade.bean.position.ExchangePosition
 import com.future.trade.bean.position.PositionDetailTable
-import com.future.trade.enums.CTPCombOffsetFlag
-import com.future.trade.enums.CTPHedgeType
+import com.future.trade.enums.*
+import com.future.trade.model.SupportTransactionOrderPrice
+import com.future.trade.repository.TradeApiProvider
 
 /**
  * 上期能源的持仓数据处理
  * 特点是平仓区分今昨仓，严格区分投机套保仓位
  */
 class SHFEINEPosition : ExchangePosition(){
+    override fun getCloseOrderFields(
+        volume: Int,
+        priceType: SupportTransactionOrderPrice,
+        limitPrice: Double
+    ): List<IOrderInsertField> {
+        //这里既得区分今昨 也得区分投机套保
+        val fieldList = ArrayList<IOrderInsertField>()
+        val user = TradeApiProvider.providerCTPTradeApi().getCurrentUser()!!
+        val orderDir = if(getDirection() == CTPDirection.Buy) CTPDirection.Sell else CTPDirection.Buy
+        if(tdSpecPos.posVolume > tdSpecPos.frozenVolume){
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(tdSpecPos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseToday,CTPHedgeType.Speculation))
+        }
+        if(tdHedgePos.posVolume > tdHedgePos.frozenVolume){
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(tdHedgePos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseToday,CTPHedgeType.Speculation))
+        }
+        if(ydSpecPos.posVolume > ydSpecPos.frozenVolume){
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(ydSpecPos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseYesterday,CTPHedgeType.Hedge))
+        }
+        if(ydHedgePos.posVolume > ydHedgePos.frozenVolume){
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(ydHedgePos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseYesterday,CTPHedgeType.Hedge))
+        }
+        return fieldList
+    }
+
+    private fun getCloseOrderFieldFromPositionDetailTable(posTable:PositionDetailTable,limitPrice: Double,volume: Int,user:RspUserLoginField,direction:CTPDirection,offset: CTPCombOffsetFlag,hedge:CTPHedgeType):IOrderInsertField{
+        val vol = if(volume > (posTable.posVolume - posTable.frozenVolume)) (posTable.posVolume - posTable.frozenVolume) else volume
+        return CTPOrderInsertField(user.brokerID,user.userID,getInstrumentId(),Omits.OmitString,user.userID,CTPOrderPriceType.LimitPrice,direction,offset,hedge,limitPrice,vol,
+            CTPTimeConditionType.GFD,DateUtils.formatNow1(),CTPVolumeConditionType.AV,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
+            1,null,0,0,1,getExchangeId(),user.userID,user.userID,null,null,null,null)
+    }
+
     /**
      * 处理委托查询响应
      */

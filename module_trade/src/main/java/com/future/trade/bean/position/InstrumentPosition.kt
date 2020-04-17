@@ -5,6 +5,7 @@ import com.future.trade.bean.*
 import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.CTPHedgeType
+import com.future.trade.model.SupportTransactionOrderPrice
 
 /**
  * 合约的持仓汇总
@@ -86,6 +87,14 @@ class InstrumentPosition : SimplePosition(){
         }
     }
 
+    override fun getInstrumentId(): String {
+        return if(Omits.isOmit(shortPosition.getInstrumentId())) longPosition.getInstrumentId() else shortPosition.getInstrumentId()
+    }
+
+    override fun getExchangeId(): String {
+        return if(Omits.isOmit(shortPosition.getExchangeId())) longPosition.getExchangeId() else shortPosition.getExchangeId()
+    }
+
     override fun getPosition(): Int {
         return shortPosition.getPosition() + longPosition.getPosition()
     }
@@ -116,5 +125,15 @@ class InstrumentPosition : SimplePosition(){
 
     override fun getOpenPositionProfit(): Double {
         return longPosition.getOpenPositionProfit() + shortPosition.getOpenPositionProfit()
+    }
+    override fun getCloseOrderFields(volume: Int, priceType: SupportTransactionOrderPrice, limitPrice:Double):List<IOrderInsertField>{
+        val fieldList = ArrayList<IOrderInsertField>()
+        if(longPosition.getPosition() > 0){
+            fieldList.addAll(longPosition.getCloseOrderFields(volume,priceType,limitPrice))
+        }
+        if(shortPosition.getPosition() > 0){
+            fieldList.addAll(shortPosition.getCloseOrderFields(volume,priceType,limitPrice))
+        }
+        return fieldList
     }
 }

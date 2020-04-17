@@ -10,6 +10,7 @@ import com.future.trade.bean.position.DirectionPosition
 import com.future.trade.bean.position.InstrumentPosition
 import com.future.trade.bean.position.Position
 import com.future.trade.enums.CTPCombOffsetFlag
+import com.future.trade.enums.CTPDirection
 import java.util.concurrent.ConcurrentHashMap
 
 interface IPositionDataHandler : BaseDataHandler<Position> {
@@ -42,6 +43,11 @@ interface IPositionDataHandler : BaseDataHandler<Position> {
      * 处理持仓明细响应
      */
     fun handleRspQryPositionDetail(rsp: RspQryPositionDetail)
+
+    /**
+     * 获取持仓数据
+     */
+    fun getPositionByInstrumentId(instrumentId:String,direction: CTPDirection? = null):Position?
 }
 
 class PositionDataHandler : IPositionDataHandler {
@@ -147,4 +153,20 @@ class PositionDataHandler : IPositionDataHandler {
         posLiveDat.postValue(ArrayList(result))
     }
 
+    override fun getPositionByInstrumentId(
+        instrumentId: String,
+        direction: CTPDirection?
+    ): Position? {
+        val pos = positionCollection[instrumentId] ?: return null
+        if(direction == null){
+            return pos
+        }
+        if(direction == CTPDirection.Buy && pos.longPosition.getPosition() > 0){
+            return pos.longPosition
+        }
+        if(direction == CTPDirection.Sell && pos.shortPosition.getPosition() > 0){
+            return pos.shortPosition
+        }
+        return null
+    }
 }

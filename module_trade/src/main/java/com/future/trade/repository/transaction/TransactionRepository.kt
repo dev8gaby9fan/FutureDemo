@@ -8,6 +8,7 @@ import com.future.trade.bean.RspTradeField
 import com.future.trade.bean.RspTradingAccountField
 import com.future.trade.bean.position.DirectionPosition
 import com.future.trade.bean.position.Position
+import com.future.trade.enums.CTPDirection
 import com.future.trade.repository.tradeapi.*
 
 /**
@@ -23,6 +24,13 @@ class TransactionRepository : ITransactionRepository {
     override val tradeLiveData: LiveData<List<RspTradeField>> = tradeDataHandler.getLiveData()
     override val positionLiveData: LiveData<List<Position>> = positionDataHandler.getLiveData()
     override val tradingAccountLiveData:MutableLiveData<RspTradingAccountField> = MutableLiveData()
+
+    override fun getPositionByInstrumentId(
+        instrumentId: String,
+        direction: CTPDirection?
+    ): Position? {
+        return positionDataHandler.getPositionByInstrumentId(instrumentId,direction)
+    }
 
     override fun handleRspQryOrderEvent(event: RspQryOrderEvent) {
         Log.d("TransactionRepository","handleRspQryOrderEvent ${event.rsp.rspInfoField.errorMsg}  ${event.rsp.rspInfoField.errorID}")

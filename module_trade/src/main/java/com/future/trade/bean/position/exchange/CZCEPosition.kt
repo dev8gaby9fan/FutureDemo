@@ -1,10 +1,12 @@
 package com.future.trade.bean.position.exchange
 
-import com.future.trade.bean.RspOrderInsert
-import com.future.trade.bean.RspQryOrder
-import com.future.trade.bean.RtnOrder
-import com.future.trade.bean.RtnTrade
+import com.fsh.common.util.DateUtils
+import com.fsh.common.util.Omits
+import com.future.trade.bean.*
 import com.future.trade.bean.position.ExchangePosition
+import com.future.trade.enums.*
+import com.future.trade.model.SupportTransactionOrderPrice
+import com.future.trade.repository.TradeApiProvider
 
 /**
  * 郑商所持仓数据
@@ -74,5 +76,22 @@ class CZCEPosition :ExchangePosition(){
             result = tdHedgePos.closePositionByRtnTrade(rtn)
         }
         return result
+    }
+    override fun getCloseOrderFields(
+        volume: Int,
+        priceType: SupportTransactionOrderPrice,
+        limitPrice: Double
+    ): List<IOrderInsertField> {
+        val list = ArrayList<IOrderInsertField>(1)
+        val user = TradeApiProvider.providerCTPTradeApi().getCurrentUser()!!
+        val orderDir = if(getDirection() == CTPDirection.Buy) CTPDirection.Sell else CTPDirection.Buy
+        val orderPriceType = if(priceType == SupportTransactionOrderPrice.Market) CTPOrderPriceType.AnyPrice else CTPOrderPriceType.LimitPrice
+        val timeCondition = if(priceType == SupportTransactionOrderPrice.Market) CTPTimeConditionType.IOC else CTPTimeConditionType.GFD
+        val volumeCondition = CTPVolumeConditionType.AV
+        val price = if(priceType == SupportTransactionOrderPrice.Market) 0.0 else limitPrice
+        list.add(CTPOrderInsertField(user.brokerID,user.userID,getInstrumentId(),Omits.OmitString,user.userID,orderPriceType,orderDir,CTPCombOffsetFlag.Close,CTPHedgeType.Speculation,
+            price,volume,timeCondition,DateUtils.formatNow1(),volumeCondition,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
+            1,null,0,0,1,getExchangeId(),null,user.userID,null,null,null,null))
+        return list
     }
 }

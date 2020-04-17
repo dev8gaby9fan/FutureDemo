@@ -1,11 +1,9 @@
 package com.future.trade.bean.position
 
 import com.fsh.common.util.Omits
-import com.future.trade.bean.RspOrderInsert
-import com.future.trade.bean.RspPositionDetailField
-import com.future.trade.bean.RspQryOrder
-import com.future.trade.bean.RtnOrder
+import com.future.trade.bean.*
 import com.future.trade.enums.CTPDirection
+import com.future.trade.model.SupportTransactionOrderPrice
 
 /**
  * 按方向处理的持仓
@@ -57,6 +55,9 @@ class DirectionPosition : SimplePosition() {
     override fun getDirection(): CTPDirection {
         return dir ?: CTPDirection.Buy
     }
+    override fun getCloseOrderFields(volume: Int, priceType: SupportTransactionOrderPrice, limitPrice:Double):List<IOrderInsertField> {
+        return exchangePosition?.getCloseOrderFields(volume,priceType,limitPrice) ?: emptyList()
+    }
 
     /**
      * ==================================数据处理方法===============================================
@@ -91,6 +92,4 @@ class DirectionPosition : SimplePosition() {
         }
         return exchangePosition!!.onRspOrderInsert(rsp)
     }
-
-
 }

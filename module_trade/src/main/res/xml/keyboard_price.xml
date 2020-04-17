@@ -34,7 +34,7 @@
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
             android:keyHeight="@dimen/abc_dp_120"
-            android:keyLabel="@string/key_add" />
+            android:keyIcon="@drawable/ic_add" />
     </Row>
     <Row>
         <Key
@@ -65,7 +65,7 @@
             android:isRepeatable="true"
             android:keyEdgeFlags="right"
             android:keyHeight="@dimen/abc_dp_120"
-            android:keyLabel="@string/key_sub" />
+            android:keyIcon="@drawable/ic_sub"/>
     </Row>
     <Row>
         <Key
@@ -77,6 +77,6 @@
             android:keyLabel="@string/key_0" />
         <Key
             android:codes="@integer/key_delete"
-            android:keyIcon="@drawable/ic_back" />
+            android:keyIcon="@drawable/ic_delete" />
     </Row>
 </Keyboard>

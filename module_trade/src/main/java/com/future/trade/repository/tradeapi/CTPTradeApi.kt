@@ -263,6 +263,11 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
             RspInfoField.fromCTPAPIRsp(p1),p3)))
     }
 
+    override fun OnErrRtnOrderInsert(p0: CThostFtdcInputOrderField?, p1: CThostFtdcRspInfoField?) {
+        super.OnErrRtnOrderInsert(p0, p1)
+        Log.d("CTPTradeApi","OnErrRtnOrderAction ${p1?.errorID} ${p1?.errorMsg} ${p0?.instrumentID} ${p0?.direction} ${p0?.combOffsetFlag} ${p0?.ipAddress}")
+    }
+
     override fun OnErrRtnOrderAction(p0: CThostFtdcOrderActionField?, p1: CThostFtdcRspInfoField?) {
         super.OnErrRtnOrderAction(p0, p1)
         Log.d("CTPTradeApi","OnErrRtnOrderAction ${p1?.errorID} ${p1?.errorMsg} ${p0?.actionFlag} ${p0?.ipAddress}")

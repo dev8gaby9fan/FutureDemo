@@ -42,8 +42,10 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
         holder.itemView.tv_ins_name.text = posItem?.getInstrumentId() ?: Omits.OmitPrice
         holder.itemView.tv_direction.text = posItem?.getDirection()?.text ?: Omits.OmitPrice
         holder.itemView.tv_pos_volume.text = posItem?.getPosition()?.toString() ?: Omits.OmitPrice
+        holder.itemView.setOnClickListener {
+            (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
+        }
     }
-
 }
 
 class PositionItemViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView)

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.common.base.BaseFragment
+import com.fsh.common.base.BaseLazyFragment
 import com.future.trade.R
 import com.future.trade.model.TransactionViewModel
 import com.future.trade.util.DiffComparable
@@ -18,25 +19,21 @@ import java.lang.IllegalArgumentException
  * T是item绑定的数据类型
  * VH item的ViewHolder对象类型
  */
-abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewHolder> : BaseFragment() {
-    private var isLoaded: Boolean = false
+abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewHolder> : BaseLazyFragment() {
+//    private var isLoaded: Boolean = false
     private var recordList: List<T> = ArrayList()
     protected var viewModel: TransactionViewModel? = null
     private lateinit var recordAdapter: RecordListAdapter
-    override fun onResume() {
-        super.onResume()
-        if (!isLoaded && !isHidden) {
-            lazyLoading()
-            isLoaded = true
-        }
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        if (!isLoaded && !isHidden) {
+//            lazyLoading()
+//            isLoaded = true
+//        }
+//    }
 
     override fun layoutRes(): Int = R.layout.fragment_transaction_record
 
-    override fun onDetach() {
-        super.onDetach()
-        isLoaded = false
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,7 +60,6 @@ abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewH
         null
     } else recordList[pos]
 
-    abstract fun lazyLoading()
     abstract fun createItemViewHolder(parent: ViewGroup, viewType: Int): VH
     abstract fun onBindItemViewHolder(holder: VH, position: Int)
     inner class RecordListAdapter : RecyclerView.Adapter<VH>() {
