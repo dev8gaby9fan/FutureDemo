@@ -1,6 +1,8 @@
 package com.future.trade
 
+import android.os.Message
 import androidx.core.text.isDigitsOnly
+import androidx.core.util.Pools
 import com.future.trade.util.VerifyUtil
 import org.junit.Test
 
@@ -19,5 +21,6 @@ class ExampleUnitTest {
         val num1 = BigDecimal(1.0).toString()
         val num2 = BigDecimal("1").toString()
         println("num1=$num1,num2=$num2")
+
     }
 }

@@ -1,6 +1,7 @@
 package com.future.quote.service
 
 import android.util.Log
+import androidx.core.util.Pools
 import com.fsh.common.ext.optInt
 import com.fsh.common.ext.optString
 import com.fsh.common.model.InstrumentInfo
@@ -174,6 +175,7 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
         private const val JSON_DATA = "data"
         private const val JSON_QUOTES = "quotes"
     }
+    private var quoteEntityPools: Pools.Pool<QuoteEntity> = Pools.SimplePool(50)
 
     override fun parse(json: JsonObject) {
         var jsonArray = json.get(JSON_DATA).asJsonArray
@@ -196,16 +198,23 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
                 continue
             }
             val quoteDataObj = jsonObj.get(insId).asJsonObject
-            val quoteEntity = QuoteEntity(insId)
+            val quoteEntity = obtainQuoteEntity(insId)
+            quoteEntity.instrument_id = insId
             for (property in quoteDataObj.keySet()) {
                 val field = QuoteEntity::class.java.getDeclaredField(property)
                 field.isAccessible = true
                 field.set(quoteEntity, quoteDataObj.optString(property))
             }
             val storeQuote = QuoteInfoMgr.mgr.storeQuote(quoteEntity)
+            quoteEntityPools.release(quoteEntity)
             quoteLieData.onNext(storeQuote)
         }
     }
+
+    private fun obtainQuoteEntity(insId:String):QuoteEntity{
+        return quoteEntityPools.acquire() ?: QuoteEntity(insId)
+    }
+
 
     private fun parseChartReturn(jsonObj: JsonObject) {
 
