@@ -150,6 +150,10 @@ class RspOrderField(var brokerID: String,var investorID: String,var instrumentID
 
     fun clone():RspOrderField = RspOrderField(brokerID,investorID,instrumentID,orderRef,userID,orderPriceType,direction,combOffsetFlag,combHedgeFlag,limitPrice,volumeTotalOriginal,timeCondition,GTDDate,volumeCondition,minVolume,contingentCondition,stopPrice,forceCloseReason,isAutoSuspend,businessUnit,requestID,orderLocalID,exchangeID,participantID,clientID,exchangeInstID,traderID,installID,orderSubmitStatus,notifySequence,tradingDay,settlementID,orderSysID,orderSource,orderStatus,orderType,volumeTraded,volumeTotal,insertDate,insertTime,activeTime,suspendTime,updateTime,cancelTime,activeTraderID,clearingPartID,sequenceNo,frontID,sessionID,userProductInfo,statusMsg,userForceClose,activeUserID,brokerOrderSeq,relativeOrderSysID,ZCETotalTradedVolume,isSwapOrder,branchID,investUnitID,accountID,currencyID,ipAddress,macAddress)
 
+    fun toActionOrderReq():IInputOrderActionField{
+        return CTPInputOrderActionField(brokerID,investorID,48,orderRef,requestID,frontID,sessionID,exchangeID,orderSysID,'0',limitPrice,null,userID,instrumentID,investUnitID,ipAddress,macAddress)
+    }
+
     companion object{
         fun fromCTPAPI(rsp:CThostFtdcOrderField?):RspOrderField? =
             if(rsp == null) null

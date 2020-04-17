@@ -88,7 +88,7 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         tradeEventPublish.onNext(localRtnOrderEvent)
     }
 
-    fun reqOrderAction(actionField:CTPInputOrderActionField){
+    fun reqOrderAction(actionField:IInputOrderActionField){
         tradeApiSource.reqOrderAction(actionField)
     }
 

@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 @Route(path = ARouterPath.Page.PAGE_MAIN)
 class MainActivity : BaseActivity() {
     override fun layoutRes(): Int = R.layout.activity_main
-    override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
+//    override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
     private val pageList: ArrayList<BaseFragment> = ArrayList(4)
     private var isCreated: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {

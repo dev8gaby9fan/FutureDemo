@@ -83,7 +83,7 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     /**
      * 撤单
      */
-    fun reqOrderAction(field:CTPInputOrderActionField){
+    fun reqOrderAction(field:IInputOrderActionField){
         repository?.reqOrderAction(field)
     }
 

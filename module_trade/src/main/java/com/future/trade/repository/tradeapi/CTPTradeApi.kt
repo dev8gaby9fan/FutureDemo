@@ -263,6 +263,11 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
             RspInfoField.fromCTPAPIRsp(p1),p3)))
     }
 
+    override fun OnErrRtnOrderAction(p0: CThostFtdcOrderActionField?, p1: CThostFtdcRspInfoField?) {
+        super.OnErrRtnOrderAction(p0, p1)
+        Log.d("CTPTradeApi","OnErrRtnOrderAction ${p1?.errorID} ${p1?.errorMsg} ${p0?.actionFlag} ${p0?.ipAddress}")
+    }
+
     override fun handleDataWhenInterrupted(list: List<CTPRequestFrame<*>>) {
         for(frame in list){
             handleData(frame)

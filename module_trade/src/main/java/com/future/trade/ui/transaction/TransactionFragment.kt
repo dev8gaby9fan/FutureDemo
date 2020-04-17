@@ -109,7 +109,6 @@ class TransactionFragment :BaseLazyFragment(){
                     altOrderInsert.listener = object : OrderInsertNoticeDialog.OrderInsertNoticeViewListener{
                         override fun onInsertClick() {
                             viewModel?.reqOrderInsert(filed)
-                            altOrderInsert.dismiss()
                         }
                     }
                     altOrderInsert.showDialog(childFragmentManager,filed.toOrderString())

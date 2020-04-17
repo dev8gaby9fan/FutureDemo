@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.alt_order_insert_notice.tv_message
 
 class OrderInsertNoticeDialog : BaseDialog(){
     private var message:String = Omits.OmitString
+    private var title:String = Omits.OmitString
     var listener:OrderInsertNoticeViewListener? = null
     override fun getLayoutRes(): Int = R.layout.alt_order_insert_notice
 
@@ -23,19 +24,24 @@ class OrderInsertNoticeDialog : BaseDialog(){
 
     }
 
-    fun showDialog(fmg:FragmentManager,msg:String){
+    fun showDialog(fmg:FragmentManager,msg:String,title:String = Omits.OmitString){
         show(fmg,null)
         message = msg
+        this.title = title
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(!Omits.isOmit(title)){
+            tv_title.text = title
+        }
         tv_message.text = message
         btn_cancel.setOnClickListener {
             dismiss()
         }
         btn_insert.setOnClickListener {
             listener?.onInsertClick()
+            dismiss()
         }
     }
 
