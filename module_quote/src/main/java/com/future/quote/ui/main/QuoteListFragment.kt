@@ -65,6 +65,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
     override fun onPause() {
         super.onPause()
         isCanUpdateDate = false
+        subscribeQuote(false)
     }
 
     private fun initViews() {
@@ -83,7 +84,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
                 super.onScrollStateChanged(recyclerView, newState)
                 isCanUpdateDate = newState == RecyclerView.SCROLL_STATE_IDLE
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeQuote()
+                    subscribeQuote(true)
                 }
             }
         })
@@ -110,7 +111,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         //WebSocket连接状态
         viewModel.socketStatusEvent.observe(this, Observer {
             if (it == FWebSocket.STATUS_CONNECTED) {
-                subscribeQuote()
+                subscribeQuote(true)
             }
         })
         //行情数据
@@ -129,7 +130,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
             })
     }
 
-    private fun subscribeQuote() {
+    private fun subscribeQuote(isSub:Boolean) {
         val layoutManager: LinearLayoutManager = quote_list.layoutManager as LinearLayoutManager
         val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
         val endPosition = layoutManager.findLastCompletelyVisibleItemPosition() + 1
@@ -139,7 +140,11 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         }
         val indIdList: String =  insList.subList(startPosition, endPosition)
             .joinToString(","){it.id}
-        viewModel.subscribeQuote(indIdList)
+        if(isSub){
+            viewModel.subscribeQuote(indIdList)
+        }else{
+            viewModel.unSubscribeQuote(indIdList)
+        }
     }
 
     override fun onSwitchExchange(id: String) {
@@ -152,7 +157,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         adapter.notifyDataSetChanged()
         //如果是WebSocket连接成功，就直接将RecyclerView滚动到第一条
         if(!viewModel.needConnectSocket()){
-            quote_list.postDelayed({subscribeQuote()},300)
+            quote_list.postDelayed({subscribeQuote(true)},300)
         }
     }
 

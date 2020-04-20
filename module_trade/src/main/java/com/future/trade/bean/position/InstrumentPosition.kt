@@ -12,6 +12,13 @@ import com.future.trade.model.SupportTransactionOrderPrice
  * 包括多仓和空仓两种仓位
  */
 class InstrumentPosition : SimplePosition(){
+    private var dataStatus:Boolean = false
+    override fun dataChanged(isChanged:Boolean) {
+        dataStatus = isChanged
+    }
+
+    override fun isDataChanged(): Boolean = dataStatus
+
     val longPosition:DirectionPosition = DirectionPosition()
     val shortPosition:DirectionPosition = DirectionPosition()
 

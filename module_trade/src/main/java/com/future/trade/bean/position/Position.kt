@@ -76,6 +76,10 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
     fun getHedgeType():CTPHedgeType
     //创建平仓的委托数据
     fun getCloseOrderFields(volume: Int, priceType: SupportTransactionOrderPrice, limitPrice:Double):List<IOrderInsertField>
+
+    fun isDataChanged():Boolean
+
+    fun dataChanged(isChanged:Boolean)
 }
 abstract class SimplePosition : Position {
     override fun getInstrumentId(): String {
@@ -127,7 +131,9 @@ abstract class SimplePosition : Position {
     }
 
     override fun compare(obj: Position): Boolean {
-        return getInstrumentId() == obj.getInstrumentId() && getPosition() == obj.getPosition() && getAvailable() == obj.getAvailable()
+        return getInstrumentId() == obj.getInstrumentId() && getPosition() == obj.getPosition()
+                && getAvailable() == obj.getAvailable() && getExchangeId() == obj.getExchangeId()
+                && getDirection() == obj.getDirection() && !isDataChanged()
     }
 
      /**
@@ -171,6 +177,7 @@ abstract class ExchangePosition : SimplePosition(){
     private var insId:String? = null
     private var exchId:String? = null
     private var direction:CTPDirection? = null
+    private var dataChagned:Boolean = false
     /**
      * 持仓明细处理
      */
@@ -184,6 +191,7 @@ abstract class ExchangePosition : SimplePosition(){
         if(direction == null){
             direction = CTPDirection.from(rsp.direction)
         }
+        dataChagned = true
         //今仓
         if(rsp.openDate == rsp.tradingDay){
             //今投机仓
@@ -203,6 +211,16 @@ abstract class ExchangePosition : SimplePosition(){
     }
 
     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        if(Omits.isOmit(insId)){
+            insId = rtn.rspField.instrumentID
+        }
+        if(Omits.isOmit(exchId)){
+            exchId = rtn.rspField.exchangeID
+        }
+        if(direction == null){
+            direction = CTPDirection.from(rtn.rspField.direction)
+        }
+        dataChagned = true
         return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
             onRtnTradeOpenPosition(rtn)
         }else{//平仓
@@ -217,6 +235,7 @@ abstract class ExchangePosition : SimplePosition(){
         }else{
             onStorePositionDetailByTrade(rtn,tdHedgePos)
         }
+
     }
 
     private fun onStorePositionDetailByTrade(rtn:RtnTrade,posTable:PositionDetailTable): Pair<RtnTrade, Boolean>{
@@ -267,6 +286,12 @@ abstract class ExchangePosition : SimplePosition(){
 
     override fun getExchangeId(): String {
         return exchId ?: Omits.OmitPrice
+    }
+
+    override fun isDataChanged(): Boolean = dataChagned
+
+    override fun dataChanged(isChanged: Boolean) {
+        dataChagned = isChanged
     }
 
     companion object{

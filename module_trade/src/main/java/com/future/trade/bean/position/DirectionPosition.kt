@@ -11,7 +11,7 @@ import com.future.trade.model.SupportTransactionOrderPrice
 class DirectionPosition : SimplePosition() {
     private var dir:CTPDirection? = null
     private var exchangePosition:ExchangePosition? = null
-
+    private var dataStatus:Boolean = false
     override fun getPosition(): Int {
         return exchangePosition?.getPosition() ?: 0
     }
@@ -59,6 +59,11 @@ class DirectionPosition : SimplePosition() {
         return exchangePosition?.getCloseOrderFields(volume,priceType,limitPrice) ?: emptyList()
     }
 
+    override fun dataChanged(isChanged:Boolean) {
+        dataStatus = isChanged
+    }
+
+    override fun isDataChanged(): Boolean = dataStatus
     /**
      * ==================================数据处理方法===============================================
      */
@@ -70,6 +75,7 @@ class DirectionPosition : SimplePosition() {
             exchangePosition = ExchangePosition.newInstance(rsp.exchangeID)
         }
         exchangePosition?.onRspPositionDetail(rsp)
+        dataChanged(true)
     }
 
     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
@@ -79,6 +85,7 @@ class DirectionPosition : SimplePosition() {
         if(exchangePosition == null){
             return Pair(rtn,false)
         }
+        dataChanged(true)
         return exchangePosition!!.onRtnOrder(rtn)
     }
 
@@ -93,6 +100,7 @@ class DirectionPosition : SimplePosition() {
         if(exchangePosition == null){
             exchangePosition = ExchangePosition.newInstance(rtn.rspField.exchangeID)
         }
+        dataChanged(true)
         return exchangePosition?.onRtnTrade(rtn) ?: Pair(rtn,false)
     }
 

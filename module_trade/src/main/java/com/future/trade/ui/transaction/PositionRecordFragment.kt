@@ -48,6 +48,7 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
         holder.itemView.setOnClickListener {
             (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
         }
+        posItem?.dataChanged(false)
     }
 }
 

@@ -169,7 +169,9 @@ class RspQryOrder(var rspField:RspOrderField?,rspInfo: RspInfoField,isLast: Bool
 /**
  * 委托回报
  */
-class RtnOrder(var rspField:RspOrderField)
+class RtnOrder(var rspField:RspOrderField){
+    fun clone():RtnOrder = RtnOrder(rspField.clone())
+}
 
 /**
  * 报单响应数据

@@ -2,6 +2,7 @@ package com.future.trade.bean.position
 
 import com.fsh.common.util.ARouterUtils
 import com.future.trade.bean.*
+import com.future.trade.enums.CTPOrderStatusType
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.HashMap
@@ -100,19 +101,24 @@ class PositionDetailTable : Comparator<String>{
     }
 
     fun onRspQryOrder(rsp: RspQryOrder):Pair<RspQryOrder,Boolean>{
+        if(posVolume == 0){
+            return Pair(rsp,false)
+        }
         val returnField = handleRspOrderField(rsp.rspField!!)
         rsp.rspField = returnField.first
         return Pair(rsp,returnField.second)
     }
 
     fun onRtnOrder(rtn:RtnOrder):Pair<RtnOrder,Boolean>{
+        if(posVolume == 0){
+            return Pair(rtn,false)
+        }
         val returnField = handleRspOrderField(rtn.rspField)
         rtn.rspField = returnField.first
         return Pair(rtn,returnField.second)
     }
 
     fun onRspOrderInsert(rsp:RspOrderInsert):Pair<RspOrderInsert,Boolean>{
-
         return Pair(rsp,false)
     }
 
@@ -124,9 +130,9 @@ class PositionDetailTable : Comparator<String>{
             //这一笔委托的挂单数量，先手动减去
             frozenVolume -= (pre.volumeTotalOriginal - pre.volumeTraded)
         }
-
+        val orderStatus = CTPOrderStatusType.from(field.orderStatus)
         val storeField = field.clone()
-        val needToFrozen = storeField.volumeTotalOriginal - storeField.volumeTraded
+        val needToFrozen = if(!orderStatus.isOver) storeField.volumeTotalOriginal - storeField.volumeTraded else 0
         val currentOrderFrozenVol: Int
         //需要冻结的手数大于可以冻结的手数，冻结手数就等于持仓手数
         //同时，存储在map中的委托记录的冻结手数为此笔委托冻结的手数

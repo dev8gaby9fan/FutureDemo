@@ -42,7 +42,7 @@ class TransactionRepository : ITransactionRepository {
     override fun handleRtnOrderEvent(event: RtnOrderEvent) {
         orderDataHandler.handleRtnOrder(event.rtn)
         //持仓也需要处理委托响应，计算仓位冻结手数
-        positionDataHandler.handleRtnOrder(event.rtn)
+        positionDataHandler.handleRtnOrder(event.rtn.clone())
     }
     override fun handleRspOrderInsertEvent(event: RspOrderInsertEvent) {
         orderDataHandler.handleRspOrderInsert(event.rsp)

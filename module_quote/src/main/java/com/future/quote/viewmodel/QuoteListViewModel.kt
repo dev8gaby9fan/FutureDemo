@@ -31,6 +31,10 @@ class QuoteListViewModel : BaseViewModel<QuoteSocketRepository>(){
         repository?.subscribeQuote(insId)
     }
 
+    fun unSubscribeQuote(insId:String){
+        repository?.unSubscribeQuote(insId)
+    }
+
     fun needConnectSocket():Boolean{
         if(!repository?.isSocketConnected()!!){
             repository?.connectSocket()

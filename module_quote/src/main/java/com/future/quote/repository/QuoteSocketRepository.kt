@@ -1,5 +1,6 @@
 package com.future.quote.repository
 
+import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -108,6 +109,17 @@ class QuoteSocketRepository : BaseRepository {
         Log.d("QuoteSocketRepository","subscribeQuote ${frame.ins_list}")
         sendMessage(frame)
         preSubscribedQuoteFrame.set(frame)
+
+    }
+
+    fun unSubscribeQuote(insList:String){
+        val preFrame = preSubscribedQuoteFrame.get() ?: return
+        val unSubList = insList.split(",")
+        preFrame.ins_list = preFrame.ins_list.split(",")
+            .filter { unSubList.contains(it) || Omits.isOmit(it)}
+            .distinctBy { it }
+            .joinToString { "," }
+        sendMessage(preFrame)
     }
 
     fun isSocketConnected():Boolean = socketStatus == FWebSocket.STATUS_CONNECTED
