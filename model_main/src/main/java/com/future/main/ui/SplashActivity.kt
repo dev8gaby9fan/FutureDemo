@@ -1,5 +1,6 @@
 package com.future.main.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.fsh.common.base.BaseActivity
@@ -38,6 +39,7 @@ class SplashActivity : BaseActivity() {
 
             override fun onAdFailedToLoad(p0: Int) {
                 Log.d("SplashActivity","AD FailedToLoad $p0")
+                toMainActivity()
             }
 
             override fun onAdImpression() {
@@ -58,5 +60,10 @@ class SplashActivity : BaseActivity() {
             }
         }
         mInterstitialAd.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun toMainActivity(){
+        startActivity(Intent(this@SplashActivity,MainActivity::class.java))
+        finish()
     }
 }

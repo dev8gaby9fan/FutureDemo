@@ -5,5 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.SplashActivity">
-
+    <ImageView
+        android:id="@+id/iv_words"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/bg_splash"
+        android:scaleType="fitXY"
+        />
+    <ImageView
+        android:id="@+id/iv_happy"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/bg_happy"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/iv_words"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_down_sea"
+        android:scaleType="fitXY"
+        />
+    <ImageView
+        android:id="@+id/iv_down_sea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/bg_down_sea"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/iv_words"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_happy"
+        android:contentDescription="@string/main_down_sea"
+        android:scaleType="fitXY"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

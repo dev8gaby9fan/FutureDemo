@@ -5,6 +5,9 @@ import com.fsh.common.util.CommonUtil
 import com.fsh.common.util.DateUtils
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
+import com.future.trade.enums.CTPCombOffsetFlag
+import com.future.trade.enums.CTPDirection
+import com.future.trade.repository.TradeApiProvider
 import com.sfit.ctp.thosttraderapi.*
 import com.sfit.ctp.thosttraderapi.CThostFtdcReqUserLoginField
 import io.reactivex.subjects.Subject
@@ -265,7 +268,7 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
 
     override fun OnErrRtnOrderInsert(p0: CThostFtdcInputOrderField?, p1: CThostFtdcRspInfoField?) {
         super.OnErrRtnOrderInsert(p0, p1)
-        Log.d("CTPTradeApi","OnErrRtnOrderAction ${p1?.errorID} ${p1?.errorMsg} ${p0?.instrumentID} ${p0?.direction} ${p0?.combOffsetFlag} ${p0?.ipAddress}")
+        Log.d("CTPTradeApi","OnErrRtnOrderInsert ${p1?.errorID} ${p1?.errorMsg} ${p0?.instrumentID} ${CTPDirection.from(p0!!.direction)?.text}[${p0.direction}] ${CTPCombOffsetFlag.from(p0.combOffsetFlag[0])?.text}[${p0.combOffsetFlag}] volumeTotalOriginal=${p0.volumeTotalOriginal} ${p0.orderRef} ${p0.requestID}")
     }
 
     override fun OnErrRtnOrderAction(p0: CThostFtdcOrderActionField?, p1: CThostFtdcRspInfoField?) {
@@ -281,14 +284,14 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
 
     override fun handleData(data: CTPRequestFrame<*>) {
         when(data.frameType){
-            CTPRequestFrameType.UserLogout -> tradeApi?.ReqUserLogout(data.frame as CThostFtdcUserLogoutField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.ConfirmSettlement -> tradeApi?.ReqSettlementInfoConfirm(data.frame as CThostFtdcSettlementInfoConfirmField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.QryOrder -> tradeApi?.ReqQryOrder(data.frame as CThostFtdcQryOrderField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.QryTrade -> tradeApi?.ReqQryTrade(data.frame as CThostFtdcQryTradeField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.QryPositionDetail -> tradeApi?.ReqQryInvestorPositionDetail(data.frame as CThostFtdcQryInvestorPositionDetailField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.QryTradingAccount -> tradeApi?.ReqQryTradingAccount(data.frame as CThostFtdcQryTradingAccountField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.OrderInsert -> tradeApi?.ReqOrderInsert(data.frame as CThostFtdcInputOrderField?,nRequestIDFactor.getAndIncrement())
-            CTPRequestFrameType.OrderAction -> tradeApi?.ReqOrderAction(data.frame as CThostFtdcInputOrderActionField?,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.UserLogout -> tradeApi?.ReqUserLogout(data.frame as CThostFtdcUserLogoutField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.ConfirmSettlement -> tradeApi?.ReqSettlementInfoConfirm(data.frame as CThostFtdcSettlementInfoConfirmField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryOrder -> tradeApi?.ReqQryOrder(data.frame as CThostFtdcQryOrderField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryTrade -> tradeApi?.ReqQryTrade(data.frame as CThostFtdcQryTradeField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryPositionDetail -> tradeApi?.ReqQryInvestorPositionDetail(data.frame as CThostFtdcQryInvestorPositionDetailField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.QryTradingAccount -> tradeApi?.ReqQryTradingAccount(data.frame as CThostFtdcQryTradingAccountField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.OrderInsert -> tradeApi?.ReqOrderInsert(data.frame as CThostFtdcInputOrderField,nRequestIDFactor.getAndIncrement())
+            CTPRequestFrameType.OrderAction -> tradeApi?.ReqOrderAction(data.frame as CThostFtdcInputOrderActionField,nRequestIDFactor.getAndIncrement())
         }
         Log.d("CTPTradeApi","[${broker?.brokerId} , ${account?.investorId}] send ${data.frameType}")
     }

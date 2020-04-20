@@ -29,7 +29,7 @@ class InstrumentPosition : SimplePosition(){
             return Pair(rsp,false)
         }
         //开仓数据不处理
-        if(rsp.rspField!!.combOffsetFlag == CTPCombOffsetFlag.Open.text){
+        if(rsp.rspField!!.combOffsetFlag[0] == CTPCombOffsetFlag.Open.offset){
             return Pair(rsp,false)
         }
         //卖平仓的委托，需要多仓处理
@@ -42,7 +42,7 @@ class InstrumentPosition : SimplePosition(){
 
     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
         //开仓行为不处理
-        if(rtn.rspField.combOffsetFlag == CTPCombOffsetFlag.Open.text){
+        if(rtn.rspField.combOffsetFlag[0] == CTPCombOffsetFlag.Open.offset){
             return Pair(rtn,false)
         }
         //卖平仓的委托，需要多仓处理
@@ -59,7 +59,7 @@ class InstrumentPosition : SimplePosition(){
             return Pair(rsp,false)
         }
         //开仓委托响应 不处理
-        if(rsp.rspField?.combOffsetFlag == CTPCombOffsetFlag.Open.text){
+        if(rsp.rspField!!.combOffsetFlag[0] == CTPCombOffsetFlag.Open.offset){
             return Pair(rsp,false)
         }
         return if(rsp.rspField?.direction == CTPDirection.Buy.direction){

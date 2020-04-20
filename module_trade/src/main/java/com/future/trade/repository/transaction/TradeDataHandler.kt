@@ -18,11 +18,6 @@ interface ITradeDataHandler : BaseDataHandler<RspTradeField> {
      * 处理成交回报
      */
     fun handleRtnQryTrade(rtn: RtnTrade)
-
-    /**
-     * 获取所有的成交数据
-     */
-    fun getTradeDataList(): List<RspTradeField>
 }
 
 class TradeDataHandler : ITradeDataHandler {
@@ -31,12 +26,10 @@ class TradeDataHandler : ITradeDataHandler {
 
     override fun getLiveData(): LiveData<List<RspTradeField>> = liveData
 
-    override fun getTradeDataList(): List<RspTradeField> = ArrayList(tradeDataCollection.values)
-
     override fun handleRtnQryTrade(rtn: RtnTrade) {
         handleRspTradeField(rtn.rspField)
         //新增的成交明细需要返回给界面上
-        liveData.postValue(getTradeDataList())
+        liveData.postValue(tradeDataCollection.values.sortedBy { o -> o.tradeDate+o.tradeTime })
     }
 
     override fun handleRspQryTrade(rsp: RspQryTrade) {
@@ -47,7 +40,7 @@ class TradeDataHandler : ITradeDataHandler {
             handleRspTradeField(rsp.rspField!!)
         }
         if (rsp.bIsLast) {
-            liveData.postValue(getTradeDataList())
+            liveData.postValue(tradeDataCollection.values.sortedBy { o -> o.tradeDate+o.tradeTime })
         }
     }
 

@@ -127,7 +127,7 @@ abstract class SimplePosition : Position {
     }
 
     override fun compare(obj: Position): Boolean {
-        return true
+        return getInstrumentId() == obj.getInstrumentId() && getPosition() == obj.getPosition() && getAvailable() == obj.getAvailable()
     }
 
      /**
@@ -203,7 +203,7 @@ abstract class ExchangePosition : SimplePosition(){
     }
 
     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
-        return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.text[0]){
+        return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
             onRtnTradeOpenPosition(rtn)
         }else{//平仓
             onRtnTradeClosePosition(rtn)

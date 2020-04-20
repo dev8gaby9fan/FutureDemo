@@ -7,6 +7,10 @@ import com.fsh.common.util.Omits
 import com.future.trade.bean.*
 import com.future.trade.enums.CTPOrderStatusType
 import com.future.trade.repository.TradeApiProvider
+import java.util.*
+import java.util.concurrent.ConcurrentSkipListMap
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 /**
  * 处理委托响应、回报数据
@@ -33,16 +37,6 @@ interface IOrderHandler : BaseDataHandler<RspOrderField> {
     fun handleRspOrderAction(rsp: RspOrderAction)
 
     /**
-     * 获取委托列表
-     */
-    fun getOrderList(): List<RspOrderField>
-
-    /**
-     * 获取挂单列表
-     */
-    fun getWithDrawList(): List<RspOrderField>
-
-    /**
      * 挂单数据的LiveData
      */
     fun getWithDrawLiveData(): LiveData<List<RspOrderField>>
@@ -60,15 +54,13 @@ class OrderDataHandler : IOrderHandler {
     override fun handleRspQryOrder(rsp: RspQryOrder) {
         dealRspOrderFieldData(rsp.rspField)
         if (rsp.bIsLast) {
-            orderLiveData.postValue(ArrayList(orderDataContainer.values))
-            withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values))
+            postValues()
         }
     }
 
     override fun handleRtnOrder(rtn: RtnOrder) {
         dealRspOrderFieldData(rtn.rspField)
-        orderLiveData.postValue(ArrayList(orderDataContainer.values))
-        withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values))
+        postValues()
     }
     //只有报单失败才有报单响应
     override fun handleRspOrderInsert(rsp: RspOrderInsert) {
@@ -76,11 +68,10 @@ class OrderDataHandler : IOrderHandler {
         val key = "${user.frontID}${user.sessionID}${rsp.rspField?.orderRef}${rsp.rspField?.instrumentID}${rsp.rspField?.userID}"
         val order = orderDataContainer[key]
         if(order != null){
-            order?.orderStatus = CTPOrderStatusType.ACTION.code
-            order?.statusMsg = rsp.rspInfoField.errorMsg
+            order.orderStatus = CTPOrderStatusType.ACTION.code
+            order.statusMsg = rsp.rspInfoField.errorMsg
             withDrawOrderDataContainer.remove(key)
-            orderLiveData.postValue(ArrayList(orderDataContainer.values))
-            withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values))
+            postValues()
         }
     }
 
@@ -109,12 +100,9 @@ class OrderDataHandler : IOrderHandler {
         }
     }
 
-    override fun getOrderList(): List<RspOrderField> {
-        return ArrayList<RspOrderField>(orderDataContainer.values)
-    }
-
-    override fun getWithDrawList(): List<RspOrderField> {
-        return ArrayList<RspOrderField>(withDrawOrderDataContainer.values)
+    private fun postValues(){
+        orderLiveData.postValue(orderDataContainer.values.sortedBy { order -> order.insertDate+order.insertTime })
+        withDrawLiveData.postValue(ArrayList(withDrawOrderDataContainer.values.sortedBy { order -> order.insertDate+order.insertTime }))
     }
 
     override fun getLiveData(): LiveData<List<RspOrderField>> = orderLiveData

@@ -36,7 +36,7 @@ class StandardPosition : ExchangePosition(){
             val specAvailableCount = tdHedgePos.posVolume + ydHedgePos.posVolume - (tdHedgePos.frozenVolume + ydHedgePos.frozenVolume)
             val closeVolume = if(volume > specAvailableCount)  specAvailableCount else volume
             fieldList.add(CTPOrderInsertField(user.brokerID,user.userID,getInstrumentId(),Omits.OmitString,user.userID,orderPriceType,orderDir,CTPCombOffsetFlag.Close,
-                CTPHedgeType.Speculation,price,closeVolume,timeCondition,DateUtils.formatNow1(),volumeCondition,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
+                CTPHedgeType.Hedge,price,closeVolume,timeCondition,DateUtils.formatNow1(),volumeCondition,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
                 0,null,0,0,0,getExchangeId(),null,user.userID,null,null,null,null))
         }
         return fieldList

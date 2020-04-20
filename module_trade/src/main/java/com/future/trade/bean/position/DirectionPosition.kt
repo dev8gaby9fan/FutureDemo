@@ -86,6 +86,16 @@ class DirectionPosition : SimplePosition() {
         return exchangePosition?.onRspQryOrder(rsp) ?: Pair(rsp,false)
     }
 
+    override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
+        if(dir == null){
+            dir = CTPDirection.from(rtn.rspField.direction)
+        }
+        if(exchangePosition == null){
+            exchangePosition = ExchangePosition.newInstance(rtn.rspField.exchangeID)
+        }
+        return exchangePosition?.onRtnTrade(rtn) ?: Pair(rtn,false)
+    }
+
     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
         if(exchangePosition == null){
             return Pair(rsp,false)

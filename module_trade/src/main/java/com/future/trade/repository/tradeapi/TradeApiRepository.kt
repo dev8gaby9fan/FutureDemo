@@ -82,6 +82,8 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
     }
 
     fun reqOrderInsert(insertField: IOrderInsertField){
+        insertField.setOref(orderRef.getAndIncrement().toString())
+        insertField.setReqId(orderReqId.getAndIncrement())
         tradeApiSource.reqOrderInsert(insertField)
         //这里手动创建一条报单记录，处理一下冻结手数
         val localRtnOrderEvent = insertField.toRtnOrderEvent()

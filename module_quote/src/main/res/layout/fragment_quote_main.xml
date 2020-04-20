@@ -27,11 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/tv_top"
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="展开内容" />
+                    android:src="@drawable/bg_splash"
+                    android:scaleType="fitXY"
+                    />
             </RelativeLayout>
 
             <androidx.appcompat.widget.Toolbar

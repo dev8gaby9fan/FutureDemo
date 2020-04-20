@@ -1,5 +1,6 @@
 package com.future.trade.ui.transaction
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.util.ARouterUtils
+import com.fsh.common.util.NumberUtils
 import com.future.trade.R
 import com.future.trade.bean.RspOrderField
 import com.future.trade.enums.CTPCombOffsetFlag
@@ -45,13 +47,15 @@ class WithDrawRecordFragment :BaseRecordFragment<RspOrderField,WithDrawItemVH>()
         WithDrawItemVH(layoutInflater.inflate(R.layout.layout_item_with_draw,parent,false))
 
 
+    @SuppressLint("SetTextI18n")
     override fun onBindItemViewHolder(holder: WithDrawItemVH, position: Int) {
-        val item = getItem(position)
-        holder.itemView.tv_ins_name.text = item?.instrumentID
-        holder.itemView.tv_offset.text = item?.combOffsetFlag
-        holder.itemView.tv_order_price.text = item?.limitPrice.toString()
-        holder.itemView.tv_order_volume.text = item?.volumeTotalOriginal.toString()
-        holder.itemView.tv_with_draw.text = (item?.volumeTotalOriginal!! - item.volumeTraded).toString()
+        val item = getItem(position)!!
+        val ins = ARouterUtils.getQuoteService().getInstrumentById(item.exchangeID+"."+item.instrumentID)
+        holder.itemView.tv_ins_name.text = item.instrumentID
+        holder.itemView.tv_offset.text = CTPDirection.from(item.direction)?.text + CTPCombOffsetFlag.from(item.combOffsetFlag[0]).text
+        holder.itemView.tv_order_price.text = NumberUtils.formatNum(item.limitPrice.toString(),ins?.priceTick)
+        holder.itemView.tv_order_volume.text = item.volumeTotalOriginal.toString()
+        holder.itemView.tv_with_draw.text = (item.volumeTotalOriginal - item.volumeTraded).toString()
         holder.itemView.setOnClickListener {
             withDrawItem = item
             val instrument = ARouterUtils.getQuoteService().getInstrumentById(item.exchangeID+"."+item.instrumentID)

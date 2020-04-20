@@ -94,23 +94,30 @@ class PositionDataHandler : IPositionDataHandler {
     }
 
     override fun handleRtnTrade(rtn: RtnTrade) {
+        Log.d("PositionDataHandler","handleRtnTrade ${rtn.rspField.instrumentID} ${CTPDirection.from(rtn.rspField.direction)?.text} ${CTPCombOffsetFlag.from(rtn.rspField.offsetFlag)} ${rtn.rspField.volume}")
         var position = positionCollection[rtn.rspField.instrumentID]
         //开仓,需要新建仓位
-        if(position == null && rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
-            position = InstrumentPosition()
-            positionCollection[rtn.rspField.instrumentID] = position
+        if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
+            if(position == null){
+                position = InstrumentPosition()
+                positionCollection[rtn.rspField.instrumentID] = position
+            }
             val result = position.onRtnTrade(rtn)
             if(result.second){
                 sendPositionDataToView()
             }
+            Log.d("PositionDataHandler","handleRtnTrade open position result ${result.second}" )
         }else if(position != null && rtn.rspField.offsetFlag != CTPCombOffsetFlag.Open.offset){
             //平仓
             val result = position.onRtnTrade(rtn)
-            //没有仓位了，或者是仓位变化了，需要通知界面刷新
-            if(position.getPosition() == 0 || result.second){
+            if(position.getPosition() == 0){
                 positionCollection.remove(rtn.rspField.instrumentID)
+            }
+            //需要通知界面刷新
+            if(result.second){
                 sendPositionDataToView()
             }
+            Log.d("PositionDataHandler","handleRtnTrade close position result ${result.second}" )
         }
     }
 

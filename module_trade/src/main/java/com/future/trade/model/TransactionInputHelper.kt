@@ -128,9 +128,6 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                     NumberUtils.formatNum(quoteEntity.lower_limit, instrument?.priceTick)
                 val lastPrice: String =
                     NumberUtils.formatNum(quoteEntity.last_price, instrument?.priceTick)
-                Log.d("TransactionInputHelper","$lastPrice == $upLimitPrice || $lastPrice == $lowLimitPrice ${(lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
-                    quoteEntity.last_price
-                ))}")
                 // 买方向用卖价，卖方向用买价 涨停无卖价，直接就使用涨停价
                 if ((lastPrice == upLimitPrice && !Omits.isOmit(quoteEntity.last_price)) || (lastPrice == lowLimitPrice && !Omits.isOmit(
                         quoteEntity.last_price

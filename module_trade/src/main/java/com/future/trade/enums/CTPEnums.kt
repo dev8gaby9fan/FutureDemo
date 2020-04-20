@@ -57,10 +57,11 @@ enum class CTPOrderStatusType(
 enum class CTPCombOffsetFlag(val offset: Char, val text: String) {
     Open('0', "开"),
     Close('1', "平"),
-    CloseToday('2', "平今"),
-    CloseYesterday('3', "平昨"),
-    ForceClose('4', "强平"),
-    LocalForceClose('5', "本地强平");
+    ForceClose('2', "强平"),
+    CloseToday('3', "平今"),
+    CloseYesterday('4', "平昨"),
+    ForceOff('5',"强减"),
+    LocalForceClose('6', "本地强平");
 
     companion object {
         private val allOffset: HashMap<Char, CTPCombOffsetFlag> = HashMap(10)

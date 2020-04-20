@@ -16,16 +16,34 @@ interface IOrderInsertField{
      * 生成一条报单回报，用于本地计算持仓冻结手数
      */
     fun toRtnOrderEvent():RtnOrderEvent
+
+    /**
+     * 设置OrderRef
+     */
+    fun setOref(oref:String)
+
+    /**
+     * 设置requestID
+     */
+    fun setReqId(reqId:Int)
 }
 
-class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrumentId:String,val orderRef:String,
+class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrumentId:String,var orderRef:String,
                           val userId:String,val priceType: CTPOrderPriceType,val direction:CTPDirection,val combOffset:CTPCombOffsetFlag,
                           val hedge:CTPHedgeType,val limitPrice:Double,val volumeTotalOriginal:Int,val timeCondition:CTPTimeConditionType,
                           val gtdDate:String,val volumeCondition:CTPVolumeConditionType,val minVolume:Int,val conditionType: CTPContingentConditionType,
                           val stopPrice:Double?,val forceCloseReason:CTPForceCloseReasonType,val isAutoSuspend:Int,val businessUnit:String?,
-                          val requestId:Int,val userForceClose:Int,val isSwapOrder:Int,val exchangeId:String,
+                          var requestId:Int,val userForceClose:Int,val isSwapOrder:Int,val exchangeId:String,
                           val investUnitId:String?,val accountId:String,val currencyId:String?,val clientId:String?,
                           val ipAddress:String?,val macAddress:String?) : IOrderInsertField{
+    override fun setReqId(reqId: Int) {
+        this.requestId = reqId
+    }
+
+    override fun setOref(oref: String) {
+        this.orderRef = oref
+    }
+
     override fun toOrderString(): String {
         return "${direction.text}  ${combOffset.text} $instrumentId ${volumeTotalOriginal}手,价格:$limitPrice"
     }
@@ -68,7 +86,7 @@ class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrume
         }
     override fun toRtnOrderEvent(): RtnOrderEvent {
         val user = TradeApiProvider.providerCTPTradeApi().getCurrentUser()
-        val rspOrderField = RspOrderField(brokerId,investorId,instrumentId,orderRef,userId,priceType.code,direction.direction,combOffset.text,
+        val rspOrderField = RspOrderField(brokerId,investorId,instrumentId,orderRef,userId,priceType.code,direction.direction,combOffset.offset.toString(),
             hedge.text,limitPrice,volumeTotalOriginal,timeCondition.code,gtdDate,volumeCondition.code,minVolume,conditionType.code,
             stopPrice?:0.0,forceCloseReason.code,isAutoSuspend,businessUnit?:Omits.OmitString,requestId,Omits.OmitString,
             exchangeId,Omits.OmitString,Omits.OmitString,instrumentId,Omits.OmitString,Omits.OmitInt,'0',Omits.OmitInt,

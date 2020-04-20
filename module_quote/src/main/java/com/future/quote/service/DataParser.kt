@@ -206,13 +206,13 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
                 field.set(quoteEntity, quoteDataObj.optString(property))
             }
             val storeQuote = QuoteInfoMgr.mgr.storeQuote(quoteEntity)
-            quoteEntityPools.release(quoteEntity)
+//            quoteEntityPools.release(quoteEntity)
             quoteLieData.onNext(storeQuote)
         }
     }
 
     private fun obtainQuoteEntity(insId:String):QuoteEntity{
-        return quoteEntityPools.acquire() ?: QuoteEntity(insId)
+        return /*quoteEntityPools.acquire() ?: */QuoteEntity(insId)
     }
 
 

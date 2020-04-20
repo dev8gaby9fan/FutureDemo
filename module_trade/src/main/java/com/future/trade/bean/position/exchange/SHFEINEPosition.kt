@@ -27,10 +27,10 @@ class SHFEINEPosition : ExchangePosition(){
             fieldList.add(getCloseOrderFieldFromPositionDetailTable(tdSpecPos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseToday,CTPHedgeType.Speculation))
         }
         if(tdHedgePos.posVolume > tdHedgePos.frozenVolume){
-            fieldList.add(getCloseOrderFieldFromPositionDetailTable(tdHedgePos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseToday,CTPHedgeType.Speculation))
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(tdHedgePos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseToday,CTPHedgeType.Hedge))
         }
         if(ydSpecPos.posVolume > ydSpecPos.frozenVolume){
-            fieldList.add(getCloseOrderFieldFromPositionDetailTable(ydSpecPos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseYesterday,CTPHedgeType.Hedge))
+            fieldList.add(getCloseOrderFieldFromPositionDetailTable(ydSpecPos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseYesterday,CTPHedgeType.Speculation))
         }
         if(ydHedgePos.posVolume > ydHedgePos.frozenVolume){
             fieldList.add(getCloseOrderFieldFromPositionDetailTable(ydHedgePos,limitPrice,volume,user,orderDir,CTPCombOffsetFlag.CloseYesterday,CTPHedgeType.Hedge))
@@ -42,14 +42,14 @@ class SHFEINEPosition : ExchangePosition(){
         val vol = if(volume > (posTable.posVolume - posTable.frozenVolume)) (posTable.posVolume - posTable.frozenVolume) else volume
         return CTPOrderInsertField(user.brokerID,user.userID,getInstrumentId(),Omits.OmitString,user.userID,CTPOrderPriceType.LimitPrice,direction,offset,hedge,limitPrice,vol,
             CTPTimeConditionType.GFD,DateUtils.formatNow1(),CTPVolumeConditionType.AV,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
-            1,null,0,0,1,getExchangeId(),user.userID,user.userID,null,null,null,null)
+            1,null,0,0,0,getExchangeId(),user.userID,user.userID,null,null,null,null)
     }
 
     /**
      * 处理委托查询响应
      */
     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {
-        return if(rsp.rspField!!.combOffsetFlag == CTPCombOffsetFlag.CloseToday.text){
+        return if(rsp.rspField!!.combOffsetFlag[0] == CTPCombOffsetFlag.CloseToday.offset){
             //投机仓位 今投机
             handleRspQryOrderByHedge(tdSpecPos,tdHedgePos,rsp)
         }else{
@@ -69,7 +69,7 @@ class SHFEINEPosition : ExchangePosition(){
      * 处理委托回报数据
      */
     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
-        return if(rtn.rspField.combOffsetFlag == CTPCombOffsetFlag.CloseToday.text){
+        return if(rtn.rspField.combOffsetFlag[0] == CTPCombOffsetFlag.CloseToday.offset){
             //投机仓位 今投机
             handleRtnOrderByHedge(tdSpecPos,tdHedgePos,rtn)
         }else{
@@ -89,7 +89,7 @@ class SHFEINEPosition : ExchangePosition(){
      * 处理报单响应
      */
     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
-        return if(rsp.rspField?.combOffsetFlag == CTPCombOffsetFlag.CloseToday.text){
+        return if(rsp.rspField!!.combOffsetFlag[0] == CTPCombOffsetFlag.CloseToday.offset){
             handleRspOrderInsertByHedge(tdSpecPos,tdHedgePos,rsp)
         }else{
             handleRspOrderInsertByHedge(ydSpecPos,ydHedgePos,rsp)

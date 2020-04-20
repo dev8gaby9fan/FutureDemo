@@ -91,7 +91,7 @@ class CZCEPosition :ExchangePosition(){
         val price = if(priceType == SupportTransactionOrderPrice.Market) 0.0 else limitPrice
         list.add(CTPOrderInsertField(user.brokerID,user.userID,getInstrumentId(),Omits.OmitString,user.userID,orderPriceType,orderDir,CTPCombOffsetFlag.Close,CTPHedgeType.Speculation,
             price,volume,timeCondition,DateUtils.formatNow1(),volumeCondition,1,CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,
-            1,null,0,0,1,getExchangeId(),null,user.userID,null,null,null,null))
+            1,null,0,0,0,getExchangeId(),null,user.userID,null,null,null,null))
         return list
     }
 }
