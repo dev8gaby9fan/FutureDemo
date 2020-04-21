@@ -47,8 +47,17 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
         holder.itemView.tv_pos_volume.text = posItem?.getPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.setOnClickListener {
             (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
+            selectItem(position)
         }
+        holder.itemView.isSelected = posItem?.isSelected() ?: false
         posItem?.dataChanged(false)
+    }
+
+    fun selectItem(index:Int){
+        recordList.forEachIndexed{ itemIndex,item->
+            item.setSelected(itemIndex == index)
+        }
+        recordAdapter.notifyItemRangeChanged(0,recordList.size)
     }
 }
 

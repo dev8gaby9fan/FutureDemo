@@ -86,8 +86,9 @@ abstract class OrderButton : View {
         canvas?.drawText(buttonName,0,buttonName.length,(measuredWidth - orderTextBounds.width())/2.0f,baseline2,textPaint)
     }
     //TODO 这里如果是非限价价格，那么就是文字，不是数字，需要把数字设置过来 price
-    fun setOrderPriceText(buttonPrice:String){
+    fun setOrderPriceText(buttonPrice:String,priceType:SupportTransactionOrderPrice){
         textOrderPrice = buttonPrice
+        this.priceType = priceType
         postInvalidate()
     }
 

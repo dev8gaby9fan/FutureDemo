@@ -21,9 +21,9 @@ import java.lang.IllegalArgumentException
  */
 abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewHolder> : BaseLazyFragment() {
 //    private var isLoaded: Boolean = false
-    private var recordList: List<T> = ArrayList()
+    protected var recordList: List<T> = ArrayList()
     protected var viewModel: TransactionViewModel? = null
-    private lateinit var recordAdapter: RecordListAdapter
+    protected lateinit var recordAdapter: RecordListAdapter
 //    override fun onResume() {
 //        super.onResume()
 //        if (!isLoaded && !isHidden) {

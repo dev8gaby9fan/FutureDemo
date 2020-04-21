@@ -88,9 +88,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     private fun setOrderButtonText(quoteEntity: QuoteEntity?) {
         if(quoteEntity == null){
-            buyButton.setOrderPriceText(Omits.OmitPrice)
-            sellButton.setOrderPriceText(Omits.OmitPrice)
-            closeButton.setOrderPriceText(Omits.OmitPrice)
+            buyButton.setOrderPriceText(Omits.OmitPrice,priceType)
+            sellButton.setOrderPriceText(Omits.OmitPrice,priceType)
+            closeButton.setOrderPriceText(Omits.OmitPrice,priceType)
             return
         }
         //买方向的价格
@@ -175,9 +175,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 }
             }
         }
-        buyButton.setOrderPriceText(buyText)
-        sellButton.setOrderPriceText(sellText)
-        closeButton.setOrderPriceText(buyText)
+        buyButton.setOrderPriceText(buyText,priceType)
+        sellButton.setOrderPriceText(sellText,priceType)
+        closeButton.setOrderPriceText(buyText,priceType)
     }
 
     fun getOrderPriceType():SupportTransactionOrderPrice = priceType
@@ -222,6 +222,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onAddKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
+            if(priceType != SupportTransactionOrderPrice.Limit){
+                priceType = SupportTransactionOrderPrice.Limit
+            }
             val addNum = instrument?.priceTick ?: NUM_ONE
             handleAddInput(priceInput, addNum, PRICE_MAX_VALUE_LEN, addNum)
             updateButtonPriceByInput()
@@ -255,6 +258,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onSubKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
+            if(priceType != SupportTransactionOrderPrice.Limit){
+                priceType = SupportTransactionOrderPrice.Limit
+            }
             val addNum = BigDecimal(instrument?.priceTick?:NUM_ONE).multiply(BigDecimal(-1)).toString()
             handleAddInput(priceInput, addNum, PRICE_MAX_VALUE_LEN, instrument?.priceTick?:NUM_ONE)
             updateButtonPriceByInput()
@@ -296,6 +302,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
      */
     override fun onDeleteKeyDown() {
         if (inputType == FutureKeyboard.KeyboardType.Price) {
+            if(priceType != SupportTransactionOrderPrice.Limit){
+                priceType = SupportTransactionOrderPrice.Limit
+            }
             handleDeleteInput(priceInput)
             updateButtonPriceByInput()
         } else {
@@ -352,9 +361,9 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
     private fun updateButtonPriceByInput(){
         val price = priceInput.text.toString()
         tradePrice = price
-        buyButton.setOrderPriceText(price)
-        sellButton.setOrderPriceText(price)
-        closeButton.setOrderPriceText(price)
+        buyButton.setOrderPriceText(price,priceType)
+        sellButton.setOrderPriceText(price,priceType)
+        closeButton.setOrderPriceText(price,priceType)
 
     }
 }

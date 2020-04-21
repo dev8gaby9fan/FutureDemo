@@ -80,8 +80,14 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
     fun isDataChanged():Boolean
 
     fun dataChanged(isChanged:Boolean)
+
+    fun isSelected():Boolean
+
+    fun setSelected(flag:Boolean)
 }
 abstract class SimplePosition : Position {
+    //是否选中状态
+    private var selectedStatus:Boolean = false
     override fun getInstrumentId(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -136,7 +142,13 @@ abstract class SimplePosition : Position {
                 && getDirection() == obj.getDirection() && !isDataChanged()
     }
 
-     /**
+    override fun isSelected(): Boolean = selectedStatus
+
+    override fun setSelected(flag: Boolean) {
+        selectedStatus = flag
+    }
+
+    /**
       * =====================================数据处理===============================================
       */
 
