@@ -51,7 +51,7 @@ dependencies {
     api deps.retrofit.api
     api deps.retrofit.convert
     api deps.retrofit.adapter
-    api deps.google_ad
+//    api deps.google_ad
     //TODO 暂时不实现分时和K线
 //    api deps.mpchart
 

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:context=".ui.account.TradingAccountActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/title_toolbar"
@@ -15,6 +14,7 @@
         app:titleTextColor="@color/dark_light"
         android:background="@color/colorPrimary"
         app:navigationIcon="@drawable/ic_back"
+        android:fitsSystemWindows="true"
         >
         <TextView
             android:id="@+id/nav_title"
@@ -29,6 +29,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:layout_width="match_parent"

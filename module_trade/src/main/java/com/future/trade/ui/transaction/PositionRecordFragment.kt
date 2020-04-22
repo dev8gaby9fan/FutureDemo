@@ -1,5 +1,6 @@
 package com.future.trade.ui.transaction
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -30,6 +31,7 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
         viewModel?.reqQryPositionDetail()
         viewModel?.positionLiveData?.observe(this, Observer {
             if((parentFragment as TransactionFragment).needSetInitPosition() && it.isNotEmpty()){
+                it[0].setSelected(true)
                 (parentFragment as TransactionFragment).onPositionItemClick(it[0])
             }
             updateDataList(it)
@@ -46,14 +48,19 @@ class PositionRecordFragment : BaseRecordFragment<Position,PositionItemViewHolde
         holder.itemView.tv_direction.text = posItem?.getDirection()?.text ?: Omits.OmitPrice
         holder.itemView.tv_pos_volume.text = posItem?.getPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.setOnClickListener {
+            if(holder.itemView.isSelected){
+                return@setOnClickListener
+            }
             (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
             selectItem(position)
         }
         holder.itemView.isSelected = posItem?.isSelected() ?: false
+        val foregroundColorRes = if(holder.itemView.isSelected) R.color.color_pressed else R.color.white
+        holder.itemView.background = ColorDrawable(holder.itemView.resources.getColor(foregroundColorRes))
         posItem?.dataChanged(false)
     }
 
-    fun selectItem(index:Int){
+    private fun selectItem(index:Int){
         recordList.forEachIndexed{ itemIndex,item->
             item.setSelected(itemIndex == index)
         }

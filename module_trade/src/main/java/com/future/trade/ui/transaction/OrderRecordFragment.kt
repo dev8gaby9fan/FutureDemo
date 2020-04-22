@@ -58,6 +58,7 @@ class OrderRecordFragment : BaseRecordFragment<RspOrderField,OrderRecordItemVH>(
         holder.itemView.tv_time.text = itemRec.insertTime
         holder.itemView.tv_hedge.text = CTPHedgeType.from(itemRec.combHedgeFlag[0])?.text
         holder.itemView.tv_smsg.text = itemRec.statusMsg
+        Log.d("OrderRecordFragment","item statusMsg ${itemRec.statusMsg}")
     }
 
 }

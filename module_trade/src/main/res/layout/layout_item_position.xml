@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/abc_dp_40"
-    android:background="?android:attr/selectableItemBackground"
+    style="@style/SelectableItemBackground"
     android:divider="@drawable/divider_horizontal"
     android:showDividers="middle">
 

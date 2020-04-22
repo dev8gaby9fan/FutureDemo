@@ -116,15 +116,29 @@ class FWebSocket : WebSocketListener() {
     }
 
     fun sendMessage(text: String) {
-        clientMgr.sendMessage(text)
+        try{
+            clientMgr.sendMessage(text)
+        }catch (e: WebSocketException) {
+            _dataStream.onNext(FWebSocketErrorMsg(e.msg, e))
+        }
+
     }
 
     fun sendMessage(jsonReq: JSONRequest) {
-        clientMgr.sendMessage(jsonReq)
+        try {
+            clientMgr.sendMessage(jsonReq)
+        } catch (e: WebSocketException) {
+            _dataStream.onNext(FWebSocketErrorMsg(e.msg, e))
+        }
+
     }
 
     fun sendMessage(byteString: ByteString) {
-        clientMgr.sendMessage(byteString)
+        try {
+            clientMgr.sendMessage(byteString)
+        } catch (e: WebSocketException) {
+            _dataStream.onNext(FWebSocketErrorMsg(e.msg, e))
+        }
     }
 
     fun close() {
