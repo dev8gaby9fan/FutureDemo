@@ -20,17 +20,9 @@ import java.lang.IllegalArgumentException
  * VH item的ViewHolder对象类型
  */
 abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewHolder> : BaseLazyFragment() {
-//    private var isLoaded: Boolean = false
     protected var recordList: List<T> = ArrayList()
     protected var viewModel: TransactionViewModel? = null
     protected lateinit var recordAdapter: RecordListAdapter
-//    override fun onResume() {
-//        super.onResume()
-//        if (!isLoaded && !isHidden) {
-//            lazyLoading()
-//            isLoaded = true
-//        }
-//    }
 
     override fun layoutRes(): Int = R.layout.fragment_transaction_record
 
@@ -62,19 +54,38 @@ abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewH
 
     abstract fun createItemViewHolder(parent: ViewGroup, viewType: Int): VH
     abstract fun onBindItemViewHolder(holder: VH, position: Int)
+    abstract fun onBindHeadViewHolder(holder: VH)
+    abstract fun createHeadViewHolder(parent: ViewGroup):VH
     open fun onItemViewHolderDetachedFromWindow(holder: VH){}
     inner class RecordListAdapter : RecyclerView.Adapter<VH>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-            createItemViewHolder(parent, viewType)
+            if(viewType == 0){
+                createHeadViewHolder(parent)
+            }else{
+                createItemViewHolder(parent, viewType)
+            }
 
-        override fun getItemCount(): Int = recordList.size
+
+        override fun getItemCount(): Int = recordList.size+1
 
         override fun onBindViewHolder(holder: VH, position: Int) =
-            onBindItemViewHolder(holder, position)
+            if(position == 0){
+                onBindHeadViewHolder(holder)
+            }else{
+                onBindItemViewHolder(holder, position-1)
+            }
+
 
         override fun onViewDetachedFromWindow(holder: VH) =
             onItemViewHolderDetachedFromWindow(holder)
+
+        override fun getItemViewType(position: Int): Int {
+            return if(position == 0) 0
+            else 1
+        }
     }
+
+
 
     private class RecordDiffCallback<T : DiffComparable<T>>(
         val oldList: List<T>,

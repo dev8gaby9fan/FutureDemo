@@ -8,32 +8,32 @@
     <TextView
         android:id="@+id/tv_ins_name"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.4"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="原油2006"
+        android:text="@string/trade_ins_name"
         />
     <TextView
         android:id="@+id/tv_direct"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight=".8"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="买"
+        android:text="@string/trade_order_dir"
         />
     <TextView
         android:id="@+id/tv_offset"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight=".8"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="开平"
+        android:text="@string/trade_order_dir"
         />
     <TextView
         android:id="@+id/tv_price"
@@ -43,7 +43,7 @@
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="成交价"
+        android:text="@string/trade_order_trade_price"
         />
     <TextView
         android:id="@+id/tv_volume"
@@ -53,26 +53,26 @@
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="成交量"
+        android:text="@string/trade_order_trade_vol"
         />
     <TextView
         android:id="@+id/tv_hedge"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight=".8"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="投机套保"
+        android:text="@string/trade_hedge_type"
         />
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="成交时间"
+        android:text="@string/trade_order_trade_time"
         />
 </LinearLayout>

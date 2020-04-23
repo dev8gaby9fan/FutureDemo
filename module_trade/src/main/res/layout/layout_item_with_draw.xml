@@ -9,51 +9,71 @@
     <TextView
         android:id="@+id/tv_ins_name"
         android:layout_width="0dp"
+        android:layout_weight="2.4"
+        android:layout_height="match_parent"
+        android:textColor="@color/dark_deep"
+        android:textSize="@dimen/abc_sp_14"
+        android:gravity="center"
+        android:text="@string/trade_ins_name"
+        />
+    <TextView
+        android:id="@+id/tv_dir"
+        android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="原油2006"
+        android:text="@string/trade_order_dir"
         />
     <TextView
         android:id="@+id/tv_offset"
         android:layout_width="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="开"
+        android:text="@string/trade_order_offset"
         />
     <TextView
         android:id="@+id/tv_order_price"
         android:layout_width="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1.5"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="456.2"
+        android:text="@string/trade_order_price"
         />
     <TextView
         android:id="@+id/tv_order_volume"
         android:layout_width="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1.5"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="10"
+        android:text="@string/trade_order_vol"
         />
     <TextView
         android:id="@+id/tv_with_draw"
         android:layout_width="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1.5"
         android:layout_height="match_parent"
         android:textColor="@color/dark_deep"
         android:textSize="@dimen/abc_sp_14"
         android:gravity="center"
-        tools:text="10"
+        android:text="@string/trade_order_with_draw"
+        />
+    <TextView
+        android:id="@+id/tv_order_hedge"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textColor="@color/dark_deep"
+        android:textSize="@dimen/abc_sp_14"
+        android:gravity="center"
+        android:text="@string/trade_hedge_type"
         />
 </LinearLayout>

@@ -16,7 +16,9 @@ import kotlinx.android.synthetic.main.layout_item_trade.view.*
 /**
  * 成交列表Fragment
  */
-class TradeRecordFragment : BaseRecordFragment<RspTradeField,TradeRecordItemVH>(){
+class TradeRecordFragment : BaseRecordFragment<RspTradeField,CommonTradeRecordVH>(){
+
+
     companion object{
         @JvmStatic
         fun newInstance():TradeRecordFragment = TradeRecordFragment().apply {
@@ -32,11 +34,18 @@ class TradeRecordFragment : BaseRecordFragment<RspTradeField,TradeRecordItemVH>(
         })
     }
 
-    override fun createItemViewHolder(parent: ViewGroup, viewType: Int): TradeRecordItemVH =
+    override fun createItemViewHolder(parent: ViewGroup, viewType: Int): CommonTradeRecordVH =
        TradeRecordItemVH(layoutInflater.inflate(R.layout.layout_item_trade,parent,false))
 
+    override fun createHeadViewHolder(parent: ViewGroup): CommonTradeRecordVH =
+        TradeRecordHeadVH(layoutInflater.inflate(R.layout.layout_item_trade,parent,false))
 
-    override fun onBindItemViewHolder(holder: TradeRecordItemVH, position: Int) {
+    override fun onBindHeadViewHolder(holder: CommonTradeRecordVH) {
+
+    }
+
+
+    override fun onBindItemViewHolder(holder: CommonTradeRecordVH, position: Int) {
         val record = getItem(position)
         holder.itemView.tv_ins_name.text = record!!.instrumentID
         holder.itemView.tv_direct.text = CTPDirection.from(record.direction)?.text
@@ -48,4 +57,8 @@ class TradeRecordFragment : BaseRecordFragment<RspTradeField,TradeRecordItemVH>(
     }
 
 }
-class TradeRecordItemVH(itemView:View) : RecyclerView.ViewHolder(itemView)
+abstract class CommonTradeRecordVH(itemView:View) : RecyclerView.ViewHolder(itemView)
+
+class TradeRecordHeadVH(itemView:View) : CommonTradeRecordVH(itemView)
+
+class TradeRecordItemVH(itemView:View) : CommonTradeRecordVH(itemView)

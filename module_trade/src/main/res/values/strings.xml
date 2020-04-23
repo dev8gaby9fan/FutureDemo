@@ -62,6 +62,30 @@
     <string name="tv_order_action_notice">反手/平仓/撤单操作确认</string>
     <string name="tv_cancel">取消</string>
     <string name="tv_ensure">确定</string>
+    <string name="trade_ins_name">合约名称</string>
+    <string name="trade_pos_dir">多空</string>
+    <string name="trade_pos_vol">手数</string>
+    <string name="trade_pos_available">可用</string>
+    <string name="trade_pos_profit">逐日盈亏</string>
+    <string name="trade_pos_cost">持仓均价</string>
+    <string name="trade_open_profit">开仓盈亏</string>
+    <string name="trade_open_cost">开仓均价</string>
+    <string name="trade_pos_today">今仓</string>
+    <string name="trade_pos_yesterday">昨仓</string>
+    <string name="trade_pos_spec">投机</string>
+    <string name="trade_pos_hedge">套保</string>
+    <string name="trade_order_offset">开平</string>
+    <string name="trade_order_price">委托价</string>
+    <string name="trade_order_vol">委托量</string>
+    <string name="trade_order_dir">买卖</string>
+    <string name="trade_order_with_draw">挂单量</string>
+    <string name="trade_hedge_type">投保</string>
+    <string name="trade_order_status">委托状态</string>
+    <string name="trade_order_trade_vol">成交量</string>
+    <string name="trade_order_time">委托时间</string>
+    <string name="trade_order_status_msg">状态信息</string>
+    <string name="trade_order_trade_price">成交价</string>
+    <string name="trade_order_trade_time">成交时间</string>
     <string-array name="tab_trans">
         <item>持仓</item>
         <item>挂单</item>

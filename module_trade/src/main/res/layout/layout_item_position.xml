@@ -13,9 +13,9 @@
         android:layout_width="@dimen/abc_dp_80"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="@color/dark_deep"
+        android:textColor="@color/dark_light"
         android:textSize="@dimen/abc_sp_14"
-        tools:text="原油2006"
+        android:text="@string/trade_ins_name"
         />
     <HorizontalScrollView
         android:id="@+id/scroller"
@@ -35,89 +35,89 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="@color/dark_deep"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="买"
+                android:text="@string/trade_pos_dir"
                 />
             <TextView
                 android:id="@+id/tv_pos_volume"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="@color/dark_deep"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="1"
+                android:text="@string/trade_pos_vol"
                 />
             <TextView
                 android:id="@+id/tv_pos_available"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="2"/>
+                android:text="@string/trade_pos_available"/>
             <TextView
                 android:id="@+id/tv_pos_pos_profit"
-                android:layout_width="@dimen/abc_dp_60"
+                android:layout_width="@dimen/abc_dp_70"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="200.54"/>
+                android:text="@string/trade_pos_profit"/>
             <TextView
                 android:id="@+id/tv_pos_pos_cost"
-                android:layout_width="@dimen/abc_dp_60"
+                android:layout_width="@dimen/abc_dp_70"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="3290.45"/>
+                android:text="@string/trade_pos_cost"/>
             <TextView
                 android:id="@+id/tv_pos_open_profit"
-                android:layout_width="@dimen/abc_dp_60"
+                android:layout_width="@dimen/abc_dp_70"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="400.54"/>
+                android:text="@string/trade_open_profit"/>
             <TextView
                 android:id="@+id/tv_pos_open_cost"
-                android:layout_width="@dimen/abc_dp_60"
+                android:layout_width="@dimen/abc_dp_70"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="400.54"/>
+                android:text="@string/trade_open_cost"/>
             <TextView
                 android:id="@+id/tv_pos_today"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="1"/>
+                android:text="@string/trade_pos_today"/>
             <TextView
                 android:id="@+id/tv_pos_yesterday"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="0"/>
+                android:text="@string/trade_pos_yesterday"/>
             <TextView
                 android:id="@+id/tv_pos_spec"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="1"/>
+                android:text="@string/trade_pos_spec"/>
             <TextView
                 android:id="@+id/tv_pos_hedge"
                 android:layout_width="@dimen/abc_dp_40"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textColor="@color/dark_deep"
+                android:gravity="center"
+                android:textColor="@color/dark_light"
                 android:textSize="@dimen/abc_sp_14"
-                tools:text="1"/>
+                android:text="@string/trade_pos_hedge"/>
         </LinearLayout>
     </HorizontalScrollView>
 

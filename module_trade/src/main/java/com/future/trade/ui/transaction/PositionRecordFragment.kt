@@ -2,7 +2,6 @@ package com.future.trade.ui.transaction
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +10,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.common.util.Omits
 import com.future.trade.R
-import com.future.trade.bean.position.DirectionPosition
 import com.future.trade.bean.position.Position
-import com.future.trade.enums.CTPDirection
-import kotlinx.android.synthetic.main.layout_item_position.*
 import kotlinx.android.synthetic.main.layout_item_position.view.*
 import kotlinx.android.synthetic.main.layout_item_position.view.scroller
-import java.lang.ref.WeakReference
 
 /**
  * 持仓列表
  */
-class PositionRecordFragment : BaseRecordFragment<Position, PositionItemViewHolder>() {
+class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemViewHolder>() {
+    private val scrollViewList: MutableList<HorizontalScrollView> = ArrayList()
     private var scrollX:Int =0
     companion object {
         @JvmStatic
@@ -46,8 +42,19 @@ class PositionRecordFragment : BaseRecordFragment<Position, PositionItemViewHold
     override fun createItemViewHolder(parent: ViewGroup, viewType: Int): PositionItemViewHolder =
         PositionItemViewHolder(layoutInflater.inflate(R.layout.layout_item_position, parent, false))
 
+    override fun createHeadViewHolder(parent: ViewGroup): CommonPositionItemViewHolder =
+        PositionHeadViewHolder(layoutInflater.inflate(R.layout.layout_item_position, parent, false))
 
-    override fun onBindItemViewHolder(holder: PositionItemViewHolder, position: Int) {
+    override fun onBindHeadViewHolder(holder: CommonPositionItemViewHolder) {
+        scrollViewList.add(holder.itemView.scroller)
+        holder.itemView.scroller.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+            this@PositionRecordFragment.scrollX = scrollX
+        }
+        holder.itemView.scroller.scrollTo(scrollX,0)
+//        holder.itemView.tv
+    }
+
+    override fun onBindItemViewHolder(holder: CommonPositionItemViewHolder, position: Int) {
         val posItem = getItem(position)
         holder.itemView.tv_ins_name.text = posItem?.getInstrumentId() ?: Omits.OmitPrice
         holder.itemView.tv_direction.text = posItem?.getDirection()?.text ?: Omits.OmitPrice
@@ -97,18 +104,20 @@ class PositionRecordFragment : BaseRecordFragment<Position, PositionItemViewHold
         posItem?.dataChanged(false)
     }
 
-    override fun onItemViewHolderDetachedFromWindow(holder: PositionItemViewHolder) {
+    override fun onItemViewHolderDetachedFromWindow(holder: CommonPositionItemViewHolder) {
         scrollViewList.remove(holder.itemView.scroller)
     }
-
-    private val scrollViewList: MutableList<HorizontalScrollView> = ArrayList()
 
     private fun selectItem(index: Int) {
         recordList.forEachIndexed { itemIndex, item ->
             item.setSelected(itemIndex == index)
         }
-        recordAdapter.notifyItemRangeChanged(0, recordList.size)
+        recordAdapter.notifyItemRangeChanged(1, recordList.size+1)
     }
 }
 
-class PositionItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+abstract class CommonPositionItemViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView)
+
+class PositionHeadViewHolder(itemView:View) : CommonPositionItemViewHolder(itemView)
+
+class PositionItemViewHolder(itemView: View) : CommonPositionItemViewHolder(itemView)

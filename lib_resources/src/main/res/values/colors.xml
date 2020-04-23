@@ -13,6 +13,6 @@
     <color name="dark_deep">#141414</color>
     <color name="dark_light">#262626</color>
 
-    <color name="color_divider">#444242</color>
+    <color name="color_divider">#bfbfbf</color>
     <color name="color_pressed">#f0f0f0</color>
 </resources>
