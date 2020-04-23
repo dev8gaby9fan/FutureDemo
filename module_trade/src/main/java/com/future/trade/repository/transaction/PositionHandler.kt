@@ -9,6 +9,8 @@ import com.future.trade.bean.position.InstrumentPosition
 import com.future.trade.bean.position.Position
 import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import java.util.concurrent.ConcurrentHashMap
 
 interface IPositionHandler : BaseDataHandler<Position> {
@@ -46,6 +48,8 @@ interface IPositionHandler : BaseDataHandler<Position> {
      * 获取持仓数据
      */
     fun getPositionByInstrumentId(instrumentId:String,direction: CTPDirection? = null):Position?
+
+    fun handleUserLogout()
 }
 
 class PositionHandler : IPositionHandler {
@@ -173,5 +177,13 @@ class PositionHandler : IPositionHandler {
             return pos.shortPosition
         }
         return null
+    }
+    override fun handleUserLogout() {
+        GlobalScope.async {
+            positionCollection.forEach {
+                it.value.onRspUserLogout()
+            }
+            positionCollection.clear()
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.future.quote.ui.main
 
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.launcher.ARouter
-import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.OnItemTouchEventListener
 import com.fsh.common.ext.RecyclerViewItemClickListener
@@ -31,7 +28,7 @@ import com.future.quote.viewmodel.QuoteListViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_quote_list.*
+import kotlinx.android.synthetic.main.quote_fragment_quote_list.*
 import kotlinx.android.synthetic.main.layout_item_quote.view.*
 
 /**
@@ -51,7 +48,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
     private lateinit var viewModel: QuoteListViewModel
     private val disposables: CompositeDisposable = CompositeDisposable()
     private var isCanUpdateDate:Boolean = true
-    override fun layoutRes(): Int = R.layout.fragment_quote_list
+    override fun layoutRes(): Int = R.layout.quote_fragment_quote_list
 
     override fun lazyLoading() {
         initViews()
@@ -70,8 +67,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
 
     private fun initViews() {
         quote_list.itemAnimator = null
-        val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayout.VISIBLE)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_common_divider))
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
         quote_list.addItemDecoration(dividerItemDecoration)
         quote_list.addOnItemTouchListener(RecyclerViewItemClickListener(quote_list,
             object : OnItemTouchEventListener {

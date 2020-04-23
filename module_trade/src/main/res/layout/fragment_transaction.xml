@@ -19,6 +19,7 @@
             android:includeFontPadding="false"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="noScroll">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_account"
                 android:layout_width="match_parent"
@@ -31,8 +32,9 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:gravity="center"
+                    android:textSize="@dimen/abc_sp_18"
                     tools:text="上期技术盘中[085739]"
-                    android:textColor="@color/dark_light" />
+                    android:textColor="@color/white" />
                 <LinearLayout
                     android:id="@+id/ll_balance"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -53,7 +55,7 @@
                         android:id="@+id/tv_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dark_deep"
+                        android:textColor="@color/white"
                         android:gravity="end"/>
                 </LinearLayout>
                 <LinearLayout
@@ -76,7 +78,7 @@
                         android:id="@+id/tv_avaliable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dark_deep"
+                        android:textColor="@color/white"
                         android:gravity="end"/>
                 </LinearLayout>
 
@@ -113,7 +115,13 @@
                     android:src="@drawable/ic_more"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -442,7 +450,7 @@
             app:direction="buy"
             app:textColor="@color/white"
             app:textSize="@dimen/abc_sp_16"
-            android:background="@color/color_divider"
+            android:background="@color/color_bg_gray_dark"
             />
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/nav_layer_trans"

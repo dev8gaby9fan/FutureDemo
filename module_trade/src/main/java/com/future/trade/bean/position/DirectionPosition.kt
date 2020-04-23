@@ -118,4 +118,7 @@ class DirectionPosition : SimplePosition() {
         }
         return exchangePosition!!.onRspOrderInsert(rsp)
     }
+    override fun onRspUserLogout() {
+        exchangePosition?.onRspUserLogout()
+    }
 }

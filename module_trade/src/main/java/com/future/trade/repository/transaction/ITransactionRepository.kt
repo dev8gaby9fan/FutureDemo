@@ -57,4 +57,6 @@ interface ITransactionRepository : BaseRepository {
      * 查询资金响应
      */
     fun handleRspQryTradingAccountEvent(event: RspQryTradingAccountEvent)
+    //交易账号退出登录
+    fun onUserLogout()
 }

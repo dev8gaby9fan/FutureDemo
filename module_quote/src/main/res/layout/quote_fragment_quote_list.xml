@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_bg_gray"
+        android:paddingLeft="@dimen/abc_dp_10"
+        android:paddingRight="@dimen/abc_dp_10"
+        android:paddingTop="@dimen/abc_dp_8"
+        android:paddingBottom="@dimen/abc_dp_8"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quote_ins_name"
+            android:textSize="@dimen/abc_sp_12"
+            android:textColor="@color/color_text_gray"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quote_last_presettle"
+            android:textSize="@dimen/abc_sp_12"
+            android:textColor="@color/color_text_gray"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quote_up_down"
+            android:textSize="@dimen/abc_sp_12"
+            android:textColor="@color/color_text_gray"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quote_pos_trade"
+            android:textSize="@dimen/abc_sp_12"
+            android:textColor="@color/color_text_gray"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            />
+
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/quote_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:context="com.future.quote.ui.main.QuoteListFragment"/>
+</LinearLayout>

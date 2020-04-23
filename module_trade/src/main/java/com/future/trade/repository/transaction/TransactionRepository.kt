@@ -71,4 +71,9 @@ class TransactionRepository : ITransactionRepository {
         //资金数据就直接往丢，不用处理
         tradingAccountLiveData.postValue(event.rsp.rspField)
     }
+    override fun onUserLogout() {
+        positionHandler.handleUserLogout()
+        orderDataHandler.handleUserLogout()
+        tradeDataHandler.handleUserLogout()
+    }
 }

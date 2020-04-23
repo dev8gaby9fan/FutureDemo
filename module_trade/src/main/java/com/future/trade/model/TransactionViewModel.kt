@@ -2,6 +2,7 @@ package com.future.trade.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.fsh.common.base.BaseViewModel
 import com.fsh.common.model.QuoteEntity
 import com.fsh.common.util.ARouterUtils
@@ -24,11 +25,12 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     val tradeLiveData:LiveData<List<RspTradeField>>
     val tradingAccountLiveData:LiveData<RspTradingAccountField>
     val quoteData: Observable<QuoteEntity> = ARouterUtils.getQuoteService().getSubscribeQuoteObservable()
+    val logoutData:MutableLiveData<RspUserLogout> = MutableLiveData()
     init {
         repository = TradeApiProvider.providerCTPTradeApi().apply {
             disposable.add(getTradeEventObserver().subscribe {
                 when(it){
-                    is RspUserLogoutEvent -> handleRspUserLogout(it.rsp)
+                    is RspUserLogoutEvent -> logoutData.postValue(it.rsp)
                 }
             })
         }
@@ -37,11 +39,6 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
         positionLiveData = repository!!.transactionRepository.positionLiveData
         tradeLiveData = repository!!.transactionRepository.tradeLiveData
         tradingAccountLiveData = repository!!.transactionRepository.tradingAccountLiveData
-    }
-
-    private fun handleRspUserLogout(rsp: RspUserLogout){
-        //TODO 这里需要将对应的列表数据清空
-        repository?.onUserLogout()
     }
 
     /**
@@ -62,6 +59,10 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
 
     fun reqQryTradingAccount(){
         repository?.reqQryTradingAccount()
+    }
+
+    fun reqUserLogoug(){
+        repository?.reqUserLogout()
     }
 
     /**

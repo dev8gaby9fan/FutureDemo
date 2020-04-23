@@ -41,6 +41,8 @@ interface IOrderHandler : BaseDataHandler<RspOrderField> {
      * 挂单数据的LiveData
      */
     fun getWithDrawLiveData(): LiveData<List<RspOrderField>>
+
+    fun handleUserLogout()
 }
 
 class OrderDataHandler : IOrderHandler {
@@ -109,4 +111,10 @@ class OrderDataHandler : IOrderHandler {
     override fun getLiveData(): LiveData<List<RspOrderField>> = orderLiveData
 
     override fun getWithDrawLiveData(): LiveData<List<RspOrderField>> = withDrawLiveData
+
+    override fun handleUserLogout() {
+        orderDataContainer.clear()
+        withDrawOrderDataContainer.clear()
+        postValues()
+    }
 }

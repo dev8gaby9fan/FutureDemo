@@ -94,6 +94,11 @@ class InstrumentPosition : SimplePosition(){
         }
     }
 
+    override fun onRspUserLogout() {
+        shortPosition.onRspUserLogout()
+        longPosition.onRspUserLogout()
+    }
+
     override fun getInstrumentId(): String {
         return if(Omits.isOmit(shortPosition.getInstrumentId())) longPosition.getInstrumentId() else shortPosition.getInstrumentId()
     }

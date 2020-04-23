@@ -18,6 +18,8 @@ interface ITradeDataHandler : BaseDataHandler<RspTradeField> {
      * 处理成交回报
      */
     fun handleRtnQryTrade(rtn: RtnTrade)
+
+    fun handleUserLogout()
 }
 
 class TradeDataHandler : ITradeDataHandler {
@@ -47,6 +49,11 @@ class TradeDataHandler : ITradeDataHandler {
     private fun handleRspTradeField(field: RspTradeField) {
         val dateKey = "${field.tradeID}${field.orderSysID}${field.investorID}"
         tradeDataCollection[dateKey] = field
+    }
+
+    override fun handleUserLogout() {
+        tradeDataCollection.clear()
+        liveData.postValue(emptyList())
     }
 
 }

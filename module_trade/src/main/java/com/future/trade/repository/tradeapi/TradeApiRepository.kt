@@ -51,7 +51,7 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
                         }
                     }
                     is RspQryTradingAccountEvent -> transactionRepository.handleRspQryTradingAccountEvent(it)
-                    is RspUserLogoutEvent -> {}
+                    is RspUserLogoutEvent -> onUserLogout()
                 }
             })
     }
@@ -122,6 +122,9 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
 
     fun onUserLogout(){
         currentUser.compareAndSet(currentUser.get(),null)
+        transactionRepository.onUserLogout()
+        orderRef.set(0)
+        orderReqId.set(0)
     }
 
     fun getOrderRefId():Int = orderRef.getAndIncrement()

@@ -46,6 +46,8 @@ class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
 
     private fun initViews(){
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
         val toggle = ActionBarDrawerToggle(activity,drawer,toolbar,R.string.drawer_open,R.string.drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()

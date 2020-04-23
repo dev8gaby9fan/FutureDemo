@@ -158,6 +158,11 @@ class PositionDetailTable : Comparator<String>{
         return Pair(rspOrderField,currentOrderFrozenVol == needToFrozen)
     }
 
+    fun onUserLogout(){
+        orderMap.clear()
+        map.clear()
+    }
+
     fun contains(key:String):Boolean = map.contains(key)
 }
 

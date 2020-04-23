@@ -86,6 +86,9 @@
     <string name="trade_order_status_msg">状态信息</string>
     <string name="trade_order_trade_price">成交价</string>
     <string name="trade_order_trade_time">成交时间</string>
+    <string name="trade_check_out">登出</string>
+    <string name="trade_system_notice">系统提示</string>
+    <string name="trade_check_out_msg">是否要退出交易账号</string>
     <string-array name="tab_trans">
         <item>持仓</item>
         <item>挂单</item>

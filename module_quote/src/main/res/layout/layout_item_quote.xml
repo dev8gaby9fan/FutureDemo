@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/abc_dp_60"
+    android:layout_height="@dimen/abc_dp_48"
     android:paddingLeft="@dimen/abc_dp_10"
     android:paddingRight="@dimen/abc_dp_10"
     >

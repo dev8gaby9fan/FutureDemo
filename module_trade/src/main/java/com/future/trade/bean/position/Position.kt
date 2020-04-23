@@ -42,6 +42,11 @@ interface PositionDataHandler{
      * true 处理完成，否则没有处理完成,需要其他类型持仓处理
      */
     fun onRtnTrade(rtn:RtnTrade):Pair<RtnTrade,Boolean>
+
+    /**
+     * 交易账号退出登录
+     */
+    fun onRspUserLogout()
 }
 
 /**
@@ -257,7 +262,14 @@ abstract class ExchangePosition : SimplePosition(){
         val positionDetail = RspPositionDetailField.fromTrade(rtn.rspField)
         posTable.putPositionDetail(positionDetail)
         return Pair(rtn,true)
-}
+    }
+
+    override fun onRspUserLogout() {
+        tdSpecPos.onUserLogout()
+        tdHedgePos.onUserLogout()
+        ydSpecPos.onUserLogout()
+        ydHedgePos.onUserLogout()
+    }
 
     abstract fun onRtnTradeClosePosition(rtn: RtnTrade) : Pair<RtnTrade, Boolean>
 

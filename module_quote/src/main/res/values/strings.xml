@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">module_quote</string>
+    <string name="quote_ins_name">合约名称</string>
+    <string name="quote_last_presettle">最新/昨结</string>
+    <string name="quote_up_down">涨跌</string>
+    <string name="quote_pos_trade">成交/持仓</string>
 </resources>

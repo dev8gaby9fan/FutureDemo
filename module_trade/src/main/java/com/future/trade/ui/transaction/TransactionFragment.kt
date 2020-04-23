@@ -4,9 +4,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fsh.common.base.BaseFragment
@@ -74,6 +79,10 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
             tradingAccountLiveData.observe(this@TransactionFragment, Observer {
                 updateAccountDetails(it)
             })
+            logoutData.observe(this@TransactionFragment, Observer {
+                //跳转到登录界面
+                startActivity(Intent(context,TradeLoginActivity::class.java))
+            })
         }
         val titleList = resources.getStringArray(R.array.tab_trans).toMutableList()
         fragmentList = getRecordFragmentList()
@@ -97,6 +106,12 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         layout_account.setOnClickListener {
             startActivity(Intent(context,TradingAccountActivity::class.java))
         }
+        val mActivity = (activity as AppCompatActivity)
+        mActivity.setSupportActionBar(tool_bar)
+        mActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
+        mActivity.supportActionBar?.setDisplayShowHomeEnabled(false)
+        Log.d("TransactionFragment","actionBar --> ${mActivity.supportActionBar}")
+        setHasOptionsMenu(true)
     }
 
     private fun initViewEvents(){
@@ -269,4 +284,26 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         altOrderInsert.showDialog(childFragmentManager,message)
     }
 
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_transaction,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_check_out){
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.trade_system_notice)
+                .setMessage(R.string.trade_check_out_msg)
+                .setNegativeButton(R.string.tv_cancel){dialog,_->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(R.string.tv_ensure){ dialog,_->
+                    viewModel?.reqUserLogoug()
+                    dialog.dismiss()
+                }.show()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
