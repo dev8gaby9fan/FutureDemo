@@ -57,6 +57,7 @@ abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewH
     abstract fun onBindHeadViewHolder(holder: VH)
     abstract fun createHeadViewHolder(parent: ViewGroup):VH
     open fun onItemViewHolderDetachedFromWindow(holder: VH){}
+    open fun onItemViewHodlerAttachedToWindow(holder: VH){}
     inner class RecordListAdapter : RecyclerView.Adapter<VH>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
             if(viewType == 0){
@@ -75,6 +76,8 @@ abstract class BaseRecordFragment<T : DiffComparable<T>, VH : RecyclerView.ViewH
                 onBindItemViewHolder(holder, position-1)
             }
 
+        override fun onViewAttachedToWindow(holder: VH) =
+            onItemViewHodlerAttachedToWindow(holder)
 
         override fun onViewDetachedFromWindow(holder: VH) =
             onItemViewHolderDetachedFromWindow(holder)

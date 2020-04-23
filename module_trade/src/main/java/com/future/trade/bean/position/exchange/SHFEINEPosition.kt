@@ -58,7 +58,7 @@ class SHFEINEPosition : ExchangePosition(){
     }
 
     private fun handleRspQryOrderByHedge(specTable:PositionDetailTable,hedgeTable:PositionDetailTable,rspOder:RspQryOrder): Pair<RspQryOrder, Boolean>{
-        return if(rspOder.rspField!!.combHedgeFlag == CTPHedgeType.Speculation.text){
+        return if(rspOder.rspField!!.combHedgeFlag[0] == CTPHedgeType.Speculation.code){
             specTable.onRspQryOrder(rspOder)
         }else{
             hedgeTable.onRspQryOrder(rspOder)
@@ -78,7 +78,7 @@ class SHFEINEPosition : ExchangePosition(){
     }
 
     private fun handleRtnOrderByHedge(specTable:PositionDetailTable,hedgeTable:PositionDetailTable,rtn:RtnOrder): Pair<RtnOrder, Boolean>{
-        return if(rtn.rspField.combHedgeFlag == CTPHedgeType.Speculation.text){
+        return if(rtn.rspField.combHedgeFlag[0] == CTPHedgeType.Speculation.code){
             specTable.onRtnOrder(rtn)
         }else{
             hedgeTable.onRtnOrder(rtn)
@@ -97,7 +97,7 @@ class SHFEINEPosition : ExchangePosition(){
     }
 
     private fun handleRspOrderInsertByHedge(specTable: PositionDetailTable,hedgeTable: PositionDetailTable,rsp:RspOrderInsert):Pair<RspOrderInsert,Boolean>{
-        return if(rsp.rspField?.combHedgeFlag == CTPHedgeType.Speculation.text){
+        return if(rsp.rspField!!.combHedgeFlag[0] == CTPHedgeType.Speculation.code){
             specTable.onRspOrderInsert(rsp)
         }else{
             hedgeTable.onRspOrderInsert(rsp)

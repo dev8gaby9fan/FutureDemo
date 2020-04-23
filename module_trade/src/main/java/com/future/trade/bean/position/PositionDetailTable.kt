@@ -1,7 +1,10 @@
 package com.future.trade.bean.position
 
+import android.util.Log
 import com.fsh.common.util.ARouterUtils
 import com.future.trade.bean.*
+import com.future.trade.enums.CTPCombOffsetFlag
+import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.CTPOrderStatusType
 import java.util.*
 import kotlin.Comparator
@@ -150,6 +153,7 @@ class PositionDetailTable : Comparator<String>{
             currentOrderFrozenVol = needToFrozen
             frozenVolume += currentOrderFrozenVol
         }
+        Log.d("PositionDetailTable","${field.instrumentID} ${CTPDirection.from(field.direction)?.text} ${CTPCombOffsetFlag.from(field.combOffsetFlag[0]).text} ${CTPOrderStatusType.from(field.orderStatus)} needFrozen[$needToFrozen] currentFrozen[$currentOrderFrozenVol] totalFrozen[$frozenVolume] posVol[$posVolume]")
         orderMap[orderKey] = storeField
         return Pair(rspOrderField,currentOrderFrozenVol == needToFrozen)
     }

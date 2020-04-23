@@ -35,7 +35,7 @@ abstract class BaseActivity : AppCompatActivity(){
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-            window.statusBarColor = Color.TRANSPARENT
+            window.statusBarColor = resources.getColor(getStatusBarColorRes())
         }
         ActivityManager.push(this)
         setContentView(layoutRes())

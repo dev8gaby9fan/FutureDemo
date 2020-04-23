@@ -1,19 +1,17 @@
 package com.future.trade.repository.transaction
 
-import android.util.ArrayMap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
-import com.future.trade.bean.position.DirectionPosition
 import com.future.trade.bean.position.InstrumentPosition
 import com.future.trade.bean.position.Position
 import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
 import java.util.concurrent.ConcurrentHashMap
 
-interface IPositionDataHandler : BaseDataHandler<Position> {
+interface IPositionHandler : BaseDataHandler<Position> {
     /**
      * 处理委托查询响应
      */
@@ -50,7 +48,7 @@ interface IPositionDataHandler : BaseDataHandler<Position> {
     fun getPositionByInstrumentId(instrumentId:String,direction: CTPDirection? = null):Position?
 }
 
-class PositionDataHandler : IPositionDataHandler {
+class PositionHandler : IPositionHandler {
     //网外发的数据按合约+持仓方向显示
     private val posLiveDat: MutableLiveData<List<Position>> = MutableLiveData()
     //初始化容器大小为20,key为合约ID-持仓方向
@@ -94,7 +92,7 @@ class PositionDataHandler : IPositionDataHandler {
     }
 
     override fun handleRtnTrade(rtn: RtnTrade) {
-        Log.d("PositionDataHandler","handleRtnTrade ${rtn.rspField.instrumentID} ${CTPDirection.from(rtn.rspField.direction)?.text} ${CTPCombOffsetFlag.from(rtn.rspField.offsetFlag)} ${rtn.rspField.volume}")
+        Log.d("PositionHandler","handleRtnTrade ${rtn.rspField.instrumentID} ${CTPDirection.from(rtn.rspField.direction)?.text} ${CTPCombOffsetFlag.from(rtn.rspField.offsetFlag)} ${rtn.rspField.volume}")
         var position = positionCollection[rtn.rspField.instrumentID]
         //开仓,需要新建仓位
         if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
@@ -106,7 +104,7 @@ class PositionDataHandler : IPositionDataHandler {
             if(result.second){
                 sendPositionDataToView()
             }
-            Log.d("PositionDataHandler","handleRtnTrade open position result ${result.second}" )
+            Log.d("PositionHandler","handleRtnTrade open position result ${result.second}" )
         }else if(position != null && rtn.rspField.offsetFlag != CTPCombOffsetFlag.Open.offset){
             //平仓
             val result = position.onRtnTrade(rtn)
@@ -117,12 +115,12 @@ class PositionDataHandler : IPositionDataHandler {
             if(result.second){
                 sendPositionDataToView()
             }
-            Log.d("PositionDataHandler","handleRtnTrade close position result ${result.second}" )
+            Log.d("PositionHandler","handleRtnTrade close position result ${result.second}" )
         }
     }
 
     override fun handleRspQryPositionDetail(rsp: RspQryPositionDetail) {
-        Log.d("PositionDataHandler","handleRspQryPositionDetail --> ${rsp.rspField?.tradeID}")
+        Log.d("PositionHandler","handleRspQryPositionDetail --> ${rsp.rspField?.tradeID}")
         if (rsp.rspField != null && !Omits.isOmit(rsp.rspField?.tradeID)) {
             val positionKey = "${rsp.rspField?.instrumentID}"
             var position = positionCollection[positionKey]
@@ -156,7 +154,7 @@ class PositionDataHandler : IPositionDataHandler {
         }.forEach {
             result.addAll(it)
         }
-        Log.d("PositionDataHandler","result length --> ${result.size}")
+        Log.d("PositionHandler","result length --> ${result.size}")
         posLiveDat.postValue(ArrayList(result))
     }
 

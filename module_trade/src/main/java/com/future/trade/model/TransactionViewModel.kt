@@ -45,15 +45,6 @@ class TransactionViewModel : BaseViewModel<TradeApiRepository>(){
     }
 
     /**
-     *  查询委托
-     */
-    fun reqQryOrder(){
-        repository?.reqQryOrder()
-        isQueriedOrder = true
-        Log.d("TransactionViewModel","reqQryOrder")
-    }
-
-    /**
      * 查询成交
      */
     fun reqQryTrade(){

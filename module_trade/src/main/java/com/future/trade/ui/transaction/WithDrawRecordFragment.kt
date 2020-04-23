@@ -38,7 +38,6 @@ class WithDrawRecordFragment :BaseRecordFragment<RspOrderField,CommonWithDrawIte
                 viewModel?.reqOrderAction(reqField)
             }
         }
-        viewModel?.reqQryOrder()
         viewModel?.withDrawOrderLiveData?.observe(this, Observer{
             updateDataList(it)
         })

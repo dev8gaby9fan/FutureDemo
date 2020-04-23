@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.layout_item_position.view.scroller
  */
 class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemViewHolder>() {
     private val scrollViewList: MutableList<HorizontalScrollView> = ArrayList()
-    private var scrollX:Int =0
+    private var scrollViewScrollX: Int = 0
+
     companion object {
         @JvmStatic
         fun newInstance(): PositionRecordFragment = PositionRecordFragment().apply {
@@ -46,12 +47,7 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
         PositionHeadViewHolder(layoutInflater.inflate(R.layout.layout_item_position, parent, false))
 
     override fun onBindHeadViewHolder(holder: CommonPositionItemViewHolder) {
-        scrollViewList.add(holder.itemView.scroller)
-        holder.itemView.scroller.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            this@PositionRecordFragment.scrollX = scrollX
-        }
-        holder.itemView.scroller.scrollTo(scrollX,0)
-//        holder.itemView.tv
+        setupScrollView(holder)
     }
 
     override fun onBindItemViewHolder(holder: CommonPositionItemViewHolder, position: Int) {
@@ -69,9 +65,10 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
             posItem?.getOpenPositionProfit()?.toString() ?: Omits.OmitPrice
         holder.itemView.tv_pos_open_cost.text =
             posItem?.getOpenCost()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_today.text = posItem?.getAvailable()?.toString() ?: Omits.OmitPrice
+        holder.itemView.tv_pos_today.text =
+            posItem?.getTodayPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.tv_pos_yesterday.text =
-            posItem?.getAvailable()?.toString() ?: Omits.OmitPrice
+            posItem?.getYeterdayPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.tv_pos_spec.text = posItem?.getSpecPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.tv_pos_hedge.text =
             posItem?.getHedgePosition()?.toString() ?: Omits.OmitPrice
@@ -82,20 +79,7 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
             (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
             selectItem(position)
         }
-        //多个Item水平滚动实现
-        holder.itemView.scroller.setOnTouchListener { _, event ->
-            for (scrollView in scrollViewList) {
-                if (scrollView != holder.itemView.scroller) {
-                    scrollView.onTouchEvent(MotionEvent.obtain(event))
-                }
-            }
-            holder.itemView.scroller.onTouchEvent(event)
-        }
-        holder.itemView.scroller.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            this@PositionRecordFragment.scrollX = scrollX
-        }
-        scrollViewList.add(holder.itemView.scroller)
-        holder.itemView.scroller.scrollTo(scrollX,0)
+        setupScrollView(holder)
         holder.itemView.isSelected = posItem?.isSelected() ?: false
         val foregroundColorRes =
             if (holder.itemView.isSelected) R.color.color_pressed else R.color.white
@@ -104,20 +88,35 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
         posItem?.dataChanged(false)
     }
 
+    override fun onItemViewHodlerAttachedToWindow(holder: CommonPositionItemViewHolder) {
+        scrollViewList.add(holder.itemView.scroller)
+        holder.itemView.scroller.scrollTo(scrollViewScrollX, 0)
+    }
+
     override fun onItemViewHolderDetachedFromWindow(holder: CommonPositionItemViewHolder) {
         scrollViewList.remove(holder.itemView.scroller)
+    }
+
+    private fun setupScrollView(holder: CommonPositionItemViewHolder) {
+        holder.itemView.scroller.setOnScrollChangeListener { _, scrollX, scrollY, _, _ ->
+            for (scrollView in scrollViewList) {
+                scrollView.scrollTo(scrollX,scrollY)
+            }
+            scrollViewScrollX = scrollX
+        }
+        holder.itemView.scroller.scrollTo(scrollViewScrollX,0)
     }
 
     private fun selectItem(index: Int) {
         recordList.forEachIndexed { itemIndex, item ->
             item.setSelected(itemIndex == index)
         }
-        recordAdapter.notifyItemRangeChanged(1, recordList.size+1)
+        recordAdapter.notifyItemRangeChanged(1, recordList.size + 1)
     }
 }
 
-abstract class CommonPositionItemViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView)
+abstract class CommonPositionItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class PositionHeadViewHolder(itemView:View) : CommonPositionItemViewHolder(itemView)
+class PositionHeadViewHolder(itemView: View) : CommonPositionItemViewHolder(itemView)
 
 class PositionItemViewHolder(itemView: View) : CommonPositionItemViewHolder(itemView)

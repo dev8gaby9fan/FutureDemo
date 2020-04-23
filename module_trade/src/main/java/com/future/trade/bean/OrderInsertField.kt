@@ -87,7 +87,7 @@ class CTPOrderInsertField(val brokerId:String,val investorId:String,val instrume
     override fun toRtnOrderEvent(): RtnOrderEvent {
         val user = TradeApiProvider.providerCTPTradeApi().getCurrentUser()
         val rspOrderField = RspOrderField(brokerId,investorId,instrumentId,orderRef,userId,priceType.code,direction.direction,combOffset.offset.toString(),
-            hedge.text,limitPrice,volumeTotalOriginal,timeCondition.code,gtdDate,volumeCondition.code,minVolume,conditionType.code,
+            hedge.code.toString(),limitPrice,volumeTotalOriginal,timeCondition.code,gtdDate,volumeCondition.code,minVolume,conditionType.code,
             stopPrice?:0.0,forceCloseReason.code,isAutoSuspend,businessUnit?:Omits.OmitString,requestId,Omits.OmitString,
             exchangeId,Omits.OmitString,Omits.OmitString,instrumentId,Omits.OmitString,Omits.OmitInt,'0',Omits.OmitInt,
             Omits.OmitString,Omits.OmitInt,Omits.OmitString,'0',CTPOrderStatusType.STATUS_CUSTOME_SEND.code,'0',

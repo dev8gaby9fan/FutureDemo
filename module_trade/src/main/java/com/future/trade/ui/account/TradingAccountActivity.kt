@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class TradingAccountActivity : BaseActivity() {
     override fun layoutRes(): Int = R.layout.activity_trading_account
+    override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
     private var viewModel:TransactionViewModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

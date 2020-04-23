@@ -4,9 +4,9 @@
     <color name="colorPrimaryDark">#006d75</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="quote_green">#a0d911</color>
-    <color name="quote_red">#f5222d</color>
-    <color name="quote_white">#bfbfbf</color>
+    <color name="quote_green">#0ba44d</color>
+    <color name="quote_red">#F83B47</color>
+    <color name="quote_white">#E2E1E1</color>
     <color name="quote_count">#ffc53d</color>
 
     <color name="white">#ffffffff</color>

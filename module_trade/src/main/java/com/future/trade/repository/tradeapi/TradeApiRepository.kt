@@ -43,7 +43,13 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
                     is RtnOrderEvent -> transactionRepository.handleRtnOrderEvent(it)
                     is RspQryTradeEvent -> transactionRepository.handleRspQryTradeEvent(it)
                     is RtnTradeEvent -> transactionRepository.handleRtnTradeEvent(it)
-                    is RspQryPositionDetailEvent -> transactionRepository.handleRspQryPositionDetailEvent(it)
+                    is RspQryPositionDetailEvent -> {
+                        transactionRepository.handleRspQryPositionDetailEvent(it)
+                        if(it.rsp.bIsLast){
+                            //查委托记录，计算可用仓位
+                            reqQryOrder()
+                        }
+                    }
                     is RspQryTradingAccountEvent -> transactionRepository.handleRspQryTradingAccountEvent(it)
                     is RspUserLogoutEvent -> {}
                 }
@@ -73,7 +79,7 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         tradeApiSource.reqQryConfirmSettlement()
     }
 
-    fun reqQryOrder(){
+    private fun reqQryOrder(){
         tradeApiSource.reqQryOrder()
     }
 

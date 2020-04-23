@@ -1,7 +1,6 @@
 package com.future.trade.ui.transaction
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +15,6 @@ import com.future.trade.enums.CTPDirection
 import com.future.trade.enums.CTPHedgeType
 import com.future.trade.enums.CTPOrderStatusType
 import kotlinx.android.synthetic.main.layout_item_order.view.*
-import kotlinx.android.synthetic.main.layout_item_with_draw.view.tv_ins_name
 
 /**
  * 委托记录fragment
@@ -39,7 +37,6 @@ class OrderRecordFragment : BaseRecordFragment<RspOrderField,CommonOrderItemVH>(
     }
 
     override fun lazyLoading() {
-        viewModel?.reqQryOrder()
         viewModel?.orderLiveData?.observe(this, Observer {
             updateDataList(it)
         })
@@ -53,19 +50,7 @@ class OrderRecordFragment : BaseRecordFragment<RspOrderField,CommonOrderItemVH>(
         OrderRecordHeadVH(layoutInflater.inflate(R.layout.layout_item_order,parent,false))
 
     override fun onBindHeadViewHolder(holder: CommonOrderItemVH) {
-        holder.itemView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            scrollViewScrollX  = scrollX
-        }
-        holder.itemView.setOnTouchListener { v, event ->
-            for(scrollView in scrollViewList){
-                if(scrollView != holder.itemView){
-                    scrollView.onTouchEvent(MotionEvent.obtain(event))
-                }
-            }
-            holder.itemView.onTouchEvent(event)
-        }
-        holder.itemView.scrollTo(scrollViewScrollX,0)
-        scrollViewList.add(holder.itemView as HorizontalScrollView)
+        setUpHorizontalScrollView(holder)
     }
 
     override fun onBindItemViewHolder(holder: CommonOrderItemVH, position: Int) {
@@ -82,17 +67,22 @@ class OrderRecordFragment : BaseRecordFragment<RspOrderField,CommonOrderItemVH>(
         holder.itemView.tv_hedge.text = CTPHedgeType.from(itemRec.combHedgeFlag[0])?.text
         holder.itemView.tv_smsg.text = itemRec.statusMsg
         holder.itemView.tv_smsg.gravity = Gravity.CENTER_VERTICAL or Gravity.START
-        holder.itemView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            scrollViewScrollX  = scrollX
-        }
-        holder.itemView.setOnTouchListener { _, event ->
+
+        setUpHorizontalScrollView(holder)
+
+    }
+
+    private fun setUpHorizontalScrollView(holder:CommonOrderItemVH){
+        holder.itemView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             for(scrollView in scrollViewList){
-                if(scrollView != holder.itemView){
-                    scrollView.onTouchEvent(MotionEvent.obtain(event))
-                }
+                scrollView.scrollTo(scrollX,scrollY)
             }
-            holder.itemView.onTouchEvent(event)
+            scrollViewScrollX = scrollX
         }
+        holder.itemView.scrollTo(scrollViewScrollX,0)
+    }
+
+    override fun onItemViewHodlerAttachedToWindow(holder: CommonOrderItemVH) {
         holder.itemView.scrollTo(scrollViewScrollX,0)
         scrollViewList.add(holder.itemView as HorizontalScrollView)
     }

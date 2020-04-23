@@ -118,6 +118,14 @@ class InstrumentPosition : SimplePosition(){
         return longPosition.getHedgePosition() + shortPosition.getHedgePosition()
     }
 
+    override fun getTodayPosition(): Int {
+        return longPosition.getTodayPosition() + shortPosition.getTodayPosition()
+    }
+
+    override fun getYeterdayPosition(): Int {
+        return longPosition.getYeterdayPosition() + shortPosition.getYeterdayPosition()
+    }
+
     override fun getOpenCost(): Double {
         return longPosition.getOpenCost() + shortPosition.getOpenCost()
     }

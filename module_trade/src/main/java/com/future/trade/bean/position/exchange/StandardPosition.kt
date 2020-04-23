@@ -44,7 +44,7 @@ class StandardPosition : ExchangePosition(){
 
     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {
         //投机仓
-        return if (rsp.rspField!!.combHedgeFlag == CTPHedgeType.Speculation.text) {
+        return if (rsp.rspField!!.combHedgeFlag[0] == CTPHedgeType.Speculation.code) {
             handleRspQryOrderByDate(tdSpecPos, ydSpecPos, rsp)
         } else {
             handleRspQryOrderByDate(tdHedgePos, ydHedgePos, rsp)
@@ -60,7 +60,7 @@ class StandardPosition : ExchangePosition(){
     }
 
     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
-        return if (rtn.rspField.combHedgeFlag == CTPHedgeType.Speculation.text) {
+        return if (rtn.rspField.combHedgeFlag[0] == CTPHedgeType.Speculation.code) {
             handleRtnOrderByDate(tdSpecPos, ydSpecPos, rtn)
         } else {
             handleRtnOrderByDate(tdHedgePos, ydHedgePos, rtn)
@@ -77,7 +77,7 @@ class StandardPosition : ExchangePosition(){
 
     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
         //投机仓
-        return if(rsp.rspField?.combHedgeFlag == CTPHedgeType.Speculation.text){
+        return if(rsp.rspField!!.combHedgeFlag[0] == CTPHedgeType.Speculation.code){
             handleRspOrderInsertByDate(tdSpecPos,ydSpecPos,rsp)
         }else{
             handleRspOrderInsertByDate(tdHedgePos,ydHedgePos,rsp)

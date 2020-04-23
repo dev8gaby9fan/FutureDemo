@@ -28,6 +28,14 @@ class DirectionPosition : SimplePosition() {
         return exchangePosition?.getHedgePosition() ?: 0
     }
 
+    override fun getTodayPosition(): Int {
+        return exchangePosition?.getTodayPosition() ?: 0
+    }
+
+    override fun getYeterdayPosition(): Int {
+        return exchangePosition?.getYeterdayPosition() ?: 0
+    }
+
     override fun getOpenCost(): Double {
         return exchangePosition?.getOpenCost() ?: 0.0
     }

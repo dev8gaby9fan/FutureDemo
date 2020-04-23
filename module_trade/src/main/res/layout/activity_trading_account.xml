@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".ui.account.TradingAccountActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/title_toolbar"
@@ -22,7 +23,7 @@
             android:layout_height="match_parent"
             android:textSize="@dimen/abc_sp_18"
             android:textStyle="bold"
-            android:textColor="@color/dark_light"
+            android:textColor="@color/white"
             android:gravity="center"
             />
     </androidx.appcompat.widget.Toolbar>

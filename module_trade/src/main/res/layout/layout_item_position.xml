@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/abc_dp_40"
+    android:focusable="true"
     style="@style/SelectableItemBackground"
     android:divider="@drawable/divider_horizontal"
     android:showDividers="middle">
@@ -22,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:focusable="false"
         android:scrollbars="none">
         <LinearLayout
             android:layout_width="wrap_content"

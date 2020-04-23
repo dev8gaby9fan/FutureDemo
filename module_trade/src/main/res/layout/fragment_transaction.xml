@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     tools:context="com.future.trade.ui.transaction.TransactionFragment"
     android:orientation="vertical">
 
@@ -122,6 +121,7 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:background="@color/white"
         android:paddingTop="@dimen/abc_dp_10"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
@@ -406,11 +406,12 @@
             app:layout_constraintTop_toBottomOf="@id/ll_right"
             android:layout_marginTop="@dimen/abc_dp_8"
             android:layout_marginLeft="@dimen/abc_dp_5"
-            app:orderPrice="178"
             app:orderText="买入"
             app:combOffset="open"
             app:direction="buy"
-            android:background="@color/colorPrimary"
+            app:textColor="@color/white"
+            app:textSize="@dimen/abc_sp_16"
+            android:background="@color/quote_red"
             />
         <com.future.trade.widget.order.OpenPositionOrderButton
             android:id="@+id/btn_sell"
@@ -420,10 +421,12 @@
             app:layout_constraintRight_toLeftOf="@id/btn_close"
             app:layout_constraintTop_toTopOf="@id/btn_buy"
             android:layout_marginLeft="@dimen/abc_dp_5"
-            app:orderPrice="178"
             app:orderText="卖出"
             app:combOffset="open"
             app:direction="sell"
+            app:textColor="@color/white"
+            app:textSize="@dimen/abc_sp_16"
+            android:background="@color/quote_green"
             />
         <com.future.trade.widget.order.ClosePositionOrderButton
             android:id="@+id/btn_close"
@@ -434,11 +437,12 @@
             app:layout_constraintTop_toTopOf="@id/btn_buy"
             android:layout_marginRight="@dimen/abc_dp_5"
             android:layout_marginLeft="@dimen/abc_dp_5"
-            app:orderPrice="178"
             app:orderText="平仓"
             app:combOffset="close"
             app:direction="buy"
-            android:background="@color/colorPrimary"
+            app:textColor="@color/white"
+            app:textSize="@dimen/abc_sp_16"
+            android:background="@color/color_divider"
             />
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/nav_layer_trans"
@@ -453,7 +457,7 @@
             app:tabSelectedTextColor="@color/dark_deep"
             app:tabMode="fixed"
             android:background="?android:attr/windowBackground"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/abc_dp_10"
             android:layout_width="0dp"
             android:layout_height="@dimen/abc_dp_40"
             android:orientation="horizontal">

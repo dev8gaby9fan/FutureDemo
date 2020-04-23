@@ -60,7 +60,10 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
     fun getSpecPosition():Int
     //套保仓位数量
     fun getHedgePosition():Int
-
+    //获取昨仓数量
+    fun getYeterdayPosition():Int
+    //获取今仓数量
+    fun getTodayPosition():Int
     //开仓成本
     fun getOpenCost():Double
     //获取持仓成本
@@ -274,6 +277,14 @@ abstract class ExchangePosition : SimplePosition(){
 
     override fun getHedgePosition(): Int {
         return tdHedgePos.posVolume + ydHedgePos.posVolume
+    }
+
+    override fun getTodayPosition(): Int {
+        return tdSpecPos.posVolume + tdHedgePos.posVolume
+    }
+
+    override fun getYeterdayPosition(): Int {
+        return ydSpecPos.posVolume + ydHedgePos.posVolume
     }
 
     override fun getOpenCost(): Double {
