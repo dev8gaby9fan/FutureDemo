@@ -3,14 +3,13 @@ package com.future.trade.ui.account
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.ext.viewModelOf
 import com.future.trade.R
 import com.future.trade.model.TransactionViewModel
 import kotlinx.android.synthetic.main.activity_trading_account.*
-import kotlinx.android.synthetic.main.activity_trading_account.tv_avaliable
+import kotlinx.android.synthetic.main.activity_trading_account.tv_available
 import kotlinx.android.synthetic.main.activity_trading_account.tv_balance
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -43,7 +42,7 @@ class TradingAccountActivity : BaseActivity() {
                 tv_currency_id.text = it.currencyID
                 tv_balance.text = it.balance.toString()
                 tv_with_draw_quota.text = it.withDrawQuota.toString()
-                tv_avaliable.text = it.avaliable.toString()
+                tv_available.text = it.avaliable.toString()
                 tv_close_profit.text = it.closeProfit.toString()
                 tv_pos_profit.text = it.positionProfit.toString()
                 tv_margin.text = it.currMargin.toString()

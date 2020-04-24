@@ -3,6 +3,7 @@ package com.fsh.common.model
 import android.os.Parcelable
 import com.fsh.common.R
 import com.fsh.common.util.Omits
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 import java.util.*
@@ -23,16 +24,13 @@ import kotlin.collections.ArrayList
 //交易所信息
 @Parcelize
 data class ExchangeInfo(var name:String,var id:String,var sortKey:Int) :Parcelable{
-    private val insList:ArrayList<InstrumentInfo> by lazy{
-        ArrayList<InstrumentInfo>(20)
-    }
-    private val insMap:ConcurrentHashMap<String, InstrumentInfo> by lazy {
-        ConcurrentHashMap<String, InstrumentInfo>()
-    }
+    @IgnoredOnParcel
+    private val insList:ArrayList<InstrumentInfo> = ArrayList(20)
+    @IgnoredOnParcel
+    private val insMap:ConcurrentHashMap<String, InstrumentInfo> = ConcurrentHashMap()
 
-    private val productMap:ConcurrentHashMap<String, ProductInfo> by lazy{
-        ConcurrentHashMap<String, ProductInfo>()
-    }
+    @IgnoredOnParcel
+    private val productMap:ConcurrentHashMap<String, ProductInfo> = ConcurrentHashMap()
 
     fun addInstrument(ins: InstrumentInfo){
         insMap[ins.id] = ins
@@ -53,6 +51,12 @@ data class ExchangeInfo(var name:String,var id:String,var sortKey:Int) :Parcelab
             insList.sortWith(Comparator { ins1, ins2 -> ins1.sortkey.compareTo(ins2.sortkey) })
         }
         return insList
+    }
+
+    fun searchInstrument(key:String):List<InstrumentInfo>{
+        return getInstruments().filter{(it.py?.contains(key,true) ?: false)
+                || it.name.contains(key,true)
+                || it.pid.contains(key,false) }
     }
 }
 

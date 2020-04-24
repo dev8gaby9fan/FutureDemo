@@ -22,6 +22,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_account"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
@@ -38,7 +39,7 @@
                 <LinearLayout
                     android:id="@+id/ll_balance"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/ll_avaliable"
+                    app:layout_constraintRight_toLeftOf="@id/ll_available"
                     app:layout_constraintTop_toBottomOf="@id/tv_account_info"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -59,7 +60,7 @@
                         android:gravity="end"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/ll_avaliable"
+                    android:id="@+id/ll_available"
                     app:layout_constraintLeft_toRightOf="@id/ll_balance"
                     app:layout_constraintRight_toLeftOf="@id/ll_profit"
                     app:layout_constraintTop_toBottomOf="@id/tv_account_info"
@@ -75,7 +76,7 @@
                         android:text="@string/tv_avaliable"
                         android:textColor="@color/dark_light"/>
                     <TextView
-                        android:id="@+id/tv_avaliable"
+                        android:id="@+id/tv_available"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -84,7 +85,7 @@
 
                 <LinearLayout
                     android:id="@+id/ll_profit"
-                    app:layout_constraintLeft_toRightOf="@id/ll_avaliable"
+                    app:layout_constraintLeft_toRightOf="@id/ll_available"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_account_info"
                     android:paddingLeft="@dimen/abc_dp_5"
@@ -111,7 +112,7 @@
                     android:layout_height="@dimen/abc_dp_18"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_avaliable"
+                    app:layout_constraintTop_toBottomOf="@id/ll_available"
                     android:src="@drawable/ic_more"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>

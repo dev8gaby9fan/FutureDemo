@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SelectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/abc_dp_40"
+    android:paddingLeft="@dimen/abc_dp_15"
+    android:paddingRight="@dimen/abc_dp_15"
+    >
+
+
+    <TextView
+        android:id="@+id/tv_ins_name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textColor="@color/dark_light"
+        android:textSize="@dimen/abc_sp_16"
+        android:gravity="center_vertical"
+        tools:text="沪金2006"
+        />
+    <TextView
+        android:id="@+id/tv_ins_exchange"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textColor="@color/color_text_gray"
+        android:textSize="@dimen/abc_sp_14"
+        android:gravity="center_vertical|end"
+        android:drawableRight="@drawable/ic_star"
+        android:drawablePadding="@dimen/abc_dp_10"
+        tools:text="上期所"
+        />
+</LinearLayout>

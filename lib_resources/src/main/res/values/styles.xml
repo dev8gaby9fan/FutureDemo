@@ -18,6 +18,7 @@
 
     <style name="LaunchTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="SelectableItemTheme">
@@ -26,5 +27,20 @@
     <style name="SelectableItemBackground">
         <item name="android:theme">@style/SelectableItemTheme</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <!--标题与NavigationIcon的距离-->
+    <style name="Toolbar.Base" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
+    </style>
+    <!-- Toolbar标题文字 -->
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/abc_sp_14</item>
+    </style>
+    <!-- 搜索框 -->
+    <style name="Widget.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@drawable/ic_search</item>
+        <item name="searchHintIcon">@null</item>
     </style>
 </resources>

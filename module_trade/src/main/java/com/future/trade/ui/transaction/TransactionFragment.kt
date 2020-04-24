@@ -1,20 +1,15 @@
 package com.future.trade.ui.transaction
 
-import android.content.DialogInterface
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
@@ -43,7 +38,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_transaction.*
 import java.lang.IllegalArgumentException
-import java.text.NumberFormat
 
 @Route(path=ARouterPath.Page.PAGE_TRADE_MAIN)
 class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
@@ -143,7 +137,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
 
     private fun updateAccountDetails(account:RspTradingAccountField){
         tv_balance.text = NumberUtils.formatNum(account.balance.toString(),"0.01")
-        tv_avaliable.text = NumberUtils.formatNum(account.avaliable.toString(),"0.01")
+        tv_available.text = NumberUtils.formatNum(account.avaliable.toString(),"0.01")
         tv_profit.text = NumberUtils.formatNum(account.closeProfit.toString(),"0.01")
         tv_account_info.text = getString(R.string.tv_account_info,account.accountID,account.brokerID)
     }

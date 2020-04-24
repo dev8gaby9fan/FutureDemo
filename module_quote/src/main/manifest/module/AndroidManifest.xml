@@ -4,6 +4,11 @@
     package="com.future.quote">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application>
+
+        <activity android:name=".ui.search.InstrumentSearchActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            />
     </application>
 
 </manifest>

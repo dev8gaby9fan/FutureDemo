@@ -61,7 +61,11 @@ class QuoteInfoMgr {
      * 搜索合约
      */
     fun searchIns(key:String):List<InstrumentInfo>{
-        TODO()
+        val result:MutableList<InstrumentInfo> = ArrayList()
+        for(entity in exchangeMap){
+            result.addAll(entity.value.searchInstrument(key))
+        }
+        return result
     }
 
     fun getExchangeList():List<ExchangeInfo>{

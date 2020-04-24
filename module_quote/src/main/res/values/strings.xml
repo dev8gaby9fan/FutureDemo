@@ -4,4 +4,6 @@
     <string name="quote_last_presettle">最新/昨结</string>
     <string name="quote_up_down">涨跌</string>
     <string name="quote_pos_trade">成交/持仓</string>
+    <string name="quote_ins_search">搜索合约</string>
+    <string name="quote_search_hint">品种\\代码\\首字母</string>
 </resources>
