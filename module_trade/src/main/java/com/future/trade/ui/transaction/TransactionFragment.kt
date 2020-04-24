@@ -1,5 +1,6 @@
 package com.future.trade.ui.transaction
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.Menu
@@ -9,7 +10,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.facade.callback.NavigationCallback
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.ext.viewModelOf
@@ -45,6 +49,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     private lateinit var fragmentList:List<BaseRecordFragment<*,*>>
     private lateinit var transactionInputHelper: TransactionInputHelper
     private lateinit var altOrderInsert:OrderInsertNoticeDialog
+    private val REQ_SEARCH_INS = 100
     private var orderIns:InstrumentInfo? = null
     var viewModel: TransactionViewModel? = null
     private val disposable:CompositeDisposable = CompositeDisposable()
@@ -119,6 +124,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         btn_buy.setOnClickListener(this)
         btn_sell.setOnClickListener(this)
         btn_close.setOnClickListener(this)
+        rl_instrument.setOnClickListener(this)
         future_keyboard.setFutureKeyboardListener(transactionInputHelper)
     }
 
@@ -222,7 +228,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     }
 
     override fun onClick(v: View?) {
-        Log.d("TransactionFragment","onClick $v")
+
         if(v is OrderButton){
             try{
                 val filed = v.performOrderInsert(transactionInputHelper.getOrderVolume())
@@ -234,6 +240,10 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
             }catch (e:IllegalArgumentException){
                 Snackbar.make(v,e.message!!,Snackbar.LENGTH_SHORT).show()
             }
+            return
+        }
+        when(v?.id){
+            R.id.rl_instrument-> toSearchInstrument()
         }
     }
 
@@ -285,19 +295,40 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.action_check_out){
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.trade_system_notice)
-                .setMessage(R.string.trade_check_out_msg)
-                .setNegativeButton(R.string.tv_cancel){dialog,_->
-                    dialog.dismiss()
-                }
-                .setPositiveButton(R.string.tv_ensure){ dialog,_->
-                    viewModel?.reqUserLogoug()
-                    dialog.dismiss()
-                }.show()
-            return true
+        when(item.itemId){
+            R.id.action_check_out-> showLogoutDialog()
+            R.id.action_search_ins-> toSearchInstrument()
         }
-        return super.onOptionsItemSelected(item)
+        return true
+    }
+
+    private fun showLogoutDialog(){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.trade_system_notice)
+            .setMessage(R.string.trade_check_out_msg)
+            .setNegativeButton(R.string.tv_cancel){dialog,_->
+                dialog.dismiss()
+            }
+            .setPositiveButton(R.string.tv_ensure){ dialog,_->
+                viewModel?.reqUserLogoug()
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun toSearchInstrument(){
+        ARouter.getInstance()
+            .build(ARouterPath.Page.PAGE_INS_SEARCH)
+            .navigation(activity,REQ_SEARCH_INS)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == REQ_SEARCH_INS && resultCode == Activity.RESULT_OK){
+            val insId = data?.getStringExtra("SELECT_INS_ID")
+            val instrument =
+                ARouterUtils.getQuoteService().getInstrumentById(insId ?: Omits.OmitString)
+            if(instrument != null){
+                switchOrderIns(instrument)
+            }
+        }
     }
 }

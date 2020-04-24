@@ -1,5 +1,6 @@
 package com.future.main.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -85,5 +86,10 @@ class MainActivity : BaseActivity() {
         })
         val adapter = CommonFragmentPagerAdapter(supportFragmentManager, pageList)
         fgt_container.adapter = adapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        pageList[fgt_container.currentItem].onActivityResult(requestCode,resultCode,data)
     }
 }

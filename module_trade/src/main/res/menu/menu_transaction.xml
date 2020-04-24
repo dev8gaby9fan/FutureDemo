@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_check_out"
-        android:title="@string/trade_check_out"
+    <item
+        android:id="@+id/action_check_out"
         android:icon="@drawable/ic_check_out"
-        app:showAsAction="always"/>
+        android:title="@string/trade_check_out"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_search_ins"
+        android:icon="@drawable/ic_search"
+        android:title="搜索合约"
+        app:showAsAction="ifRoom" />
 </menu>

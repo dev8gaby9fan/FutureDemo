@@ -142,7 +142,7 @@ class InstrumentSearchActivity : BaseActivity() {
             holder.itemView.tv_ins_exchange.text = QuoteInfoMgr.mgr.getExchange(ins.eid).name
             holder.itemView.setOnClickListener {
                 intent.putExtra(SELECT_INS_ID,ins.id)
-                setResult(Activity.RESULT_OK)
+                setResult(Activity.RESULT_OK,intent)
                 finish()
             }
         }

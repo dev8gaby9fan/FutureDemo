@@ -1,11 +1,9 @@
 package com.future.quote.ui.main
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -17,13 +15,16 @@ import com.fsh.common.ext.findFragmentById
 import com.fsh.common.ext.viewModelOf
 import com.fsh.common.model.ARouterPath
 import com.fsh.common.util.ARouterUtils
+import com.fsh.common.util.SnackbarUtils
 import com.future.quote.R
 import com.future.quote.event.BaseEvent
 import com.future.quote.service.QuoteInfoMgr
 import com.future.quote.ui.search.InstrumentSearchActivity
 import com.future.quote.viewmodel.QuoteMainViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_quote.*
 import kotlinx.android.synthetic.main.fragment_quote_main.*
+import java.lang.Exception
 
 /**
  * Created by devFan
@@ -42,6 +43,11 @@ class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
     private lateinit var quoteMainViewModel:QuoteMainViewModel
     private lateinit var menuFragment: IDrawerMenuFragment
     private lateinit var contentFragment: IContentFragment
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.fitsSystemWindows = true
+    }
 
     override fun lazyLoading() {
         val tradeService = ARouterUtils.getTradeService()
@@ -104,9 +110,18 @@ class QuoteMainFragment : BaseLazyFragment(),MenuEventListener{
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_search){
-            startActivity(Intent(activity,InstrumentSearchActivity::class.java))
+//            startActivity(Intent(activity,InstrumentSearchActivity::class.java))
+            testSnackbar()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun testSnackbar(){
+        try{
+            SnackbarUtils.show(requireActivity(),"测试消息",Snackbar.LENGTH_SHORT)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 }
 
