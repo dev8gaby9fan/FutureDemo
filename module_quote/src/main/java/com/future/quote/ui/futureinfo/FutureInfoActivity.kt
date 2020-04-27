@@ -43,6 +43,14 @@ class FutureInfoActivity : BaseActivity(){
     }
 
     private fun initViews(instrumentId:String){
+        setSupportActionBar(toolbar)
+        supportActionBar.apply {
+            this?.setHomeButtonEnabled(true)
+            this?.setHomeAsUpIndicator(R.drawable.ic_back)
+            this?.setDefaultDisplayHomeAsUpEnabled(true)
+            this?.setDisplayShowTitleEnabled(false)
+        }
+
         val tabTitles = resources.getStringArray(R.array.quote_future_tabs)
         fragments.add(FutureChartsFragment.newInstance(instrumentId))
         fragments.add(FutureInformationFragment.newInstance(instrumentId))
