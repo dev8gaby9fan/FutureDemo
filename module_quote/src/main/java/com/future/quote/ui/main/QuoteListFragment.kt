@@ -24,6 +24,7 @@ import com.fsh.common.util.Omits
 import com.fsh.common.websocket.FWebSocket
 import com.future.quote.R
 import com.future.quote.service.QuoteInfoMgr
+import com.future.quote.ui.futureinfo.FutureInfoActivity
 import com.future.quote.viewmodel.QuoteListViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -88,18 +89,19 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
     }
     //行情列表Item点击处理
     private fun handleItemClick(pos:Int){
-        val tradeService = ARouterUtils.getTradeService()
-        tradeService.setTradeIns(insList[pos])
+//        val tradeService = ARouterUtils.getTradeService()
+//        tradeService.setTradeIns(insList[pos])
         //没有登录就跳转到登录界面
-        if(!tradeService.isTradingLogin()){
-            ARouter.getInstance()
-                .build(ARouterPath.Page.PAGE_TRADE_LOGIN)
-                .navigation(context)
-        }else{
-            //切换到交易界面
-            ARouterUtils.getMainService()
-                .switchTabPage(MainService.PAGE_TRADE)
-        }
+//        if(!tradeService.isTradingLogin()){
+//            ARouter.getInstance()
+//                .build(ARouterPath.Page.PAGE_TRADE_LOGIN)
+//                .navigation(context)
+//        }else{
+//            //切换到交易界面
+//            ARouterUtils.getMainService()
+//                .switchTabPage(MainService.PAGE_TRADE)
+//        }
+        FutureInfoActivity.startActivity(requireContext(),insList[pos].id)
     }
 
     private fun initDatas() {

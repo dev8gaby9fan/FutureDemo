@@ -6,4 +6,19 @@
     <string name="quote_pos_trade">成交/持仓</string>
     <string name="quote_ins_search">搜索合约</string>
     <string name="quote_search_hint">品种\\代码\\首字母</string>
+    <string name="quote_tv_buy_side">买盘</string>
+    <string name="quote_tv_sell_side">卖盘</string>
+    <string name="quote_quote_high">最高</string>
+    <string name="quote_quote_low">最低</string>
+    <string name="quote_quote_vol">成交量</string>
+    <string name="quote_quote_open">今开</string>
+    <string name="quote_quote_pre_close">昨收</string>
+    <string name="quote_quote_pre_settlement">昨结</string>
+    <string name="quote_quote_price_avg">均价</string>
+    <string name="quote_quote_pos_vol">持仓量</string>
+    <string name="quote_quote_oi">日增量</string>
+    <string-array name="quote_future_tabs">
+        <item>行情</item>
+        <item>资讯</item>
+    </string-array>
 </resources>

@@ -16,7 +16,7 @@ class ARouterPath {
         companion object{
             //市场界面
             const val PAGE_QUOTE_MAIN = "/quote/main"
-            //K线 TODO 暂时没有
+            //K线
             const val PAGE_QUOTE_KLINE = "/quote/kline"
             //搜索合约
             const val PAGE_INS_SEARCH = "/quote/search"

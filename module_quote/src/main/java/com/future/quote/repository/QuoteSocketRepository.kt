@@ -1,6 +1,5 @@
 package com.future.quote.repository
 
-import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,18 +10,18 @@ import com.fsh.common.util.Omits
 import com.fsh.common.websocket.*
 import com.future.quote.BuildConfig
 import com.future.quote.data.PeekMessageFrame
+import com.future.quote.data.SetChartFrame
 import com.future.quote.data.SubscribeQuoteFrame
 import com.future.quote.data.WebSocketTextFrame
 import com.future.quote.service.DataParser
 import com.future.quote.service.WebSocketFrameParser
-import com.google.gson.Gson
+import com.future.quote.enums.ChartType
+import com.future.quote.enums.FutureChartType
 import com.google.gson.JsonParser
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import okio.ByteString
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -68,7 +67,7 @@ class QuoteSocketRepository : BaseRepository {
     }
 
     private fun handleTextMsg(text: String) {
-//        Log.e("QuoteSocketRepository","text msg $text")
+        Log.e("QuoteSocketRepository","text msg $text")
         webSocketFrameParser.parse(JsonParser().parse(text).asJsonObject)
         sendMessage(PeekMessageFrame())
     }
@@ -123,4 +122,18 @@ class QuoteSocketRepository : BaseRepository {
     }
 
     fun isSocketConnected():Boolean = socketStatus == FWebSocket.STATUS_CONNECTED
+
+    /**
+     * 请求曲线数据
+     */
+    fun setChart(instrumentId:String, type: FutureChartType, viewWidth:Int = 500){
+        val reqFrame1 = SetChartFrame(instrumentId,type.duration,0L, 86400000000000L)
+        val reqFrame = if(type.chartType == ChartType.Line){
+            SetChartFrame(instrumentId,type.duration,0, 86400000000000L)
+        }else{
+            SetChartFrame(instrumentId,type.duration,null,null,viewWidth)
+        }
+        Log.d("QuoteSocketRepository","setChart $type ${reqFrame.toJsonString()}")
+        sendMessage(reqFrame)
+    }
 }

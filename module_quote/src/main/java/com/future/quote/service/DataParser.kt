@@ -6,9 +6,17 @@ import com.fsh.common.ext.optInt
 import com.fsh.common.ext.optString
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
+import com.fsh.common.util.Omits
 import com.future.quote.event.BaseEvent.Companion.ACTION_LOAD_INS_OK
+import com.future.quote.model.DiffEntity
+import com.future.quote.model.KLineEntity
+import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import io.reactivex.subjects.Subject
+import java.lang.Exception
+import java.lang.reflect.Field
 
 /**
  * Created by devFan
@@ -32,12 +40,12 @@ class InstrumentParser : DataParser<Int> {
     companion object {
         private val supportClassType = arrayOf("FUTURE_CONT", "FUTURE")
         private val supportedExchange = mapOf(
-            "CFFEX" to Pair(5,"中金所"),
-            "DCE" to Pair(4,"大商所"),
-            "SHFE" to Pair(1,"上期所"),
-            "INE" to Pair(2,"能源所"),
-            "CZCE" to Pair(3,"郑商所"),
-            "KQ" to Pair(0,"主力合约")
+            "CFFEX" to Pair(5, "中金所"),
+            "DCE" to Pair(4, "大商所"),
+            "SHFE" to Pair(1, "上期所"),
+            "INE" to Pair(2, "能源所"),
+            "CZCE" to Pair(3, "郑商所"),
+            "KQ" to Pair(0, "主力合约")
         )
 
 
@@ -48,7 +56,7 @@ class InstrumentParser : DataParser<Int> {
             return "UnKnown"
         }
 
-        fun getExchangeSortKey(id:String):Int{
+        fun getExchangeSortKey(id: String): Int {
             if (supportedExchange.containsKey(id)) {
                 return supportedExchange[id]!!.first
             }
@@ -97,7 +105,7 @@ class InstrumentParser : DataParser<Int> {
             instrument.maxMarketOrderVolume = subObj.optString("max_market_order_volume")
             instrument.maxLimitOrderVolume = subObj.optString("max_limit_order_volume")
 
-            when(classN){
+            when (classN) {
                 //期货普通合约格式
                 "FUTURE" -> {
                     instrument.isMainIns = false
@@ -174,10 +182,14 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
     companion object {
         private const val JSON_DATA = "data"
         private const val JSON_QUOTES = "quotes"
+        private const val JSON_KLINES = "klines"
+        private const val JSON_CHARTS = "charts"
     }
+
     private var quoteEntityPools: Pools.Pool<QuoteEntity> = Pools.SimplePool(50)
 
     override fun parse(json: JsonObject) {
+        //这里是拿到data对象里面的数据
         var jsonArray = json.get(JSON_DATA).asJsonArray
         for (jsonObj in jsonArray) {
             val keySet = jsonObj.asJsonObject.keySet()
@@ -185,6 +197,9 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
                 val dataJson = jsonObj.asJsonObject.get(key)
                 when (key) {
                     JSON_QUOTES -> parseQuoteReturn(dataJson.asJsonObject)
+                    JSON_KLINES -> parseKlineReturn(dataJson.asJsonObject)
+                    JSON_CHARTS -> parseChartReturn(dataJson.asJsonObject)
+                    else -> Log.d("QuoteParser", "json can't parse $key")
                     //TODO 这里未来还需要K线解析
                 }
             }
@@ -193,8 +208,8 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
 
     private fun parseQuoteReturn(jsonObj: JsonObject) {
         for (insId in jsonObj.keySet()) {
-            if(!jsonObj.get(insId).isJsonObject){
-                Log.d("QuoteParser","parseQuoteReturn ${jsonObj.get(insId)}")
+            if (!jsonObj.get(insId).isJsonObject) {
+                Log.d("QuoteParser", "parseQuoteReturn ${jsonObj.get(insId)}")
                 continue
             }
             val quoteDataObj = jsonObj.get(insId).asJsonObject
@@ -211,13 +226,90 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>) : DataParser<U
         }
     }
 
-    private fun obtainQuoteEntity(insId:String):QuoteEntity{
+    private fun obtainQuoteEntity(insId: String): QuoteEntity {
         return /*quoteEntityPools.acquire() ?: */QuoteEntity(insId)
+    }
+
+    private fun parseKlineReturn(jsonObj: JsonObject) {
+        Log.d("QuoteParser", "start to parse kline data $jsonObj")
+        for (insId in jsonObj.keySet()) {
+            if (Omits.isOmit(insId)) continue
+            val instrumentKLines = DiffEntity.getInstrumentKLineEntity(insId)
+            //klineDataByDuration里面的key是时间（60000000000），它里面有data对象
+            val insElement = jsonObj.remove(insId) ?: continue
+            val klineDataByDuration = insElement as JsonObject
+            for (duration in klineDataByDuration.keySet()) {
+                val klineEntityElement = klineDataByDuration.get(duration) ?: continue
+                val klineEntityJson = klineEntityElement as JsonObject
+                val kLineEntity = instrumentKLines[duration] ?: KLineEntity()
+                instrumentKLines[duration] = kLineEntity
+                Log.d("QuoteParser", "start to parse kline duration $duration")
+                for (klinePropertyName in klineEntityJson.keySet()) {
+                    try {
+                        val property = klineEntityJson.get(klinePropertyName)
+                        if (property !is JsonObject) {
+//                            val field =
+//                                KLineEntity::class.java.getDeclaredField(klinePropertyName)
+//                            field.isAccessible = true
+//                            field.set(kLineEntity, property)
+//                            klineEntityJson.optInt()
+                            setJsonValueToObjProperty(kLineEntity,property as JsonPrimitive,KLineEntity::class.java.getDeclaredField(klinePropertyName))
+                        } else {
+                            if (klinePropertyName == JSON_DATA) {
+                                Log.d("QuoteParser","start to parse kline data ")
+                                for (dataKey in property.keySet()) {
+                                    val dataEntity =
+                                        kLineEntity.data[dataKey] ?: KLineEntity.DataEntity()
+                                    kLineEntity.data[dataKey] = dataEntity
+                                    val dataJsonEle = property.get(dataKey) ?: continue
+                                    for (dataPropertyName in dataJsonEle.asJsonObject.keySet()) {
+                                        val dataProperty = property.get(dataPropertyName) ?: continue
+                                        setJsonValueToObjProperty(dataEntity,dataProperty as JsonPrimitive,KLineEntity.DataEntity::class.java.getDeclaredField(dataPropertyName))
+                                    }
+                                }
+                                Log.d("QuoteParser","parse kline data end DataEntity size ${kLineEntity.data.size}")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    Log.d(
+                        "QuoteParser",
+                        "end to parse kline duration $duration ${instrumentKLines.size}"
+                    )
+                }
+            }
+
+            Log.d("QuoteParser", "parse instrument kline over $insId ${instrumentKLines.size}")
+        }
+        Log.d("QuoteParser", "parse kline data end $jsonObj")
+    }
+
+    private fun setJsonValueToObjProperty(obj:Any, property: JsonPrimitive, field:Field){
+        field.isAccessible = true
+        if(property.isString){
+            field.set(obj,property.asString)
+        }else if(property.isNumber){
+            val numbProperty = property.asNumber
+            if(numbProperty is Int){
+                field.set(obj,property.asInt)
+            }else if(numbProperty is Double){
+                field.set(obj,property.asDouble)
+            }else if(numbProperty is Long){
+                field.set(obj,property.asLong)
+            }else if(numbProperty is Float){
+                field.set(obj,property.asFloat)
+            }else if(numbProperty is Byte){
+                field.set(obj,numbProperty.toByte())
+            }
+        }else if(property.isBoolean){
+            field.set(obj,property.asBoolean)
+        }
     }
 
 
     private fun parseChartReturn(jsonObj: JsonObject) {
-
+        Log.d("QuoteParser","parseChartReturn $jsonObj")
     }
 
 }
