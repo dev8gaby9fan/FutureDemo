@@ -40,6 +40,7 @@ enum class ChartType{
 }
 
 object FutureChartDuration{
+    const val _1MILLIS = 1000000
     private const val _1SECOND:Long = 1000000000
     const val _1MIN:Long = 60* _1SECOND
     const val _5MIN:Long = 5 * _1MIN

@@ -14,10 +14,10 @@ object DiffEntity {
         return map
     }
 
-    fun getChartEntity(instrumentId: String):ChartEntity{
-        val entity = charts[instrumentId] ?: ChartEntity()
-        if(!charts.containsKey(instrumentId)){
-            charts[instrumentId] = entity
+    fun getChartEntity(key: String):ChartEntity{
+        val entity = charts[key] ?: ChartEntity()
+        if(!charts.containsKey(key)){
+            charts[key] = entity
         }
         return entity
     }

@@ -3,4 +3,11 @@
     <declare-styleable name="ScrollableViewPager">
         <attr name="scrollable" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="CombinedChartView">
+        <attr name="chartType" format="enum">
+            <enum name="line" value="0"/>
+            <enum name="candle" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

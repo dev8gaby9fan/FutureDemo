@@ -5,6 +5,7 @@ import com.fsh.common.model.ExchangeInfo
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
 import com.future.quote.event.BaseEvent
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope
 import okhttp3.internal.connection.Exchange
@@ -30,13 +31,13 @@ class QuoteInfoMgr {
         }
     }
 
-    fun addInstrument(ins:InstrumentInfo){
+    fun addInstrument(ins:InstrumentInfo,tradingTime:JsonElement?){
         var exchange = exchangeMap[ins.eid]
         if(exchange == null){
             exchange = ExchangeInfo(InstrumentParser.getExchangeName(ins.eid),ins.eid,InstrumentParser.getExchangeSortKey(ins.eid))
             exchangeMap[ins.eid] = exchange
         }
-        exchange.addInstrument(ins)
+        exchange.addInstrument(ins,tradingTime)
     }
 
     fun getInstrument(insId:String,exchangeId:String? = null):InstrumentInfo?{

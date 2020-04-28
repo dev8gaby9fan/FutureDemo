@@ -18,4 +18,10 @@
     <color name="color_bg_gray">#e9e9e9</color>
     <color name="color_bg_gray_dark">#afafaf</color>
     <color name="color_text_gray">#9a9a9a</color>
+
+    <color name="color_chart_background">#ffffff</color>
+    <color name="color_chart_grid_background">#ffffff</color>
+    <color name="color_day_line">#5297d5</color>
+    <color name="color_avg_line">#f3cc45</color>
+    <color name="color_highlight">#000000</color>
 </resources>

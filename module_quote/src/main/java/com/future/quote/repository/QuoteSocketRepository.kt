@@ -17,6 +17,7 @@ import com.future.quote.service.DataParser
 import com.future.quote.service.WebSocketFrameParser
 import com.future.quote.enums.ChartType
 import com.future.quote.enums.FutureChartType
+import com.future.quote.model.KLineEntity
 import com.google.gson.JsonParser
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -36,13 +37,15 @@ import java.util.concurrent.atomic.AtomicReference
 class QuoteSocketRepository : BaseRepository {
     private val disposables: CompositeDisposable = CompositeDisposable()
     private var _statusData: MutableLiveData<Int> = MutableLiveData()
-    private var _quoteData: Subject<QuoteEntity> = PublishSubject.create<QuoteEntity>()
+    private var _quoteData: Subject<QuoteEntity> = PublishSubject.create()
+    private var _chartData:Subject<List<KLineEntity>> = PublishSubject.create()
     private var socketStatus:Int = FWebSocket.STATUS_CLOSED
     private val webSocketFrameParser:DataParser<Unit>  by lazy(mode=LazyThreadSafetyMode.SYNCHRONIZED){
-        WebSocketFrameParser(_quoteData)
+        WebSocketFrameParser(_quoteData,_chartData)
     }
     val statusData:LiveData<Int> = _statusData
     val quoteData = _quoteData
+    val chartData = _chartData
     private var preSubscribedQuoteFrame:AtomicReference<SubscribeQuoteFrame> = AtomicReference(SubscribeQuoteFrame(Omits.OmitString))
     private val webSocket: FWebSocket by lazy {
         FWebSocket().apply {

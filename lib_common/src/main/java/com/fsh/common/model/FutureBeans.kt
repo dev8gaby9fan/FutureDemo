@@ -3,6 +3,8 @@ package com.fsh.common.model
 import android.os.Parcelable
 import com.fsh.common.R
 import com.fsh.common.util.Omits
+import com.google.gson.Gson
+import com.google.gson.JsonElement
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -32,12 +34,16 @@ data class ExchangeInfo(var name:String,var id:String,var sortKey:Int) :Parcelab
     @IgnoredOnParcel
     private val productMap:ConcurrentHashMap<String, ProductInfo> = ConcurrentHashMap()
 
-    fun addInstrument(ins: InstrumentInfo){
+    fun addInstrument(ins: InstrumentInfo,tradingTime: JsonElement?){
         insMap[ins.id] = ins
         var product = getProduct(ins.pid)
         if(product == null){
             product = ProductInfo(ins.name, ins.pid, ins.eid)
             productMap[product.id] = product
+        }
+        if(tradingTime != null){
+            val tradingTimeObj = Gson().fromJson(tradingTime,TradingTime::class.java)
+            product.tradingTime = tradingTimeObj
         }
     }
 
@@ -62,7 +68,16 @@ data class ExchangeInfo(var name:String,var id:String,var sortKey:Int) :Parcelab
 
 //品种信息
 @Parcelize
-data class ProductInfo(var name:String,var id:String,var eid:String) : Parcelable
+class ProductInfo(var name:String,var id:String,var eid:String) : Parcelable{
+    var tradingTime:TradingTime? = null
+            set(value){
+                if(field == null){
+                    field = value
+                }
+            }
+}
+
+data class TradingTime(var day:List<List<String>>,var night:List<List<String>>)
 
 //合约信息
 @Parcelize

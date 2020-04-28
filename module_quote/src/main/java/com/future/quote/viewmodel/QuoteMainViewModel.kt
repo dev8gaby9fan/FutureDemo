@@ -44,16 +44,18 @@ class QuoteMainViewModel : BaseViewModel<QuoteHttpReposity>(){
         if(repository == null){
             return
         }
+        Log.e("QuoteMainViewModel","start down load instrument file")
         disposables.add(repository!!.loadInstruments()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe({
+                Log.e("QuoteMainViewModel","down load instrument file over,start to parse")
                 InstrumentParser().parse(it)
+                Log.e("QuoteMainViewModel","parse instrument file over")
                 //合约加载完成后，开始连接行情服务
                 _insEvent.postValue(BaseEvent(BaseEvent.ACTION_LOAD_INS_OK))
             },{
                 Log.e("QuoteMainViewModel","load ins fail",it)
-                //TODO dismissLoading
                 _insEvent.postValue(BaseEvent(BaseEvent.ACTION_LOAD_INS_FAIL))
             })
         )
