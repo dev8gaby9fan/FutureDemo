@@ -2,6 +2,7 @@ package com.fsh.common.widget.mpchart.render
 
 import android.graphics.Canvas
 import android.graphics.Path
+import android.util.Log
 import com.fsh.common.widget.mpchart.component.XAxisComponent
 import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.components.XAxis
@@ -84,7 +85,7 @@ class XAxisCurrentDayLineComponentRender(viewPortHandler: ViewPortHandler?, xAxi
         var labelWidth = 0
         var labelHeight = 0
         val count = (mXAxis as XAxisComponent).xLabels.size()
-
+        Log.d("XAxisCurrentDayLineRender","drawLabels lables count $count")
         for (i in 0 until count) {
             /*获取label对应key值，也就是x轴坐标0,60,121,182,242*/
             val ix = (mXAxis as XAxisComponent).xLabels.keyAt(i)

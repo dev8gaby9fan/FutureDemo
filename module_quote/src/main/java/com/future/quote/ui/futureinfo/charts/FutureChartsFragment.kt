@@ -61,6 +61,7 @@ class FutureChartsFragment : BaseLazyFragment(){
         for(tabIndex in 0 until tab_charts.tabCount){
             tab_charts.getTabAt(tabIndex)?.text = futureChartTypeList[tabIndex].title
         }
+        charts_container.offscreenPageLimit = tab_charts.tabCount
     }
 
     private fun loadDatas(instrumentId: String){

@@ -35,11 +35,11 @@ object Omits {
     }
 
     fun isOmit(fValue: Float): Boolean {
-        return fValue == OmitFloat
+        return fValue == OmitFloat || fValue.isNaN() ||fValue.isInfinite()
     }
 
     fun isOmit(dValue: Double?): Boolean {
-        return dValue == null || dValue == OmitDouble
+        return dValue == null || dValue == OmitDouble || dValue.isNaN() ||dValue.isInfinite()
     }
 
     fun isOmit(byValue: ByteArray?): Boolean {

@@ -9,6 +9,7 @@ import com.fsh.common.widget.mpchart.CombinedChartView
 import com.future.quote.R
 import com.future.quote.enums.FutureChartDuration
 import com.future.quote.model.KLineEntity
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
@@ -30,6 +31,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
     private var colorDayLine:Int = 0
     private var colorAvgLine:Int = 0
     private var xAxisLables:SparseArray<String> = SparseArray()
+    private var xValues:SparseArray<String> = SparseArray()
     private lateinit var dayLineData:ILineDataSet
     private lateinit var avgLineData:ILineDataSet
     private lateinit var oiLineData:ILineDataSet
@@ -53,11 +55,65 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
         secondChartView.setScaleEnabled(false)
         colorDayLine = resources.getColor(R.color.color_day_line)
         colorAvgLine = resources.getColor(R.color.color_avg_line)
+        initChartView()
     }
+
+    private fun initChartView(){
+        firstChartView.setViewPortOffsets(0F,0F,0F,1F)
+        val fXAxis = firstChartView.xAxis
+        fXAxis.position = XAxis.XAxisPosition.BOTTOM
+        fXAxis.setDrawLabels(false)
+        fXAxis.setDrawGridLines(false)
+        fXAxis.setDrawAxisLine(false)
+
+        val fAxisLeft = firstChartView.axisLeft
+        fAxisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        fAxisLeft.setDrawGridLines(false)
+        fAxisLeft.setDrawAxisLine(false)
+        fAxisLeft.setDrawLabels(true)
+        fAxisLeft.setLabelCount(3, true)
+//        fAxisLeft.enableGridDashedLine(3F, 6F, 0F)
+        fAxisLeft.valueFormatter = ChartViewYAxisValueFormatter(priceTick)
+        fAxisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+
+
+        val fAxisRight = firstChartView.axisRight
+        fAxisRight.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        fAxisRight.setDrawGridLines(false)
+        fAxisRight.setLabelCount(3,true)
+        fAxisRight.setDrawLabels(true)
+//        fAxisRight.enableGridDashedLine(3F,6F,0F)
+        fAxisRight.valueFormatter = ChartViewYAxisValueFormatter("0.01")
+
+        firstChartView.legend.isEnabled = false
+
+        secondChartView.setViewPortOffsets(0f, 0f, 0f, 30f)
+        val sXAxis = secondChartView.xAxis
+        sXAxis.position = XAxis.XAxisPosition.BOTTOM
+        sXAxis.setDrawLabels(true)
+        sXAxis.setDrawGridLines(false)
+        sXAxis.setDrawAxisLine(true)
+        sXAxis.textColor = textColor
+
+        val sAxisLeft = secondChartView.axisLeft
+        sAxisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        sAxisLeft.setDrawGridLines(false)
+        sAxisLeft.setLabelCount(2,true)
+        sAxisLeft.setDrawLabels(true)
+        sAxisLeft.enableGridDashedLine(3F,6F,0F)
+        sAxisLeft.valueFormatter = ChartViewYAxisValueFormatter("1")
+
+        val sAxisRight = secondChartView.axisRight
+        sAxisRight.setDrawGridLines(false)
+        sAxisRight.setDrawLabels(false)
+        sAxisRight.setDrawAxisLine(false)
+    }
+
     override fun drawChartLines(kLineEntity: KLineEntity) {
         Log.d("CurrentDayLineChartFragment","drawChartLines ${kLineEntity.instrumentId} ${kLineEntity.klineDuration} ${kLineEntity.data.size} isInit${(firstChartView.data == null || firstChartView.data.allData.isEmpty())}")
         if(firstChartView.data == null || firstChartView.data.allData.isEmpty()){
             drawInitChartLines(kLineEntity)
+            Log.d("CurrentDayLineChartFragment","drawChartLines firstChartView left Axis draw grid line  ${firstChartView.axisLeft.labelCount} ${firstChartView.axisLeft.isDrawGridLinesEnabled} ${firstChartView.axisLeft.isDrawAxisLineEnabled}")
         }else{
             drawUpdateChartLines(kLineEntity)
         }
@@ -103,7 +159,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
         secondCombinedData.setData(secondLineData)
         secondCombinedData.setData(secondBarData)
 
-        refreshChartLegend(lastIndex)
+        refreshLegend(lastIndex)
 
         firstChartView.data = firstCombinedData
         firstChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
@@ -121,14 +177,43 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
     }
     //更新数据
     private fun drawUpdateChartLines(kLineEntity: KLineEntity){
+        val newLastId = kLineEntity.last_id
+        for(index in lastIndex .. newLastId){
+            val dataEntity = kLineEntity.data[index.toString()] ?: continue
+            if(index == lastIndex){
+                sumVolume -= dataEntity.volume
+                sumPrice -= dataEntity.volume * dataEntity.close
+                dayLineData.removeEntryByXValue(index.toFloat())
+                dayLineData.removeEntryByXValue(index.toFloat())
+                avgLineData.removeEntryByXValue(index.toFloat())
+                volBarData.removeEntryByXValue(index.toFloat())
+                oiLineData.removeEntryByXValue(index.toFloat())
+            }
+            val mutableList = generateMutableEntries(index, dataEntity)
+            dayLineData.addEntry(mutableList[0])
+            avgLineData.addEntry(mutableList[1])
+            oiLineData.addEntry(mutableList[2])
+            volBarData.addEntry(mutableList[3] as BarEntry)
+        }
+        lastIndex = newLastId
+        refreshLegend(lastIndex)
+        firstChartView.data.notifyDataChanged()
+        firstChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
+        firstChartView.xAxis.axisMaximum = firstChartView.data.xMax + 0.35F
+        firstChartView.xAxis.axisMinimum = firstChartView.data.xMin - 0.35F
+        firstChartView.xAxis.xLabels = xAxisLables
+        firstChartView.invalidate()
 
+        secondChartView.data.notifyDataChanged()
+        secondChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
+        secondChartView.xAxis.axisMaximum = secondChartView.data.xMax + 0.35F
+        secondChartView.xAxis.axisMinimum = secondChartView.data.xMin - 0.35F
+        secondChartView.xAxis.xLabels = xAxisLables
+        secondChartView.invalidate()
     }
 
     private fun generateMutableEntries(index:Int,data:KLineEntity.DataEntity):List<Entry>{
         val entries:MutableList<Entry> = ArrayList()
-        calendar.timeInMillis = data.datetime / FutureChartDuration._1MILLIS
-        xAxisLables.put(index,DateUtils.formatDate(DateUtils.PATTERN_HHMM,calendar.time))
-
         sumVolume += data.volume
         sumPrice += data.close * data.volume
         val avg:Float = if(sumVolume == 0) 0F else sumPrice/sumVolume
@@ -136,7 +221,30 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
         entries.add(Entry(index.toFloat(),avg))
         entries.add(Entry(index.toFloat(),data.close_oi.toFloat()))
         entries.add(BarEntry(index.toFloat(),data.volume.toFloat()))
+        generateXAxisLabels(index,data.datetime)
         return entries
+    }
+
+    private fun generateXAxisLabels(index:Int,time:Long){
+        calendar.timeInMillis = time / FutureChartDuration._1MILLIS
+        val formatTime = DateUtils.formatDate(DateUtils.PATTERN_HHMM,calendar.time)
+        xValues.put(index,formatTime)
+        if(index == tradingDayStartId){
+            xAxisLables.put(index,formatTime)
+        }else if(index == tradingDayEndId){
+            //最后一个数据点时间为14:59:59或者02:59:59等，显示整点时间，需要+1分钟
+            calendar.timeInMillis +=  60000L
+            xAxisLables.put(index, DateUtils.formatDate(DateUtils.PATTERN_HHMM,calendar.time))
+        }else{
+            val preTimeS = xValues[index-1] ?: return
+            val preTime = DateUtils.parseDate(DateUtils.PATTERN_HHMM,preTimeS)?: return
+            val currentTime = DateUtils.parseDate(DateUtils.PATTERN_HHMM,formatTime) ?: return
+            //这中间出现中午收盘或者是盘中小憩的时间点，加上
+            if(currentTime.time - preTime.time != 60000L){
+                xAxisLables.put(index, formatTime)
+            }
+        }
+
     }
 
     private fun generateLineDataSet(entries:List<Entry>,lineColor:Int,lable:String,dependency: YAxis.AxisDependency,isHighlight:Boolean = false):ILineDataSet{
@@ -169,9 +277,5 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
             firstChartView.axisLeft.axisMaximum = (preSettlementPrice - lowValue).toFloat()
             firstChartView.axisRight.axisMaximum = (preSettlementPrice - lowValue).toFloat()
         }
-    }
-
-    private fun refreshChartLegend(index:Int){
-
     }
 }

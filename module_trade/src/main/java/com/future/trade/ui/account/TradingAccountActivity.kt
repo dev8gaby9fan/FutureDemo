@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.ext.viewModelOf
+import com.fsh.common.util.NumberUtils
 import com.future.trade.R
 import com.future.trade.model.TransactionViewModel
 import kotlinx.android.synthetic.main.activity_trading_account.*
@@ -40,29 +41,29 @@ class TradingAccountActivity : BaseActivity() {
             tradingAccountLiveData.observe(this@TradingAccountActivity, Observer {
                 dismissLoading()
                 tv_currency_id.text = it.currencyID
-                tv_balance.text = it.balance.toString()
-                tv_with_draw_quota.text = it.withDrawQuota.toString()
-                tv_available.text = it.avaliable.toString()
-                tv_close_profit.text = it.closeProfit.toString()
-                tv_pos_profit.text = it.positionProfit.toString()
-                tv_margin.text = it.currMargin.toString()
-                tv_frozen_margin.text = it.frozenMargin.toString()
-                tv_with_draw_money.text = it.withDraw.toString()
-                tv_deposit.text = it.deposit.toString()
-                tv_commission.text = it.commission.toString()
-                tv_frozen_commission.text = it.frozenCommission.toString()
-                tv_pre_fund_mortgage_in.text = it.preFundMortgageIn.toString()
-                tv_pre_fund_mortgage_out.text = it.preFundMortgageOut.toString()
-                tv_fund_mortgage_in.text = it.fundMortgageIn.toString()
-                tv_fund_mortgage_out.text = it.fundMortgageOut.toString()
-                tv_fund_mortgage_available.text = it.fundMortgageAvailable.toString()
-                tv_mortgageable_fund.text = it.mortgageableFund.toString()
-                tv_spec_product_margin.text = it.specProductMargin.toString()
-                tv_spec_product_frozen_margin.text = it.specProductFrozenMargin.toString()
-                tv_spec_product_commission.text = it.specProductCommission.toString()
-                tv_spec_product_frozen_commission.text = it.specProductFrozenCommission.toString()
-                tv_spec_product_position_profit.text = it.specProductPositionProfit.toString()
-                tv_spec_product_close_profit.text = it.specProductCloseProfit.toString()
+                tv_balance.text = NumberUtils.formatNum(it.balance.toString(),"0.001")
+                tv_with_draw_quota.text = NumberUtils.formatNum(it.withDrawQuota.toString(),"0.001")
+                tv_available.text = NumberUtils.formatNum(it.avaliable.toString(),"0.001")
+                tv_close_profit.text = NumberUtils.formatNum(it.closeProfit.toString(),"0.001")
+                tv_pos_profit.text = NumberUtils.formatNum(it.positionProfit.toString(),"0.001")
+                tv_margin.text = NumberUtils.formatNum(it.currMargin.toString(),"0.001")
+                tv_frozen_margin.text = NumberUtils.formatNum(it.frozenMargin.toString(),"0.001")
+                tv_with_draw_money.text = NumberUtils.formatNum(it.withDraw.toString(),"0.001")
+                tv_deposit.text = NumberUtils.formatNum(it.deposit.toString(),"0.001")
+                tv_commission.text = NumberUtils.formatNum(it.commission.toString(),"0.001")
+                tv_frozen_commission.text = NumberUtils.formatNum(it.frozenCommission.toString(),"0.001")
+                tv_pre_fund_mortgage_in.text = NumberUtils.formatNum(it.preFundMortgageIn.toString(),"0.001")
+                tv_pre_fund_mortgage_out.text = NumberUtils.formatNum(it.preFundMortgageOut.toString(),"0.001")
+                tv_fund_mortgage_in.text = NumberUtils.formatNum(it.fundMortgageIn.toString(),"0.001")
+                tv_fund_mortgage_out.text = NumberUtils.formatNum(it.fundMortgageOut.toString(),"0.001")
+                tv_fund_mortgage_available.text = NumberUtils.formatNum(it.fundMortgageAvailable.toString(),"0.001")
+                tv_mortgageable_fund.text = NumberUtils.formatNum(it.mortgageableFund.toString(),"0.001")
+                tv_spec_product_margin.text = NumberUtils.formatNum(it.specProductMargin.toString(),"0.001")
+                tv_spec_product_frozen_margin.text = NumberUtils.formatNum(it.specProductFrozenMargin.toString(),"0.001")
+                tv_spec_product_commission.text = NumberUtils.formatNum(it.specProductCommission.toString(),"0.001")
+                tv_spec_product_frozen_commission.text = NumberUtils.formatNum(it.specProductFrozenCommission.toString(),"0.001")
+                tv_spec_product_position_profit.text = NumberUtils.formatNum(it.specProductPositionProfit.toString(),"0.001")
+                tv_spec_product_close_profit.text = NumberUtils.formatNum(it.specProductCloseProfit.toString(),"0.001")
                 nav_title.text = getString(R.string.tv_account_info,it.accountID,it.brokerID)
             })
         }

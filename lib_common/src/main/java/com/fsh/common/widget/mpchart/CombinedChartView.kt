@@ -11,6 +11,7 @@ import com.fsh.common.widget.mpchart.component.YAxisComponent
 import com.fsh.common.widget.mpchart.render.*
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
@@ -61,13 +62,16 @@ class CombinedChartView : CombinedChart {
             YAxisCurrentDayLineComponentRender(mViewPortHandler,mAxisLeft,mLeftAxisTransformer)
         else
             YAxisKlineComponentRender(mViewPortHandler,mAxisLeft,mLeftAxisTransformer)
+
         mAxisRight = YAxisComponent(YAxis.AxisDependency.RIGHT)
         mAxisRendererRight = if(chartType == CHART_TYPE_LINE)
             YAxisCurrentDayLineComponentRender(mViewPortHandler,mAxisRight,mRightAxisTransformer)
         else
             YAxisKlineComponentRender(mViewPortHandler,mAxisRight,mRightAxisTransformer)
+
         mLegend = LegendComponent()
         mLegendRenderer = LegendComponentRender(viewPortHandler,mLegend)
+
         mRenderer = CombinedChartViewRender(this,mAnimator,mViewPortHandler)
     }
 
@@ -81,7 +85,6 @@ class CombinedChartView : CombinedChart {
         setNoDataText("正在加载数据中")
         isAutoScaleMinMaxEnabled = true
         isDragEnabled = true
-        setViewPortOffsets(0F,0F,0F,1F)
         isDoubleTapToZoomEnabled = false
         isHighlightPerDragEnabled = false
         isHighlightPerTapEnabled = false

@@ -2,6 +2,7 @@ package com.fsh.common.widget.mpchart.render
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.fsh.common.R
 import com.fsh.common.util.CommonUtil
@@ -68,7 +69,7 @@ class YAxisCurrentDayLineComponentRender(viewPortHandler: ViewPortHandler?, yAxi
             }
             xPos = mViewPortHandler.offsetLeft()
 
-
+            Log.d("YAxisCurrentDayLineComponentRender","${hashCode()} ${mYAxis.hashCode()} ${mYAxis.mEntryCount} ${mYAxis.labelCount} ${mYAxis.axisDependency}")
         } else {
 
             if (labelPosition == YAxis.YAxisLabelPosition.OUTSIDE_CHART) {

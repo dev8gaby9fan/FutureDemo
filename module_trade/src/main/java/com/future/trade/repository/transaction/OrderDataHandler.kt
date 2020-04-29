@@ -62,11 +62,13 @@ class OrderDataHandler : IOrderHandler {
     }
 
     override fun handleRtnOrder(rtn: RtnOrder) {
+        Log.d("OrderDataHandler","handleRtnOrder ${rtn.rspField.statusMsg} ${rtn.rspField.orderStatus} ${rtn.rspField.orderSubmitStatus}")
         dealRspOrderFieldData(rtn.rspField)
         postValues()
     }
     //只有报单失败才有报单响应
     override fun handleRspOrderInsert(rsp: RspOrderInsert) {
+        Log.d("OrderDataHandler","handleRspOrderInsert ${rsp.rspInfoField.errorID} ${rsp.rspInfoField.errorMsg}")
         val user = TradeApiProvider.providerCTPTradeApi().getCurrentUser()!!
         val key = "${user.frontID}${user.sessionID}${rsp.rspField?.orderRef}${rsp.rspField?.instrumentID}${rsp.rspField?.userID}"
         val order = orderDataContainer[key]
