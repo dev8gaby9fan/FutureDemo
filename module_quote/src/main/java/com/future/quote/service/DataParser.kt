@@ -203,7 +203,9 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
                 when (key) {
                     JSON_QUOTES -> parseQuoteReturn(dataJson.asJsonObject)
                     JSON_KLINES -> klineList = parseKlineReturn(dataJson.asJsonObject)
-                    JSON_CHARTS -> parseChartReturn(dataJson.asJsonObject)
+                    JSON_CHARTS -> {
+                        parseChartReturn(dataJson.asJsonObject,klineList!![0].instrumentId,klineList[0].klineDuration)
+                    }
                     JSON_MDHIS_MORE_DATA -> {}
                     else -> Log.d("QuoteParser", "json can't parse $key")
                 }
@@ -285,7 +287,6 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
 
     private fun setJsonValueToObjProperty(obj:Any, property: JsonPrimitive, field:Field){
         field.isAccessible = true
-//
         when(field.type.toString()){
             "int" ->  field.set(obj,property.asInt)
             "float" -> field.set(obj,property.asFloat)
@@ -298,9 +299,10 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
     }
 
 
-    private fun parseChartReturn(jsonObj: JsonObject) {
+    private fun parseChartReturn(jsonObj: JsonObject,instrumentId:String,duration:Long) {
+        Log.d("QuoteParser","start to parse Chart return $jsonObj")
         val chartIdJson = jsonObj.get(JSON_CHART_ID) ?: return
-        val chartEntity = DiffEntity.getChartEntity(JSON_CHART_ID)
+        val chartEntity = DiffEntity.getChartEntity("$instrumentId:$duration")
         for(key in chartIdJson.asJsonObject.keySet()){
             if(key == JSON_STATE && chartIdJson.asJsonObject.get(key) != null){
                 val stateJson = chartIdJson.asJsonObject.getAsJsonObject(key)

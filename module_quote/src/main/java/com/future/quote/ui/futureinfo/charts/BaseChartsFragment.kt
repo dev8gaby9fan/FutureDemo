@@ -20,7 +20,10 @@ import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.quote_fragment_current_day_line_chart.*
 
@@ -37,6 +40,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     protected var highlightColor:Int = 0
     protected var preSettlementPrice:Float = Float.NaN
     protected var textColor:Int = 0
+    protected var colorAvgLine:Int = 0
 
     protected var calendar:Calendar = Calendar.getInstance()
     protected var priceTick:String? = null
@@ -67,6 +71,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         quoteWhite = quoteGreen
         highlightColor = resources.getColor(R.color.color_highlight)
         textColor = resources.getColor(R.color.color_text_gray)
+        colorAvgLine = resources.getColor(R.color.color_avg_line)
     }
 
     private  fun initData(){
@@ -110,6 +115,22 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         secondChartView.legend.setCustom(secondLegendEntries)
         secondChartView.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
         secondChartView.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+    }
+
+    protected fun generateLineDataSet(entries:List<Entry>, lineColor:Int, lable:String, dependency: YAxis.AxisDependency, isHighlight:Boolean = false): ILineDataSet {
+        val lineDataSet = LineDataSet(entries,lable)
+        lineDataSet.color = lineColor
+        lineDataSet.lineWidth = 0.8F
+        lineDataSet.setDrawCircles(false)
+        lineDataSet.setDrawCircleHole(false)
+        lineDataSet.setDrawValues(false)
+        lineDataSet.axisDependency = dependency
+        lineDataSet.isHighlightEnabled = isHighlight
+        if(isHighlight){
+//            refreshYAxisRange(lineDataSet)
+            lineDataSet.highlightLineWidth = 0.8F
+        }
+        return lineDataSet
     }
 
     /**

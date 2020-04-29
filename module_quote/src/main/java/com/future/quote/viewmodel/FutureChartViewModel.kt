@@ -1,5 +1,6 @@
 package com.future.quote.viewmodel
 
+import androidx.core.util.Consumer
 import com.fsh.common.base.BaseViewModel
 import com.fsh.common.util.Omits
 import com.future.quote.enums.FutureChartType

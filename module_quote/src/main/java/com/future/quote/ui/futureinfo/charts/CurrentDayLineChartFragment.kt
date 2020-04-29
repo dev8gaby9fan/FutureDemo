@@ -29,7 +29,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
     }
     //均线和分时曲线颜色
     private var colorDayLine:Int = 0
-    private var colorAvgLine:Int = 0
+
     private var xAxisLables:SparseArray<String> = SparseArray()
     private var xValues:SparseArray<String> = SparseArray()
     private lateinit var dayLineData:ILineDataSet
@@ -54,7 +54,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
         firstChartView.setScaleEnabled(false)
         secondChartView.setScaleEnabled(false)
         colorDayLine = resources.getColor(R.color.color_day_line)
-        colorAvgLine = resources.getColor(R.color.color_avg_line)
+
         initChartView()
     }
 
@@ -245,22 +245,6 @@ class CurrentDayLineChartFragment : BaseChartsFragment(){
             }
         }
 
-    }
-
-    private fun generateLineDataSet(entries:List<Entry>,lineColor:Int,lable:String,dependency: YAxis.AxisDependency,isHighlight:Boolean = false):ILineDataSet{
-        val lineDataSet = LineDataSet(entries,lable)
-        lineDataSet.color = lineColor
-        lineDataSet.lineWidth = 0.8F
-        lineDataSet.setDrawCircles(false)
-        lineDataSet.setDrawCircleHole(false)
-        lineDataSet.setDrawValues(false)
-        lineDataSet.axisDependency = dependency
-        lineDataSet.isHighlightEnabled = isHighlight
-        if(isHighlight){
-//            refreshYAxisRange(lineDataSet)
-            lineDataSet.highlightLineWidth = 0.8F
-        }
-        return lineDataSet
     }
 
     private fun refreshYAxisRange(lineDataSet:ILineDataSet){

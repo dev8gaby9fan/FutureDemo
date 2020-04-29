@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.fsh.common.util.Omits
 
 class KLineEntity{
-    var last_id:Int = Omits.OmitInt
+    var last_id:Int = -1
     var trading_day_start_id:Int = Omits.OmitInt
     var trading_day_end_id:Int = Omits.OmitInt
     var data:MutableMap<String,DataEntity> = HashMap()
