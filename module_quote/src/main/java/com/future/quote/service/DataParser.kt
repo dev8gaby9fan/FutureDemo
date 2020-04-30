@@ -11,10 +11,7 @@ import com.future.quote.event.BaseEvent.Companion.ACTION_LOAD_INS_OK
 import com.future.quote.model.ChartEntity
 import com.future.quote.model.DiffEntity
 import com.future.quote.model.KLineEntity
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import com.google.gson.*
 import io.reactivex.subjects.Subject
 import java.lang.Exception
 import java.lang.reflect.Field
@@ -186,7 +183,7 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
         private const val JSON_KLINES = "klines"
         private const val JSON_CHARTS = "charts"
         private const val JSON_MDHIS_MORE_DATA = "mdhis_more_data"
-        private const val JSON_CHART_ID = "CHART_ID"
+        const val JSON_CHART_ID = "CHART_ID"
         private const val JSON_STATE = "state"
     }
 
@@ -203,9 +200,7 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
                 when (key) {
                     JSON_QUOTES -> parseQuoteReturn(dataJson.asJsonObject)
                     JSON_KLINES -> klineList = parseKlineReturn(dataJson.asJsonObject)
-                    JSON_CHARTS -> {
-                        parseChartReturn(dataJson.asJsonObject,klineList!![0].instrumentId,klineList[0].klineDuration)
-                    }
+                    JSON_CHARTS -> parseChartReturn(dataJson.asJsonObject)
                     JSON_MDHIS_MORE_DATA -> {}
                     else -> Log.d("QuoteParser", "json can't parse $key")
                 }
@@ -241,12 +236,13 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
     }
 
     private fun parseKlineReturn(jsonObj: JsonObject):List<KLineEntity>{
+        Log.d("QuoteParser","parseKlineReturn $jsonObj")
         var returnParams = ArrayList<KLineEntity>()
         for (insId in jsonObj.keySet()) {
             if (Omits.isOmit(insId)) continue
             val instrumentKLines = DiffEntity.getInstrumentKLineEntity(insId)
             //klineDataByDuration里面的key是时间（60000000000），它里面有data对象
-            val insElement = jsonObj.remove(insId) ?: continue
+            val insElement = jsonObj.get(insId) ?: continue
             val klineDataByDuration = insElement as JsonObject
             for (duration in klineDataByDuration.keySet()) {
                 val klineEntityElement = klineDataByDuration.get(duration) ?: continue
@@ -299,11 +295,12 @@ class QuoteParser(private var quoteLieData: Subject<QuoteEntity>,private var cha
     }
 
 
-    private fun parseChartReturn(jsonObj: JsonObject,instrumentId:String,duration:Long) {
+    private fun parseChartReturn(jsonObj: JsonObject) {
         Log.d("QuoteParser","start to parse Chart return $jsonObj")
         val chartIdJson = jsonObj.get(JSON_CHART_ID) ?: return
-        val chartEntity = DiffEntity.getChartEntity("$instrumentId:$duration")
+        val chartEntity = DiffEntity.getChartEntity(JSON_CHART_ID)
         for(key in chartIdJson.asJsonObject.keySet()){
+            if(chartIdJson.asJsonObject.get(key) is JsonNull) return
             if(key == JSON_STATE && chartIdJson.asJsonObject.get(key) != null){
                 val stateJson = chartIdJson.asJsonObject.getAsJsonObject(key)
                 for(stateType in stateJson.keySet()){

@@ -18,10 +18,8 @@ class FutureChartViewModel : BaseViewModel<QuoteSocketRepository>(){
         repository = QuoteRepositoryProvider.providerSocketRepository()
         chartData = repository!!.chartData.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map {
-                it.find {klineEntity->
-                    klineEntity.instrumentId == instrumentId && klineEntity.klineDuration == type?.duration }
-            }
+            .switchMap {Observable.fromIterable(it) }
+            .filter{it.instrumentId == instrumentId && it.klineDuration == type?.duration}
     }
 
     private var instrumentId:String? = null

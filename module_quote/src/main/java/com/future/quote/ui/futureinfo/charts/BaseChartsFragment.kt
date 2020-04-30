@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.View
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.viewModelOf
+import com.fsh.common.util.CommonUtil
 import com.fsh.common.util.NumberUtils
+import com.fsh.common.util.Omits
 import com.fsh.common.widget.mpchart.CombinedChartView
 import com.fsh.common.widget.mpchart.component.ValueFormatterComponent
 import com.future.quote.R
@@ -25,7 +27,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.quote_fragment_current_day_line_chart.*
 
 abstract class BaseChartsFragment : BaseLazyFragment(){
     private val disposables:CompositeDisposable = CompositeDisposable()
@@ -45,7 +46,8 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     protected var calendar:Calendar = Calendar.getInstance()
     protected var priceTick:String? = null
     protected val barColors:List<Int> = ArrayList()
-
+    protected lateinit var instrumentId:String
+    protected lateinit var chartType: FutureChartType
     companion object{
         const val INSTRUMENT_ID = "INSTRUMENT_ID"
         const val CHARTTYPE = "CHARTTYPE"
@@ -59,8 +61,9 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
 
 
     override fun lazyLoading() {
-        val instrument = arguments?.getString(INSTRUMENT_ID)!!
-        priceTick = QuoteInfoMgr.mgr.getInstrument(instrument)?.priceTick
+        instrumentId = arguments?.getString(INSTRUMENT_ID)!!
+        chartType = (arguments?.getSerializable(CHARTTYPE) ?: FutureChartType.L_1MIN) as FutureChartType
+        priceTick = QuoteInfoMgr.mgr.getInstrument(instrumentId)?.priceTick
         initViews()
         initData()
     }
@@ -75,15 +78,25 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     }
 
     private  fun initData(){
-        val instrument = arguments?.getString(INSTRUMENT_ID)!!
-        val chartType:FutureChartType = (arguments?.getSerializable(CHARTTYPE) ?: FutureChartType.L_1MIN) as FutureChartType
-        val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(instrument)
+        val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(instrumentId)
         preSettlementPrice = quoteEntity?.pre_settlement?.toFloat() ?: Float.NaN
         viewMode = viewModelOf<FutureChartViewModel>().value.also { it ->
-            Log.d(javaClass.simpleName,"initData setChart $instrument ${chartType.duration}")
-            it.setChart(instrument,chartType,viewWidth)
-            disposables.add(it.chartData.subscribe {drawChartLines(it)})
+            disposables.add(it.chartData.subscribe({drawChartLines(it)},{
+                Log.e("${this@BaseChartsFragment.javaClass.simpleName}","Chart data received error message",it)
+            }))
         }
+    }
+
+    fun unSetChart(){
+        viewMode?.setChart(Omits.OmitString,chartType,viewWidth)
+        DiffEntity.clearInstrumentKLineEntity(instrumentId)
+    }
+
+    override fun onVisible() {
+        val instrument = arguments?.getString(INSTRUMENT_ID)!!
+        val chartType:FutureChartType = (arguments?.getSerializable(CHARTTYPE) ?: FutureChartType.L_1MIN) as FutureChartType
+        Log.d(javaClass.simpleName,"initData setChart $instrument ${chartType.duration}")
+        viewMode?.setChart(instrument,chartType,viewWidth)
     }
 
     abstract fun drawChartLines(kLineEntity: KLineEntity)
@@ -109,12 +122,30 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         val dataEntity = dataEntityMap[index.toString()] ?: return
         val secondLegendEntries = ArrayList<LegendEntry>(2)
         secondLegendEntries.add(LegendEntry("VOL:${dataEntity.volume}",Legend.LegendForm.NONE,
-            Float.NaN, Float.NaN,null,resources.getColor(R.color.quote_white)))
+            Float.NaN, Float.NaN,null,CommonUtil.getColorRes(R.color.quote_white)))
         secondLegendEntries.add(LegendEntry("OI:${dataEntity.close_oi}",Legend.LegendForm.NONE,
             Float.NaN, Float.NaN,null,quoteRed))
         secondChartView.legend.setCustom(secondLegendEntries)
         secondChartView.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
         secondChartView.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        if(firstChartView.chartType == CombinedChartView.CHART_TYPE_CANDLE){
+            refreshCandleChartLegend(dataEntity)
+        }
+    }
+
+    private fun refreshCandleChartLegend(dataEntity:KLineEntity.DataEntity){
+        val chartLegend = ArrayList<LegendEntry>(4)
+        chartLegend.add(LegendEntry("Open:${dataEntity.open}",Legend.LegendForm.NONE, Float.NaN,
+            Float.NaN,null,quoteWhite))
+        chartLegend.add(LegendEntry("Close:${dataEntity.close}",Legend.LegendForm.NONE, Float.NaN,
+            Float.NaN,null,quoteWhite))
+        chartLegend.add(LegendEntry("High:${dataEntity.high}",Legend.LegendForm.NONE, Float.NaN,
+            Float.NaN,null,quoteWhite))
+        chartLegend.add(LegendEntry("Low:${dataEntity.low}",Legend.LegendForm.NONE, Float.NaN,
+            Float.NaN,null,quoteWhite))
+        firstChartView.legend.setCustom(chartLegend)
+        firstChartView.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        firstChartView.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
     }
 
     protected fun generateLineDataSet(entries:List<Entry>, lineColor:Int, lable:String, dependency: YAxis.AxisDependency, isHighlight:Boolean = false): ILineDataSet {
@@ -131,6 +162,11 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
             lineDataSet.highlightLineWidth = 0.8F
         }
         return lineDataSet
+    }
+
+    override fun onDestroyView() {
+        firstChartView.data?.clearValues()
+        super.onDestroyView()
     }
 
     /**

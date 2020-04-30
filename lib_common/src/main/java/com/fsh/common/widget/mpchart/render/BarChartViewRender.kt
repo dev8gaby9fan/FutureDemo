@@ -10,6 +10,8 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.renderer.BarChartRenderer
 import com.github.mikephil.charting.utils.Utils
 import com.github.mikephil.charting.utils.ViewPortHandler
+import kotlin.math.ceil
+import kotlin.math.min
 
 class BarChartViewRender(
     chart: BarDataProvider?,
@@ -53,10 +55,7 @@ class BarChartViewRender(
             var x: Float
 
             var i = 0
-            val count = Math.min(
-                Math.ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(),
-                dataSet.entryCount
-            )
+            val count = min(ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(), dataSet.entryCount)
             while (i < count) {
 
                 val e = dataSet.getEntryForIndex(i)

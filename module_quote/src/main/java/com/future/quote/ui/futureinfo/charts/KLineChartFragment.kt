@@ -1,13 +1,16 @@
 package com.future.quote.ui.futureinfo.charts
 
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import com.fsh.common.widget.mpchart.chartlistener.CoupleChartGestureListener
 import com.future.quote.R
 import com.future.quote.enums.FutureChartType
 import com.future.quote.model.ChartEntity
 import com.future.quote.model.DiffEntity
 import com.future.quote.model.KLineEntity
+import com.future.quote.service.QuoteParser
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -123,12 +126,27 @@ class KLineChartFragment : BaseChartsFragment(){
             secondChartView,
             arrayListOf(firstChartView, secondChartView)
         )
+
+        val scaleX = 2.4F
+        val topVals = FloatArray(9)
+        val middleVals = FloatArray(9)
+        val bottomVals = FloatArray(9)
+        val topMatrix = firstChartView.viewPortHandler.matrixTouch
+        val middleMatrix = secondChartView.viewPortHandler.matrixTouch
+        topMatrix.getValues(topVals)
+        middleMatrix.getValues(middleVals)
+
+        topVals[Matrix.MSCALE_X] = scaleX
+        middleVals[Matrix.MSCALE_X] = scaleX
+        topMatrix.setValues(topVals)
+        middleMatrix.setValues(middleVals)
+        firstChartView.viewPortHandler.refresh(topMatrix, firstChartView, false)
+        secondChartView.viewPortHandler.refresh(middleMatrix, secondChartView, false)
     }
 
     override fun drawChartLines(kLineEntity: KLineEntity) {
-        val instrument = arguments?.getString(INSTRUMENT_ID)!!
-        val chartType:FutureChartType = (arguments?.getSerializable(CHARTTYPE) ?: FutureChartType.L_1MIN) as FutureChartType
-        val chartEntity = DiffEntity.getChartEntity("$instrument:${chartType.duration}")
+        val chartEntity = DiffEntity.getChartEntity(QuoteParser.JSON_CHART_ID)
+        Log.d("KLineChartFragment","drawChartLines $instrumentId ${chartType.duration} ${kLineEntity.klineDuration} ${kLineEntity.data.size}")
         if(firstChartView.data == null || firstChartView.data.allData.isEmpty()){
             drawInitCharts(kLineEntity,chartEntity)
         }
@@ -170,11 +188,24 @@ class KLineChartFragment : BaseChartsFragment(){
             })
             setData(LineData(oiLineData))
         }
+        refreshLegend(lastIndex)
         firstChartView.data = firstChartData//当前屏幕会显示所有的数据
         firstChartView.xAxis.axisMaximum = firstChartData.xMax + 2.5f
         firstChartView.xAxis.axisMinimum = firstChartData.xMin - 0.5f
         firstChartView.setVisibleXRangeMinimum(10F)
-        firstChartView.moveViewToX((lastIndex - leftIndex).toFloat())
+        firstChartView.setVisibleXRangeMaximum(70F)
+
+
+        secondChartView.data = secondChartData//当前屏幕会显示所有的数据
+        secondChartView.xAxis.axisMaximum = secondChartData.xMax + 2.5f
+        secondChartView.xAxis.axisMinimum = secondChartData.xMin - 0.5f
+        secondChartView.setVisibleXRangeMinimum(10F)
+        secondChartView.setVisibleXRangeMaximum(70F)
+        firstChartView.postDelayed({
+            firstChartView.moveViewToX((lastIndex - leftIndex).toFloat())
+            secondChartView.moveViewToX((lastIndex - leftIndex).toFloat())
+        },300)
+        Log.d("KLineChartFragment","chart view move to ${(lastIndex - leftIndex).toFloat()}")
     }
 
     private fun generateMultiDataEntries(index:Int,leftIndex:Int,dataEntity:KLineEntity.DataEntity):List<Entry>{

@@ -14,6 +14,11 @@ object DiffEntity {
         return map
     }
 
+    fun clearInstrumentKLineEntity(instrumentId: String){
+        val remove = klines.remove(instrumentId)
+        remove?.clear()
+    }
+
     fun getChartEntity(key: String):ChartEntity{
         val entity = charts[key] ?: ChartEntity()
         if(!charts.containsKey(key)){

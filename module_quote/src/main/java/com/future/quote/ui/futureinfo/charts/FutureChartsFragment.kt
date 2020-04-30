@@ -109,9 +109,10 @@ class FutureChartsFragment : BaseLazyFragment(){
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         disposable.clear()
+        fragments[charts_container.currentItem].unSetChart()
+        super.onDestroyView()
     }
 
 

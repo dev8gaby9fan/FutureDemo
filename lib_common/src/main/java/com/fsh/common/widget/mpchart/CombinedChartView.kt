@@ -17,21 +17,27 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 
 class CombinedChartView : CombinedChart {
-    companion object{
+    companion object {
         const val CHART_TYPE_LINE = 0
         const val CHART_TYPE_CANDLE = 1
     }
-    private var chartType:Int = CHART_TYPE_LINE
+
+    var chartType: Int = CHART_TYPE_LINE
+        private set(value) {
+            field = value
+        }
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
         attrs,
         defStyle
-    ){
+    ) {
         val ta =
             context?.obtainStyledAttributes(attrs, R.styleable.CombinedChartView)
-        chartType = ta?.getInt(R.styleable.CombinedChartView_chartType,CHART_TYPE_LINE) ?: CHART_TYPE_LINE
+        chartType =
+            ta?.getInt(R.styleable.CombinedChartView_chartType, CHART_TYPE_LINE) ?: CHART_TYPE_LINE
         ta?.recycle()
 
 
@@ -43,39 +49,39 @@ class CombinedChartView : CombinedChart {
         initViews()
     }
 
-    private fun initAxis(){
+    private fun initAxis() {
 
         mLeftAxisTransformer = TransformerComponent(mViewPortHandler)
         mRightAxisTransformer = TransformerComponent(mViewPortHandler)
 
         mXAxis = XAxisComponent()
-        mXAxisRenderer = if(chartType == CHART_TYPE_LINE)
-            XAxisCurrentDayLineComponentRender(mViewPortHandler,mXAxis,mLeftAxisTransformer,this)
+        mXAxisRenderer = if (chartType == CHART_TYPE_LINE)
+            XAxisCurrentDayLineComponentRender(mViewPortHandler, mXAxis, mLeftAxisTransformer, this)
         else
-            XAxisKlineComponentRender(mViewPortHandler,mXAxis,mLeftAxisTransformer,this)
+            XAxisKlineComponentRender(mViewPortHandler, mXAxis, mLeftAxisTransformer, this)
 
         mXAxis.setDrawGridLines(false)
 
 
         mAxisLeft = YAxisComponent(YAxis.AxisDependency.LEFT)
-        mAxisRendererLeft = if(chartType == CHART_TYPE_LINE)
-            YAxisCurrentDayLineComponentRender(mViewPortHandler,mAxisLeft,mLeftAxisTransformer)
+        mAxisRendererLeft = if (chartType == CHART_TYPE_LINE)
+            YAxisCurrentDayLineComponentRender(mViewPortHandler, mAxisLeft, mLeftAxisTransformer)
         else
-            YAxisKlineComponentRender(mViewPortHandler,mAxisLeft,mLeftAxisTransformer)
+            YAxisKlineComponentRender(mViewPortHandler, mAxisLeft, mLeftAxisTransformer)
 
         mAxisRight = YAxisComponent(YAxis.AxisDependency.RIGHT)
-        mAxisRendererRight = if(chartType == CHART_TYPE_LINE)
-            YAxisCurrentDayLineComponentRender(mViewPortHandler,mAxisRight,mRightAxisTransformer)
+        mAxisRendererRight = if (chartType == CHART_TYPE_LINE)
+            YAxisCurrentDayLineComponentRender(mViewPortHandler, mAxisRight, mRightAxisTransformer)
         else
-            YAxisKlineComponentRender(mViewPortHandler,mAxisRight,mRightAxisTransformer)
+            YAxisKlineComponentRender(mViewPortHandler, mAxisRight, mRightAxisTransformer)
 
         mLegend = LegendComponent()
-        mLegendRenderer = LegendComponentRender(viewPortHandler,mLegend)
+        mLegendRenderer = LegendComponentRender(viewPortHandler, mLegend)
 
-        mRenderer = CombinedChartViewRender(this,mAnimator,mViewPortHandler)
+        mRenderer = CombinedChartViewRender(this, mAnimator, mViewPortHandler)
     }
 
-    private fun initViews(){
+    private fun initViews() {
         description.isEnabled = false
         isDragDecelerationEnabled = true
         setBackgroundColor(resources.getColor(R.color.color_chart_background))
@@ -130,7 +136,7 @@ class CombinedChartView : CombinedChart {
         }
     }
 
-    fun getEntryForHighlight(highlight:Highlight): Entry? {
+    fun getEntryForHighlight(highlight: Highlight): Entry? {
         val dataObjects = mData.allData
 
         if (highlight.dataIndex >= dataObjects.size)
@@ -138,16 +144,16 @@ class CombinedChartView : CombinedChart {
 
         val data = dataObjects[highlight.dataIndex]
 
-        if (highlight.dataSetIndex >= data.dataSetCount)
-            return null
+        return if (highlight.dataSetIndex >= data.dataSetCount)
+            null
         else {
             // The value of the highlighted entry could be NaN -
             //   if we are not interested in highlighting a specific value.
 
-            val entries:List<Entry> = data.getDataSetByIndex(highlight.dataSetIndex)
+            val entries: List<Entry> = data.getDataSetByIndex(highlight.dataSetIndex)
                 .getEntriesForXValue(highlight.x) as List<Entry>
 
-            return entries[0]
+            entries[0]
         }
     }
 
