@@ -3,6 +3,7 @@ package com.future.quote.ui.futureinfo.charts
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseArray
 import android.view.View
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.viewModelOf
@@ -44,6 +45,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     protected var colorAvgLine:Int = 0
 
     protected var calendar:Calendar = Calendar.getInstance()
+    protected val xValues: SparseArray<String> = SparseArray()
     protected var priceTick:String? = null
     protected val barColors:List<Int> = ArrayList()
     protected lateinit var instrumentId:String
@@ -177,6 +179,12 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     class ChartViewYAxisValueFormatter(private val priceTick:String?) : ValueFormatterComponent(){
         override fun getFormattedValue(value: Float): String {
             return NumberUtils.formatNum(value.toString(),priceTick)
+        }
+    }
+
+    class CandleChartViewXAxisValueFormatter(private val lables:SparseArray<String>) : ValueFormatterComponent(){
+        override fun getFormattedValue(value: Float): String {
+            return lables[value.toInt()] ?: Omits.OmitString
         }
     }
 }

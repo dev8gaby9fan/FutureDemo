@@ -9,6 +9,7 @@ object DateUtils {
     const val PATTERN_YYYYMMDD_HHMMSS = "yyyyMMdd HH:mm:ss"
     const val PATTERN_HHMMSS = "HH:mm:ss"
     const val PATTERN_HHMM = "HH:mm"
+    const val PATTERN_MMDD = "MM/dd"
     fun formatDate(pattern:String,date: Date):String =
         SimpleDateFormat(pattern).format(date)
 

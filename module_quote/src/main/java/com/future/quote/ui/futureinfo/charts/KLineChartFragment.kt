@@ -4,6 +4,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
+import com.fsh.common.util.DateUtils
 import com.fsh.common.widget.mpchart.chartlistener.CoupleChartGestureListener
 import com.future.quote.R
 import com.future.quote.enums.FutureChartType
@@ -100,7 +101,7 @@ class KLineChartFragment : BaseChartsFragment(){
         bottomBottomAxis.gridColor = highlightColor
         bottomBottomAxis.axisLineColor = highlightColor
         bottomBottomAxis.textColor = textColor
-        bottomBottomAxis.valueFormatter = ChartViewYAxisValueFormatter(priceTick)
+        bottomBottomAxis.valueFormatter = CandleChartViewXAxisValueFormatter(xValues)
 
         val bottomLeftAxis = secondChartView.axisLeft
         bottomLeftAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
@@ -258,7 +259,7 @@ class KLineChartFragment : BaseChartsFragment(){
             secondChartView.xAxis.axisMaximum = secondChartView.data.xMax + 2.5f
             secondChartView.xAxis.axisMinimum = secondChartView.data.xMin - 0.5f
             secondChartView.invalidate()
-
+            refreshLegend(lastIndex)
         }else{//更多历史数据
 
         }
@@ -273,6 +274,8 @@ class KLineChartFragment : BaseChartsFragment(){
         entries.add(Entry(index.toFloat(),avg))
         entries.add(Entry(index.toFloat(),dataEntity.close_oi.toFloat()))
         entries.add(BarEntry(index.toFloat(),dataEntity.volume.toFloat(),dataEntity.open - dataEntity.close))
+        calendar.timeInMillis = dataEntity.datetime / 1000000
+        xValues.put(index,DateUtils.formatDate(chartType.pattern,calendar.time))
         return entries
     }
 

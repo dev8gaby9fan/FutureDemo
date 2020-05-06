@@ -32,7 +32,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
     private var colorDayLine: Int = 0
 
     private var xAxisLables: SparseArray<String> = SparseArray()
-    private var xValues: SparseArray<String> = SparseArray()
+
     private lateinit var dayLineData: ILineDataSet
     private lateinit var avgLineData: ILineDataSet
     private lateinit var oiLineData: ILineDataSet

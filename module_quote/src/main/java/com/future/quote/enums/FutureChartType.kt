@@ -1,33 +1,42 @@
 package com.future.quote.enums
 
-enum class FutureChartType(val title:String,val duration:Long,val chartType: ChartType){
+import com.fsh.common.util.DateUtils
+
+enum class FutureChartType(val title:String,val duration:Long,val chartType: ChartType,val pattern:String){
     L_1MIN("分时",
         FutureChartDuration._1MIN,
-        ChartType.Line
+        ChartType.Line,
+        DateUtils.PATTERN_HHMM
     ),
     K_1DAY("1日",
         FutureChartDuration._1DAY,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_MMDD
     ),
     K_1MIN("1分",
         FutureChartDuration._1MIN,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_HHMM
     ),
     K_5MIN("5分",
         FutureChartDuration._5MIN,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_HHMM
     ),
     K_15MIN("15分",
         FutureChartDuration._15MIN,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_HHMM
     ),
     K_30MIN("30分",
         FutureChartDuration._30MIN,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_HHMM
     ),
     K_1HOUR("1时",
         FutureChartDuration._1HOUR,
-        ChartType.Candel
+        ChartType.Candel,
+        DateUtils.PATTERN_HHMM
     );
     companion object{
         val TYPE_LIST:List<FutureChartType> = values().toList()
