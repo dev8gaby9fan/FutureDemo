@@ -57,6 +57,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         super.onViewCreated(view, savedInstanceState)
         firstChartView = view.findViewById(R.id.chart_first)
         secondChartView = view.findViewById(R.id.chart_second)
+        initViews()
     }
 
 
@@ -64,9 +65,10 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         instrumentId = arguments?.getString(INSTRUMENT_ID)!!
         chartType = (arguments?.getSerializable(CHARTTYPE) ?: FutureChartType.L_1MIN) as FutureChartType
         priceTick = QuoteInfoMgr.mgr.getInstrument(instrumentId)?.priceTick
-        initViews()
         initData()
     }
+
+
 
     protected open fun initViews(){
         quoteRed = resources.getColor(R.color.quote_red)
@@ -88,7 +90,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     }
 
     fun unSetChart(){
-        viewMode?.setChart(Omits.OmitString,chartType,viewWidth)
+        viewMode?.setChart("IF8888",chartType,viewWidth)
         DiffEntity.clearInstrumentKLineEntity(instrumentId)
     }
 
@@ -165,7 +167,7 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     }
 
     override fun onDestroyView() {
-        firstChartView.data?.clearValues()
+//        firstChartView.data?.clearValues()
         super.onDestroyView()
     }
 

@@ -21,7 +21,7 @@ class BarChartViewRender(
 
     private val mBarShadowRectBuffer = RectF()
     //画线型成交量图
-    private val mLinePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var mLinePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     init {
         mLinePaint.style = Paint.Style.STROKE
@@ -55,7 +55,10 @@ class BarChartViewRender(
             var x: Float
 
             var i = 0
-            val count = min(ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(), dataSet.entryCount)
+            val count = Math.min(
+                Math.ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(),
+                dataSet.entryCount
+            )
             while (i < count) {
 
                 val e = dataSet.getEntryForIndex(i)

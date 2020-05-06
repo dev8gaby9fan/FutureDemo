@@ -149,6 +149,8 @@ class KLineChartFragment : BaseChartsFragment(){
         Log.d("KLineChartFragment","drawChartLines $instrumentId ${chartType.duration} ${kLineEntity.klineDuration} ${kLineEntity.data.size}")
         if(firstChartView.data == null || firstChartView.data.allData.isEmpty()){
             drawInitCharts(kLineEntity,chartEntity)
+        }else{
+            drawUpdateCharts(kLineEntity,chartEntity)
         }
     }
 
@@ -174,7 +176,7 @@ class KLineChartFragment : BaseChartsFragment(){
 
         candleData = generateCandleData(candleEnties)
         avgLineData = generateLineDataSet(avgEntries,colorAvgLine,"avgLineChart",YAxis.AxisDependency.LEFT)
-        volBarData = generateBarDataSet(volEntries,"volBarChart", arrayListOf(quoteGreen),true)
+        volBarData = generateBarDataSet(volEntries,"volBarChart", arrayListOf(quoteGreen,quoteRed),true)
         oiLineData = generateLineDataSet(oiEntries,colorAvgLine,"oiLineChart",YAxis.AxisDependency.LEFT)
 
         val firstChartData = CombinedData().apply {
@@ -193,19 +195,73 @@ class KLineChartFragment : BaseChartsFragment(){
         firstChartView.xAxis.axisMaximum = firstChartData.xMax + 2.5f
         firstChartView.xAxis.axisMinimum = firstChartData.xMin - 0.5f
         firstChartView.setVisibleXRangeMinimum(10F)
-        firstChartView.setVisibleXRangeMaximum(70F)
+//        firstChartView.setVisibleXRangeMaximum(70F)
 
 
         secondChartView.data = secondChartData//当前屏幕会显示所有的数据
         secondChartView.xAxis.axisMaximum = secondChartData.xMax + 2.5f
         secondChartView.xAxis.axisMinimum = secondChartData.xMin - 0.5f
         secondChartView.setVisibleXRangeMinimum(10F)
-        secondChartView.setVisibleXRangeMaximum(70F)
+//        secondChartView.setVisibleXRangeMaximum(70F)
         firstChartView.postDelayed({
             firstChartView.moveViewToX((lastIndex - leftIndex).toFloat())
             secondChartView.moveViewToX((lastIndex - leftIndex).toFloat())
         },300)
         Log.d("KLineChartFragment","chart view move to ${(lastIndex - leftIndex).toFloat()}")
+    }
+
+    private fun drawUpdateCharts(kLineEntity: KLineEntity, chartEntity: ChartEntity){
+        val newLeftId = chartEntity.left_id
+        val newRightId = chartEntity.right_id
+        if(newLeftId == -1 || newRightId == -1) return
+        val newLastId = kLineEntity.last_id
+        if(newLastId == -1) return
+        //新增数据
+        if(newLeftId >= leftIndex && newRightId >= rightIndex){
+            for(index in newLastId..newRightId){
+                val dataEntity = kLineEntity.data[index.toString()]?:continue
+                if(index == lastIndex){
+                    sumVolume -= dataEntity.volume
+                    sumPrice -= dataEntity.volume * dataEntity.close
+                    sumVolume += dataEntity.volume
+                    sumPrice += dataEntity.volume * dataEntity.close
+                    val avgPrice = sumPrice / sumVolume
+                    val candleEntry = candleData.getEntryForIndex(candleData.entryCount-1)
+                    candleEntry.close = dataEntity.close
+                    candleEntry.open = dataEntity.open
+                    candleEntry.high = dataEntity.high
+                    candleEntry.low = dataEntity.low
+                    avgLineData.getEntryForIndex(avgLineData.entryCount-1).y = avgPrice
+                    volBarData.getEntryForIndex(volBarData.entryCount-1).y = dataEntity.volume.toFloat()
+                    volBarData.getEntryForIndex(volBarData.entryCount-1).data = dataEntity.open - dataEntity.close
+                    oiLineData.getEntryForIndex(oiLineData.entryCount-1).y = dataEntity.close_oi.toFloat()
+                }else{
+                    val entries =
+                        generateMultiDataEntries(index, newLeftId, dataEntity)
+                    candleData.addEntry(entries[0] as CandleEntry)
+                    avgLineData.addEntry(entries[1])
+                    oiLineData.addEntry(entries[2])
+                    volBarData.addEntry(entries[3] as BarEntry)
+                }
+            }
+            leftIndex = newLeftId
+            rightIndex = newRightId
+            lastIndex = newLastId
+            firstChartView.data.notifyDataChanged()
+            firstChartView.notifyDataSetChanged()
+            firstChartView.xAxis.axisMaximum = firstChartView.data.xMax + 2.5f
+            firstChartView.xAxis.axisMinimum = firstChartView.data.xMin - 0.5f
+            firstChartView.invalidate()
+
+            secondChartView.data.notifyDataChanged()
+            secondChartView.notifyDataSetChanged()
+            secondChartView.xAxis.axisMaximum = secondChartView.data.xMax + 2.5f
+            secondChartView.xAxis.axisMinimum = secondChartView.data.xMin - 0.5f
+            secondChartView.invalidate()
+
+        }else{//更多历史数据
+
+        }
     }
 
     private fun generateMultiDataEntries(index:Int,leftIndex:Int,dataEntity:KLineEntity.DataEntity):List<Entry>{
@@ -216,7 +272,7 @@ class KLineChartFragment : BaseChartsFragment(){
         entries.add(CandleEntry(index.toFloat(),dataEntity.high,dataEntity.low,dataEntity.open,dataEntity.close))
         entries.add(Entry(index.toFloat(),avg))
         entries.add(Entry(index.toFloat(),dataEntity.close_oi.toFloat()))
-        entries.add(BarEntry(index.toFloat(),dataEntity.volume.toFloat()))
+        entries.add(BarEntry(index.toFloat(),dataEntity.volume.toFloat(),dataEntity.open - dataEntity.close))
         return entries
     }
 

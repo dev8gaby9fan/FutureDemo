@@ -172,7 +172,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         firstCombinedData.setData(lineData)
 
         volBarData =
-            generateBarDataSet(volBarEntries, "volBarChart", arrayListOf(colorAvgLine), true)
+            generateBarDataSet(volBarEntries, "volBarChart", arrayListOf(quoteGreen,quoteRed), true)
         oiLineData = generateLineDataSet(
             oiLineEntries,
             colorAvgLine,
@@ -209,7 +209,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         val newLastId = kLineEntity.last_id
         for (index in lastIndex..newLastId) {
             val dataEntity = kLineEntity.data[index.toString()] ?: continue
-            if (index == lastIndex) {
+            if(index == lastIndex){
                 sumVolume -= dataEntity.volume
                 sumPrice -= dataEntity.volume * dataEntity.close
                 sumVolume += dataEntity.volume
@@ -219,7 +219,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
                 avgLineData.getEntryForIndex(avgLineData.entryCount-1).y = avgPrice
                 oiLineData.getEntryForIndex(oiLineData.entryCount-1).y = dataEntity.close_oi.toFloat()
                 volBarData.getEntryForIndex(volBarData.entryCount-1).y = dataEntity.volume.toFloat()
-
+                volBarData.getEntryForIndex(volBarData.entryCount-1).data = dataEntity.open - dataEntity.close
             } else {
                 val mutableList = generateMutableEntries(index, dataEntity)
                 dayLineData.addEntry(mutableList[0])
@@ -227,18 +227,20 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
                 oiLineData.addEntry(mutableList[2])
                 volBarData.addEntry(mutableList[3] as BarEntry)
             }
-            Log.d("CurrentDayLineFragment", "current inde ${index} $lastIndex $newLastId")
         }
         lastIndex = newLastId
         refreshLegend(lastIndex)
         firstChartView.data.notifyDataChanged()
+        firstChartView.notifyDataSetChanged()
         firstChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
         firstChartView.xAxis.axisMaximum = firstChartView.data.xMax + 0.35F
         firstChartView.xAxis.axisMinimum = firstChartView.data.xMin - 0.35F
         firstChartView.xAxis.xLabels = xAxisLables
         firstChartView.invalidate()
 ////        refreshYAxisRange(dayLineData)
+
         secondChartView.data.notifyDataChanged()
+        secondChartView.notifyDataSetChanged()
         secondChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
         secondChartView.xAxis.axisMaximum = secondChartView.data.xMax + 0.35F
         secondChartView.xAxis.axisMinimum = secondChartView.data.xMin - 0.35F
@@ -254,7 +256,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         entries.add(Entry(index.toFloat(), data.close))
         entries.add(Entry(index.toFloat(), avg))
         entries.add(Entry(index.toFloat(), data.close_oi.toFloat()))
-        entries.add(BarEntry(index.toFloat(), data.volume.toFloat()))
+        entries.add(BarEntry(index.toFloat(), data.volume.toFloat(),data.open - data.close))
         generateXAxisLabels(index, data.datetime)
         return entries
     }

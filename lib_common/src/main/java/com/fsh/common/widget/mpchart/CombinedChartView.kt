@@ -3,6 +3,7 @@ package com.fsh.common.widget.mpchart
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.Log
 import com.fsh.common.R
 import com.fsh.common.widget.mpchart.component.LegendComponent
 import com.fsh.common.widget.mpchart.component.TransformerComponent
@@ -27,8 +28,8 @@ class CombinedChartView : CombinedChart {
             field = value
         }
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?) : this(context,null)
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs,0)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
         attrs,
@@ -40,11 +41,6 @@ class CombinedChartView : CombinedChart {
             ta?.getInt(R.styleable.CombinedChartView_chartType, CHART_TYPE_LINE) ?: CHART_TYPE_LINE
         ta?.recycle()
 
-
-    }
-
-    override fun init() {
-        super.init()
         initAxis()
         initViews()
     }

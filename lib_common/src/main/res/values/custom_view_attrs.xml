@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="ScrollableViewPager">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="ScrollableViewPager" tools:ignore="ResourceName">
         <attr name="scrollable" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="CombinedChartView">
+    <declare-styleable name="CombinedChartView" tools:ignore="ResourceName">
         <attr name="chartType" format="enum">
             <enum name="line" value="0"/>
             <enum name="candle" value="1"/>
