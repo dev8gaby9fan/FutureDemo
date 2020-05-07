@@ -37,6 +37,9 @@ versions.cardview="1.0.0"
 versions.annotation="1.1.0"
 versions.room="2.2.3"
 versions.gad="19.1.0"
+versions.doraemonkit="3.1.4"
+versions.doraemonkit_leakcanary="3.1.4"
+versions.doraemonkit_plugin="3.1.4"
 
 def androidx=[:]
 androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
@@ -88,6 +91,11 @@ def rxjava=[:]
 rxjava.java="io.reactivex.rxjava2:rxjava:$versions.rxjava"
 rxjava.android="io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
 
+def doraemonkit =[:]
+doraemonkit.kit = "com.didichuxing.doraemonkit:doraemonkit:$versions.doraemonkit"
+doraemonkit.leakcanary = "com.didichuxing.doraemonkit:doraemonkit-leakcanary:$versions.doraemonkit_leakcanary"
+doraemonkit.plugin = "com.didichuxing.doraemonkit:doraemonkit-plugin:$versions.doraemonkit_plugin"
+
 deps.androidx = androidx
 deps.material = material
 deps.gson = gson
@@ -101,7 +109,7 @@ deps.okhttp=okhttp
 deps.rxjava=rxjava
 deps.retrofit=retrofit
 deps.google_ad = google_ad
-
+deps.doraemonkit = doraemonkit
 //编译版本
 def build_versions=[:]
 build_versions.min_sdk = 24

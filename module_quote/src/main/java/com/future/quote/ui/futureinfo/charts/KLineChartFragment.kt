@@ -86,7 +86,16 @@ class KLineChartFragment : BaseChartsFragment(){
         leftAxis.valueFormatter = ChartViewYAxisValueFormatter(priceTick)
 
         val rightAxis = firstChartView.axisRight
-        rightAxis.isEnabled = false
+        rightAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        rightAxis.setDrawGridLines(true)
+        rightAxis.setDrawAxisLine(false)
+        rightAxis.spaceBottom = 3f
+        rightAxis.spaceTop = 3f
+        rightAxis.enableGridDashedLine(3F, 6F, 0F)
+        rightAxis.gridColor = highlightColor
+        rightAxis.textColor = textColor
+        rightAxis.setLabelCount(6, true)
+        rightAxis.valueFormatter = ChartViewYAxisValueFormatter(priceTick)
 
         secondChartView.isScaleYEnabled = false
         secondChartView.setDrawBorders(false)
@@ -127,7 +136,8 @@ class KLineChartFragment : BaseChartsFragment(){
             secondChartView,
             arrayListOf(firstChartView, secondChartView)
         )
-
+        firstChartView.setViewPortOffsets(0F, 0F, 0F, 1F)
+        secondChartView.setViewPortOffsets(0F, 0F, 0F, 30F)
         val scaleX = 2.4F
         val topVals = FloatArray(9)
         val middleVals = FloatArray(9)
@@ -176,9 +186,9 @@ class KLineChartFragment : BaseChartsFragment(){
         }
 
         candleData = generateCandleData(candleEnties)
-        avgLineData = generateLineDataSet(avgEntries,colorAvgLine,"avgLineChart",YAxis.AxisDependency.LEFT)
+        avgLineData = generateLineDataSet(avgEntries,colorAvgLine,"avgLineChart",YAxis.AxisDependency.RIGHT)
         volBarData = generateBarDataSet(volEntries,"volBarChart", arrayListOf(quoteGreen,quoteRed),true)
-        oiLineData = generateLineDataSet(oiEntries,colorAvgLine,"oiLineChart",YAxis.AxisDependency.LEFT)
+        oiLineData = generateLineDataSet(oiEntries,colorAvgLine,"oiLineChart",YAxis.AxisDependency.RIGHT)
 
         val firstChartData = CombinedData().apply {
             setData(CandleData(this@KLineChartFragment.candleData))

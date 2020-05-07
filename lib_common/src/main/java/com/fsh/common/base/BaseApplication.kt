@@ -4,9 +4,10 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.multidex.BuildConfig
 import androidx.multidex.MultiDex
 import com.alibaba.android.arouter.launcher.ARouter
+import com.didichuxing.doraemonkit.DoraemonKit
+import com.fsh.common.BuildConfig
 import com.fsh.common.util.CommonUtil
 import com.fsh.common.util.DateUtils
 import java.io.File
@@ -48,6 +49,9 @@ open class BaseApplication : Application(),Thread.UncaughtExceptionHandler{
         initArouter()
         CommonUtil.application = this
         Thread.setDefaultUncaughtExceptionHandler(this)
+        if(BuildConfig.DEBUG){
+            DoraemonKit.install(this,null,"c6062411b36abf47c54c365e4f7e5a11")
+        }
     }
 
     private fun initArouter(){

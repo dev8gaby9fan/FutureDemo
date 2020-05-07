@@ -7,13 +7,16 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.fsh.common.base.ActivityManager
 import com.fsh.common.base.BaseActivity
 import com.fsh.common.base.BaseFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
 import com.fsh.common.model.ARouterPath
 import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.BottomNavigationViewHelper
+import com.fsh.common.util.Omits
 import com.future.main.R
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 @Route(path = ARouterPath.Page.PAGE_MAIN)
@@ -22,6 +25,7 @@ class MainActivity : BaseActivity() {
 //    override fun getStatusBarColorRes(): Int = R.color.colorPrimaryDark
     private val pageList: ArrayList<BaseFragment> = ArrayList(4)
     private var isCreated: Boolean = false
+    private var preClickTime:Long = Omits.OmitLong
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initPageList()
@@ -91,5 +95,18 @@ class MainActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         pageList[fgt_container.currentItem].onActivityResult(requestCode,resultCode,data)
+    }
+
+    override fun onBackPressed() {
+        val currentTime = System.currentTimeMillis()
+        if(Omits.isOmit(preClickTime) || (currentTime - preClickTime) > 2000){
+            Snackbar.make(fgt_container,"再次点击退出程序!",Snackbar.LENGTH_SHORT).show()
+            preClickTime = currentTime
+            return
+        }
+        if(currentTime - preClickTime < 2000){
+            ActivityManager.quitApp()
+        }
+        preClickTime = currentTime
     }
 }

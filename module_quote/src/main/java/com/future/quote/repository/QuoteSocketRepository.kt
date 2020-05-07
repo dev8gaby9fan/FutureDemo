@@ -130,7 +130,6 @@ class QuoteSocketRepository : BaseRepository {
      * 请求曲线数据
      */
     fun setChart(instrumentId:String, type: FutureChartType, viewWidth:Int = 500){
-        val reqFrame1 = SetChartFrame(instrumentId,type.duration,0L, 86400000000000L)
         val reqFrame = if(type.chartType == ChartType.Line){
             SetChartFrame(instrumentId,type.duration,0, 86400000000000L)
         }else{

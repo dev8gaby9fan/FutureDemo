@@ -33,6 +33,7 @@ class ClosePositionOrderButton : OrderButton{
             setTransactionInfo(instrument,pType,null,CTPCombOffsetFlag.Close)
             return
         }
+        isEnabled = true
         this.position = pos
         var orderDir:CTPDirection? = null
         if(pos !is InstrumentPosition && pos.getDirection() == CTPDirection.Sell){

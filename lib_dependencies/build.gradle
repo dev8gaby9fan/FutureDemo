@@ -53,6 +53,8 @@ dependencies {
     api deps.retrofit.adapter
 //    api deps.google_ad
     api deps.mpchart
+    api deps.doraemonkit.kit
+    api deps.doraemonkit.leakcanary
 
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 //    implementation 'androidx.appcompat:appcompat:1.0.2'

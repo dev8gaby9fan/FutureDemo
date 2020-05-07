@@ -10,9 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.alibaba.android.arouter.facade.Postcard
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.facade.callback.NavigationCallback
 import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.base.CommonFragmentPagerAdapter
@@ -71,7 +69,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         initData()
     }
 
-    fun initViews(){
+    private fun initViews(){
         viewModel = viewModelOf<TransactionViewModel>().value.apply {
             //查一下资金
             reqQryTradingAccount()
@@ -184,6 +182,8 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         if(quoteEntity != null){
             handleQuoteUpdate(quoteEntity)
         }
+        //取消选中的item
+        (fragmentList[0] as PositionRecordFragment).onSwitchTransactionInstrument(needToBindIns)
     }
 
     private fun handleQuoteUpdate(quoteEntity: QuoteEntity){
@@ -228,7 +228,6 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     }
 
     override fun onClick(v: View?) {
-
         if(v is OrderButton){
             try{
                 val filed = v.performOrderInsert(transactionInputHelper.getOrderVolume())
@@ -313,6 +312,11 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
                 viewModel?.reqUserLogoug()
                 dialog.dismiss()
             }.show()
+    }
+
+    override fun onDestroyView() {
+        disposable.clear()
+        super.onDestroyView()
     }
 
     private fun toSearchInstrument(){

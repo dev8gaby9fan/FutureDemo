@@ -5,7 +5,6 @@ import android.util.Log
 import android.util.SparseArray
 import com.fsh.common.util.DateUtils
 import com.fsh.common.util.Omits
-import com.fsh.common.widget.mpchart.CombinedChartView
 import com.future.quote.R
 import com.future.quote.enums.FutureChartDuration
 import com.future.quote.model.KLineEntity
@@ -31,7 +30,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
     //均线和分时曲线颜色
     private var colorDayLine: Int = 0
 
-    private var xAxisLables: SparseArray<String> = SparseArray()
+    private var xAxisLabels: SparseArray<String> = SparseArray()
 
     private lateinit var dayLineData: ILineDataSet
     private lateinit var avgLineData: ILineDataSet
@@ -193,14 +192,14 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         firstChartView.setVisibleXRangeMinimum((tradingDayEndId - tradingDayStartId).toFloat())
         firstChartView.xAxis.axisMaximum = firstCombinedData.xMax + 0.35F
         firstChartView.xAxis.axisMinimum = firstCombinedData.xMin - 0.35F
-        firstChartView.xAxis.xLabels = xAxisLables
+        firstChartView.xAxis.xLabels = xAxisLabels
         firstChartView.invalidate()
 
         secondChartView.data = secondCombinedData
         secondChartView.setVisibleXRangeMinimum((tradingDayEndId - tradingDayStartId).toFloat())
         secondChartView.xAxis.axisMaximum = firstCombinedData.xMax + 0.35F
         secondChartView.xAxis.axisMinimum = firstCombinedData.xMin - 0.35F
-        secondChartView.xAxis.xLabels = xAxisLables
+        secondChartView.xAxis.xLabels = xAxisLabels
         secondChartView.invalidate()
     }
 
@@ -235,7 +234,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         firstChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
         firstChartView.xAxis.axisMaximum = firstChartView.data.xMax + 0.35F
         firstChartView.xAxis.axisMinimum = firstChartView.data.xMin - 0.35F
-        firstChartView.xAxis.xLabels = xAxisLables
+        firstChartView.xAxis.xLabels = xAxisLabels
         firstChartView.invalidate()
 ////        refreshYAxisRange(dayLineData)
 
@@ -244,7 +243,7 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         secondChartView.setVisibleXRangeMinimum((tradingDayEndId-tradingDayStartId).toFloat())
         secondChartView.xAxis.axisMaximum = secondChartView.data.xMax + 0.35F
         secondChartView.xAxis.axisMinimum = secondChartView.data.xMin - 0.35F
-        secondChartView.xAxis.xLabels = xAxisLables
+        secondChartView.xAxis.xLabels = xAxisLabels
         secondChartView.invalidate()
     }
 
@@ -266,18 +265,18 @@ class CurrentDayLineChartFragment : BaseChartsFragment() {
         val formatTime = DateUtils.formatDate(DateUtils.PATTERN_HHMM, calendar.time)
         xValues.put(index, formatTime)
         if (index == tradingDayStartId) {
-            xAxisLables.put(index, formatTime)
+            xAxisLabels.put(index, formatTime)
         } else if (index == tradingDayEndId) {
             //最后一个数据点时间为14:59:59或者02:59:59等，显示整点时间，需要+1分钟
             calendar.timeInMillis += 60000L
-            xAxisLables.put(index, DateUtils.formatDate(DateUtils.PATTERN_HHMM, calendar.time))
+            xAxisLabels.put(index, DateUtils.formatDate(DateUtils.PATTERN_HHMM, calendar.time))
         } else {
             val preTimeS = xValues[index - 1] ?: return
             val preTime = DateUtils.parseDate(DateUtils.PATTERN_HHMM, preTimeS) ?: return
             val currentTime = DateUtils.parseDate(DateUtils.PATTERN_HHMM, formatTime) ?: return
             //这中间出现中午收盘或者是盘中小憩的时间点，加上
             if (currentTime.time - preTime.time != 60000L) {
-                xAxisLables.put(index, formatTime)
+                xAxisLabels.put(index, formatTime)
             }
         }
 

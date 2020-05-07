@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.util.Omits
 import com.future.trade.R
 import com.future.trade.bean.position.Position
@@ -72,13 +73,21 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
         holder.itemView.tv_pos_spec.text = posItem?.getSpecPosition()?.toString() ?: Omits.OmitPrice
         holder.itemView.tv_pos_hedge.text =
             posItem?.getHedgePosition()?.toString() ?: Omits.OmitPrice
-        holder.itemView.setOnClickListener {
+        val clickListener = { _:View?->
+            if (!holder.itemView.isSelected) {
+                (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
+                selectItem(position)
+            }
+        }
+        holder.itemView.setOnClickListener(clickListener)
+        holder.itemView.container.setOnClickListener(clickListener)
+        /* {
             if (holder.itemView.isSelected) {
                 return@setOnClickListener
             }
             (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
             selectItem(position)
-        }
+        }*/
         setupScrollView(holder)
         holder.itemView.isSelected = posItem?.isSelected() ?: false
         val foregroundColorRes =
@@ -112,6 +121,16 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
             item.setSelected(itemIndex == index)
         }
         recordAdapter.notifyItemRangeChanged(1, recordList.size + 1)
+    }
+
+    fun onSwitchTransactionInstrument(instrument:InstrumentInfo){
+        val pos = recordList.find { pos -> pos.getInstrumentId() == instrument.ctpInstrumentId }
+        if(pos == null){
+            selectItem(-1)
+            return
+        }
+        val index = recordList.indexOf(pos)
+        selectItem(index)
     }
 }
 

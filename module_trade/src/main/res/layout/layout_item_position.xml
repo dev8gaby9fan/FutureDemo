@@ -25,6 +25,7 @@
         android:overScrollMode="never"
         android:scrollbars="none">
         <LinearLayout
+            android:id="@+id/container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:divider="@drawable/divider_horizontal"

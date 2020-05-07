@@ -18,6 +18,8 @@ import com.future.quote.model.DiffEntity
 import com.future.quote.model.KLineEntity
 import com.future.quote.service.QuoteInfoMgr
 import com.future.quote.viewmodel.FutureChartViewModel
+import com.github.mikephil.charting.charts.BarLineChartBase
+import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.YAxis
@@ -25,8 +27,10 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseChartsFragment : BaseLazyFragment(){
@@ -59,7 +63,33 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
         super.onViewCreated(view, savedInstanceState)
         firstChartView = view.findViewById(R.id.chart_first)
         secondChartView = view.findViewById(R.id.chart_second)
+        firstChartView.setOnChartValueSelectedListener(ChartValueSelectedListener(firstChartView,secondChartView))
+        secondChartView.setOnChartValueSelectedListener(ChartValueSelectedListener(firstChartView,secondChartView))
         initViews()
+    }
+
+    inner class ChartValueSelectedListener(var source: BarLineChartBase<*>, var combinedChart:BarLineChartBase<*>) : OnChartValueSelectedListener{
+        override fun onNothingSelected() {
+            combinedChart.highlightValue(null)
+        }
+
+        override fun onValueSelected(e: Entry?, h: Highlight?) {
+            if(h == null) return
+           val y = if(source == firstChartView){
+                h.drawY - firstChartView.height
+            }else{
+                h.drawY + firstChartView.height
+            }
+            val h1 = combinedChart.getHighlightByTouchPoint(h.xPx,h.yPx)
+            h1?.setDraw(h.x,y)
+            combinedChart.highlightValue(h1)
+//            val h2 = secondChartView.getHighlightByTouchPoint(h.xPx,h.yPx)
+//            val yBottom = if(source == firstChartView){
+//
+//            }
+//            h2?.setDraw(h.x,h.drawY)
+        }
+
     }
 
 
@@ -169,7 +199,8 @@ abstract class BaseChartsFragment : BaseLazyFragment(){
     }
 
     override fun onDestroyView() {
-//        firstChartView.data?.clearValues()
+        firstChartView.data?.clearValues()
+        secondChartView.data?.clearValues()
         super.onDestroyView()
     }
 
