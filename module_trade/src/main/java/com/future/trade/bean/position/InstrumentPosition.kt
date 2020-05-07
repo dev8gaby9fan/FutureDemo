@@ -1,10 +1,10 @@
 package com.future.trade.bean.position
 
+import com.fsh.common.model.QuoteEntity
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
 import com.future.trade.enums.CTPCombOffsetFlag
 import com.future.trade.enums.CTPDirection
-import com.future.trade.enums.CTPHedgeType
 import com.future.trade.model.SupportTransactionOrderPrice
 
 /**
@@ -127,8 +127,8 @@ class InstrumentPosition : SimplePosition(){
         return longPosition.getTodayPosition() + shortPosition.getTodayPosition()
     }
 
-    override fun getYeterdayPosition(): Int {
-        return longPosition.getYeterdayPosition() + shortPosition.getYeterdayPosition()
+    override fun getYesterdayPosition(): Int {
+        return longPosition.getYesterdayPosition() + shortPosition.getYesterdayPosition()
     }
 
     override fun getOpenCost(): Double {
@@ -155,5 +155,10 @@ class InstrumentPosition : SimplePosition(){
             fieldList.addAll(shortPosition.getCloseOrderFields(volume,priceType,limitPrice))
         }
         return fieldList
+    }
+
+    override fun onQuoteUpdate(quoteEntity: QuoteEntity) {
+        longPosition.onQuoteUpdate(quoteEntity)
+        shortPosition.onQuoteUpdate(quoteEntity)
     }
 }

@@ -86,7 +86,8 @@ enum class CTPCombOffsetFlag(val offset: Char, val text: String) {
  */
 enum class CTPDirection(val direction: Char, val text: String) {
     Buy('0', "买"),
-    Sell('1', "卖");
+    Sell('1', "卖"),
+    Unknown('9',"未知");
 
     companion object {
         private val all: HashMap<Char, CTPDirection> = HashMap()
@@ -109,7 +110,8 @@ enum class CTPDirection(val direction: Char, val text: String) {
 enum class CTPHedgeType(val code: Char, val text: String) {
     Speculation('1', "投机"),
     Arbitrage('2', "套利"),
-    Hedge('3', "套保");
+    Hedge('3', "套保"),
+    Unknown('9',"未知");
 
     companion object {
         private val all: HashMap<Char, CTPHedgeType> = HashMap()

@@ -1,5 +1,6 @@
 package com.future.trade.bean.position
 
+import com.fsh.common.model.QuoteEntity
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
 import com.future.trade.enums.CTPDirection
@@ -32,8 +33,8 @@ class DirectionPosition : SimplePosition() {
         return exchangePosition?.getTodayPosition() ?: 0
     }
 
-    override fun getYeterdayPosition(): Int {
-        return exchangePosition?.getYeterdayPosition() ?: 0
+    override fun getYesterdayPosition(): Int {
+        return exchangePosition?.getYesterdayPosition() ?: 0
     }
 
     override fun getOpenCost(): Double {
@@ -120,5 +121,9 @@ class DirectionPosition : SimplePosition() {
     }
     override fun onRspUserLogout() {
         exchangePosition?.onRspUserLogout()
+    }
+
+    override fun onQuoteUpdate(quoteEntity: QuoteEntity) {
+        exchangePosition?.onQuoteUpdate(quoteEntity)
     }
 }

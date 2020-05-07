@@ -2,16 +2,19 @@ package com.future.trade.ui.transaction
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.fsh.common.model.InstrumentInfo
+import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
 import com.future.trade.R
 import com.future.trade.bean.position.Position
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.layout_item_position.view.*
 import kotlinx.android.synthetic.main.layout_item_position.view.scroller
 
@@ -21,6 +24,7 @@ import kotlinx.android.synthetic.main.layout_item_position.view.scroller
 class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemViewHolder>() {
     private val scrollViewList: MutableList<HorizontalScrollView> = ArrayList()
     private var scrollViewScrollX: Int = 0
+    private var disposable: Disposable? = null
 
     companion object {
         @JvmStatic
@@ -39,6 +43,17 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
             }
             updateDataList(it)
         })
+        disposable = viewModel?.quoteData?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())?.subscribe {
+                recordList.filter { pos -> pos.getExchangeId() + "." + pos.getInstrumentId() == it.instrument_id }
+                    .forEach { pos ->
+                        pos.onQuoteUpdate(it)
+                        val index = recordList.indexOf(pos)
+                        if (index > 0) {
+                            recordAdapter.notifyItemChanged(index + 1)
+                        }
+                    }
+        }
     }
 
     override fun createItemViewHolder(parent: ViewGroup, viewType: Int): PositionItemViewHolder =
@@ -52,30 +67,25 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
     }
 
     override fun onBindItemViewHolder(holder: CommonPositionItemViewHolder, position: Int) {
-        val posItem = getItem(position)
-        holder.itemView.tv_ins_name.text = posItem?.getInstrumentId() ?: Omits.OmitPrice
-        holder.itemView.tv_direction.text = posItem?.getDirection()?.text ?: Omits.OmitPrice
-        holder.itemView.tv_pos_volume.text = posItem?.getPosition()?.toString() ?: Omits.OmitPrice
+        val posItem = getItem(position)?:return
+        holder.itemView.tv_ins_name.text = posItem.getInstrumentId()
+        holder.itemView.tv_direction.text = posItem.getDirection()?.text
+        holder.itemView.tv_pos_volume.text = posItem.getPosition()?.toString()
         holder.itemView.tv_pos_available.text =
-            posItem?.getAvailable()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_pos_profit.text =
-            posItem?.getPositionProfit()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_pos_cost.text =
-            posItem?.getPositionCost()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_open_profit.text =
-            posItem?.getOpenPositionProfit()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_open_cost.text =
-            posItem?.getOpenCost()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_today.text =
-            posItem?.getTodayPosition()?.toString() ?: Omits.OmitPrice
+            posItem.getAvailable().toString()
+        holder.itemView.tv_pos_pos_profit.text = NumberUtils.formatNum(posItem.getPositionProfit().toString(),"0.01")
+        holder.itemView.tv_pos_pos_cost.text = NumberUtils.formatNum((posItem.getPositionCost() / posItem.getPosition()).toString(),"0.01")
+        holder.itemView.tv_pos_open_profit.text = NumberUtils.formatNum(posItem.getOpenPositionProfit().toString(),"0.01")
+        holder.itemView.tv_pos_open_cost.text = NumberUtils.formatNum((posItem.getOpenCost()/posItem.getPosition()).toString(),"0.01")
+        holder.itemView.tv_pos_today.text = posItem.getTodayPosition().toString()
         holder.itemView.tv_pos_yesterday.text =
-            posItem?.getYeterdayPosition()?.toString() ?: Omits.OmitPrice
-        holder.itemView.tv_pos_spec.text = posItem?.getSpecPosition()?.toString() ?: Omits.OmitPrice
+            posItem.getYesterdayPosition().toString()
+        holder.itemView.tv_pos_spec.text = posItem.getSpecPosition().toString()
         holder.itemView.tv_pos_hedge.text =
-            posItem?.getHedgePosition()?.toString() ?: Omits.OmitPrice
-        val clickListener = { _:View?->
+            posItem.getHedgePosition().toString()
+        val clickListener = { _: View? ->
             if (!holder.itemView.isSelected) {
-                (parentFragment as TransactionFragment).onPositionItemClick(posItem!!)
+                (parentFragment as TransactionFragment).onPositionItemClick(posItem)
                 selectItem(position)
             }
         }
@@ -89,12 +99,12 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
             selectItem(position)
         }*/
         setupScrollView(holder)
-        holder.itemView.isSelected = posItem?.isSelected() ?: false
+        holder.itemView.isSelected = posItem.isSelected()
         val foregroundColorRes =
             if (holder.itemView.isSelected) R.color.color_pressed else R.color.white
         holder.itemView.background =
             ColorDrawable(holder.itemView.resources.getColor(foregroundColorRes))
-        posItem?.dataChanged(false)
+        posItem.dataChanged(false)
     }
 
     override fun onItemViewHodlerAttachedToWindow(holder: CommonPositionItemViewHolder) {
@@ -109,11 +119,11 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
     private fun setupScrollView(holder: CommonPositionItemViewHolder) {
         holder.itemView.scroller.setOnScrollChangeListener { _, scrollX, scrollY, _, _ ->
             for (scrollView in scrollViewList) {
-                scrollView.scrollTo(scrollX,scrollY)
+                scrollView.scrollTo(scrollX, scrollY)
             }
             scrollViewScrollX = scrollX
         }
-        holder.itemView.scroller.scrollTo(scrollViewScrollX,0)
+        holder.itemView.scroller.scrollTo(scrollViewScrollX, 0)
     }
 
     private fun selectItem(index: Int) {
@@ -123,14 +133,20 @@ class PositionRecordFragment : BaseRecordFragment<Position, CommonPositionItemVi
         recordAdapter.notifyItemRangeChanged(1, recordList.size + 1)
     }
 
-    fun onSwitchTransactionInstrument(instrument:InstrumentInfo){
+    fun onSwitchTransactionInstrument(instrument: InstrumentInfo) {
         val pos = recordList.find { pos -> pos.getInstrumentId() == instrument.ctpInstrumentId }
-        if(pos == null){
+        if (pos == null) {
             selectItem(-1)
             return
         }
         val index = recordList.indexOf(pos)
         selectItem(index)
+    }
+
+    override fun onDetach() {
+        disposable?.dispose()
+        disposable = null
+        super.onDetach()
     }
 }
 

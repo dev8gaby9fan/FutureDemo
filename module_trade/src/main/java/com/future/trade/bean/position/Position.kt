@@ -1,5 +1,8 @@
 package com.future.trade.bean.position
 
+import com.fsh.common.model.InstrumentInfo
+import com.fsh.common.model.QuoteEntity
+import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.Omits
 import com.future.trade.bean.*
 import com.future.trade.enums.CTPCombOffsetFlag
@@ -47,6 +50,11 @@ interface PositionDataHandler{
      * 交易账号退出登录
      */
     fun onRspUserLogout()
+
+    /**
+     * 行情更新
+     */
+    fun onQuoteUpdate(quoteEntity:QuoteEntity)
 }
 
 /**
@@ -66,7 +74,7 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
     //套保仓位数量
     fun getHedgePosition():Int
     //获取昨仓数量
-    fun getYeterdayPosition():Int
+    fun getYesterdayPosition():Int
     //获取今仓数量
     fun getTodayPosition():Int
     //开仓成本
@@ -96,53 +104,29 @@ interface Position : PositionDataHandler , DiffComparable<Position>{
 abstract class SimplePosition : Position {
     //是否选中状态
     private var selectedStatus:Boolean = false
-    override fun getInstrumentId(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getInstrumentId(): String = Omits.OmitString
 
-    override fun getExchangeId(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getExchangeId(): String = Omits.OmitString
 
-    override fun getPosition(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getPosition(): Int = 0
 
-    override fun getAvailable(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getAvailable(): Int = 0
 
-    override fun getSpecPosition(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getSpecPosition(): Int = 0
 
-    override fun getHedgePosition(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getHedgePosition(): Int = 0
 
-    override fun getOpenCost(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getOpenCost(): Double = 0.0
 
-    override fun getPositionCost(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getPositionCost(): Double = 0.0
 
-    override fun getPositionProfit(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getPositionProfit(): Double = 0.0
 
-    override fun getOpenPositionProfit(): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getOpenPositionProfit(): Double = 0.0
 
-    override fun getDirection(): CTPDirection {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getDirection(): CTPDirection = CTPDirection.Unknown
 
-    override fun getHedgeType(): CTPHedgeType {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getHedgeType(): CTPHedgeType = CTPHedgeType.Unknown
 
     override fun compare(obj: Position): Boolean {
         return getInstrumentId() == obj.getInstrumentId() && getPosition() == obj.getPosition()
@@ -160,25 +144,17 @@ abstract class SimplePosition : Position {
       * =====================================数据处理===============================================
       */
 
-     override fun onRspPositionDetail(rsp: RspPositionDetailField) {
-         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-     }
+     override fun onRspPositionDetail(rsp: RspPositionDetailField) {}
 
-     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> {
-         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-     }
+     override fun onRspQryOrder(rsp: RspQryOrder): Pair<RspQryOrder, Boolean> = Pair(rsp,false)
 
-     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> {
-         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-     }
+     override fun onRtnOrder(rtn: RtnOrder): Pair<RtnOrder, Boolean> = Pair(rtn,false)
 
-     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> {
-         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-     }
+     override fun onRspOrderInsert(rsp: RspOrderInsert): Pair<RspOrderInsert, Boolean> = Pair(rsp,false)
 
-     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> {
-         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-     }
+     override fun onRtnTrade(rtn: RtnTrade): Pair<RtnTrade, Boolean> = Pair(rtn,false)
+
+    override fun onQuoteUpdate(quoteEntity: QuoteEntity) {}
 }
 
 /**
@@ -197,7 +173,9 @@ abstract class ExchangePosition : SimplePosition(){
     private var insId:String? = null
     private var exchId:String? = null
     private var direction:CTPDirection? = null
-    private var dataChagned:Boolean = false
+    private var dataChanged:Boolean = false
+    private var posProfit:Double = 0.0
+    private var openProfit:Double = 0.0
     /**
      * 持仓明细处理
      */
@@ -211,7 +189,7 @@ abstract class ExchangePosition : SimplePosition(){
         if(direction == null){
             direction = CTPDirection.from(rsp.direction)
         }
-        dataChagned = true
+        dataChanged = true
         //今仓
         if(rsp.openDate == rsp.tradingDay){
             //今投机仓
@@ -240,7 +218,7 @@ abstract class ExchangePosition : SimplePosition(){
         if(direction == null){
             direction = CTPDirection.from(rtn.rspField.direction)
         }
-        dataChagned = true
+        dataChanged = true
         return if(rtn.rspField.offsetFlag == CTPCombOffsetFlag.Open.offset){
             onRtnTradeOpenPosition(rtn)
         }else{//平仓
@@ -295,7 +273,7 @@ abstract class ExchangePosition : SimplePosition(){
         return tdSpecPos.posVolume + tdHedgePos.posVolume
     }
 
-    override fun getYeterdayPosition(): Int {
+    override fun getYesterdayPosition(): Int {
         return ydSpecPos.posVolume + ydHedgePos.posVolume
     }
 
@@ -308,11 +286,11 @@ abstract class ExchangePosition : SimplePosition(){
     }
 
     override fun getPositionProfit(): Double {
-        return 0.0
+        return posProfit
     }
 
     override fun getOpenPositionProfit(): Double {
-        return 0.0
+        return openProfit
     }
 
     override fun getInstrumentId(): String {
@@ -323,10 +301,30 @@ abstract class ExchangePosition : SimplePosition(){
         return exchId ?: Omits.OmitPrice
     }
 
-    override fun isDataChanged(): Boolean = dataChagned
+    override fun isDataChanged(): Boolean = dataChanged
 
     override fun dataChanged(isChanged: Boolean) {
-        dataChagned = isChanged
+        dataChanged = isChanged
+    }
+
+    override fun onQuoteUpdate(quoteEntity: QuoteEntity) {
+        val posCost = getPositionCost()
+        val openCost = getOpenCost()
+        val instrument = ARouterUtils.getQuoteService().getInstrumentById("$exchId.$insId")?:return
+        if(posCost > 0.0 && !Omits.isOmit(quoteEntity.last_price)){
+            posProfit = calculateProfit(posCost,quoteEntity.last_price.toDouble(),instrument)
+        }
+        if(openCost > 0.0 && !Omits.isOmit(quoteEntity.last_price)){
+            openProfit = calculateProfit(openCost,quoteEntity.last_price.toDouble(),instrument)
+        }
+    }
+
+    private fun calculateProfit(cost:Double,lastPrice:Double,instrument:InstrumentInfo):Double{
+       return if(getDirection() == CTPDirection.Buy){
+            (lastPrice * getPosition() - cost)*instrument.volumeMultiple
+        }else{
+            (cost - lastPrice * getPosition())*instrument.volumeMultiple
+        }
     }
 
     companion object{
