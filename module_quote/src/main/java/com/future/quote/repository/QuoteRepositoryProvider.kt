@@ -13,14 +13,14 @@ import com.fsh.common.retrofit.RetrofitUtils
  */
 
 object QuoteRepositoryProvider {
-    private val quoteHttpReposity:QuoteHttpReposity by lazy {
-        RetrofitUtils.createApi(QuoteHttpReposity::class.java)
+    private val instrumentRepository: InstrumentRepository by lazy {
+        ShinnyInstrumentRepository(ShinnyHTTPRepository())
     }
 
-    private val quoteScoketReposity:QuoteSocketRepository by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+    private val quoteScoketReposity: QuoteSocketRepository by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
         QuoteSocketRepository()
     }
 
-    fun providerHttpRepository():QuoteHttpReposity = quoteHttpReposity
-    fun providerSocketRepository():QuoteSocketRepository = quoteScoketReposity
+    fun providerHttpRepository(): InstrumentRepository = instrumentRepository
+    fun providerSocketRepository(): QuoteSocketRepository = quoteScoketReposity
 }

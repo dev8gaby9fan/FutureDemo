@@ -75,6 +75,11 @@ abstract class TradeApiRepository(var tradeApiSource: TradeApiSource) : BaseRepo
         tradeApiSource.reqConfirmSettlement()
     }
 
+    /** 请求结算单数据*/
+    fun reqQrySettlementInfo() {
+        tradeApiSource.reqQrySettlementInfo()
+    }
+
     fun reqQryConfirmSettlement(){
         tradeApiSource.reqQryConfirmSettlement()
     }

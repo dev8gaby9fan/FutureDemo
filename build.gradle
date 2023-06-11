@@ -4,14 +4,8 @@ buildscript {
     apply from: 'versions.gradle'
 
     addRepos(repositories)
-//    repositories {
-//        google()
-//        jcenter()
-//
-//    }
+
     dependencies {
-//        classpath 'com.android.tools.build:gradle:3.5.3'
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath deps.gradle
         classpath deps.kotlin.plugin
         classpath deps.doraemonkit.plugin
@@ -23,6 +17,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
         maven{url 'https://jitpack.io'}
         flatDir {

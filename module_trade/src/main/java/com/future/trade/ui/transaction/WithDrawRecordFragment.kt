@@ -2,12 +2,10 @@ package com.future.trade.ui.transaction
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.fsh.common.ext.viewModelOf
 import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.NumberUtils
 import com.future.trade.R
@@ -66,7 +64,7 @@ class WithDrawRecordFragment :BaseRecordFragment<RspOrderField,CommonWithDrawIte
         holder.itemView.setOnClickListener {
             withDrawItem = item
             val instrument = ARouterUtils.getQuoteService().getInstrumentById(item.exchangeID+"."+item.instrumentID)
-            withDrawDialog?.showDialog(childFragmentManager,"${instrument?.name} ${item.volumeTotal}手${CTPDirection.from(item.direction)?.text}${CTPCombOffsetFlag.from(item.combOffsetFlag[0]).text}价格:${item.limitPrice}",
+            withDrawDialog?.showDialog(childFragmentManager,"${instrument?.instrumentName} ${item.volumeTotal}手${CTPDirection.from(item.direction)?.text}${CTPCombOffsetFlag.from(item.combOffsetFlag[0]).text}价格:${item.limitPrice}",
                 getString(R.string.tv_order_action_notice))
         }
     }

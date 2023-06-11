@@ -1,7 +1,6 @@
 package com.future.trade.model
 
 import android.text.TextUtils
-import android.util.Log
 import android.widget.TextView
 import com.fsh.common.model.InstrumentInfo
 import com.fsh.common.model.QuoteEntity
@@ -58,7 +57,7 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
             settingPos = TradeApiProvider.providerTransactionRepository().getPositionByInstrumentId(ins.ctpInstrumentId)
         }
         closeButton.setTradePosition(settingPos,priceType)
-        onQuoteUpdate(quoteService?.getQuoteByInstrument(ins.id))
+        onQuoteUpdate(quoteService?.getQuoteByInstrument(ins.instrumentID))
         volumeInput.text = tradeVolume.toString()
     }
 
@@ -68,7 +67,7 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
 
     fun changePriceType(type: SupportTransactionOrderPrice) {
         priceType = type
-        val quote  = quoteService?.getQuoteByInstrument(instrument?.id)
+        val quote  = quoteService?.getQuoteByInstrument(instrument?.instrumentID)
         tradePrice = if (priceType == SupportTransactionOrderPrice.Limit) {
             if(quote != null){
                 NumberUtils.formatNum(quote.last_price, instrument?.priceTick)
@@ -144,7 +143,7 @@ class TransactionInputHelper(private val priceInput: TextView, private val volum
                 }
             }
             SupportTransactionOrderPrice.Market -> {
-                val type = ExchangeType.from(instrument?.eid) ?: return
+                val type = ExchangeType.from(instrument?.exchangeID) ?: return
                 //上期能源所不支持市价单，用涨跌停去搞
                 if (type == ExchangeType.INE || type == ExchangeType.SHFE) {
                     //没有获取到涨跌停，就搞一个0

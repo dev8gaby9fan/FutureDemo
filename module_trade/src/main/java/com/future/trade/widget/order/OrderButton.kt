@@ -120,14 +120,14 @@ abstract class OrderButton : View {
         if(Omits.isOmit(textOrderPrice) || textOrderPrice.toDouble() < 0){
             throw IllegalArgumentException(resources.getString(R.string.notice_price_error))
         }
-        val exchange = ExchangeType.from(orderInstrument?.id)
+        val exchange = ExchangeType.from(orderInstrument?.instrumentID)
         if(priceType == SupportTransactionOrderPrice.Market){
             //市价单价格不对
             if(exchange != ExchangeType.SHFE && exchange != ExchangeType.INE && textOrderPrice.toDouble() != 0.0){
                 throw IllegalArgumentException(resources.getString(R.string.notice_market_price_fail))
             }
         }
-        val quoteEntity = ARouterUtils.getQuoteService().getQuoteByInstrument(orderInstrument?.id)
+        val quoteEntity = ARouterUtils.getQuoteService().getQuoteByInstrument(orderInstrument?.instrumentID)
         if(quoteEntity != null){
             val upLimitPrice = quoteEntity!!.upper_limit
             val lowLimit = quoteEntity!!.lower_limit
@@ -175,7 +175,7 @@ abstract class OrderButton : View {
             CTPTimeConditionType.IOC,Omits.OmitString,CTPVolumeConditionType.AV,1,
             CTPContingentConditionType.Immediately,null,CTPForceCloseReasonType.NotForceClose,0,null,
             tradeAPI.getOrderReqId(),0,0,
-            orderInstrument!!.eid,null,currentUser.userID,null,
+            orderInstrument!!.exchangeID,null,currentUser.userID,null,
             null,null,null))
     }
 

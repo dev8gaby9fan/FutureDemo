@@ -124,31 +124,33 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
 
     //请求结算单响应
     override fun OnRspQrySettlementInfo(
-        pSettlementInfo: CThostFtdcSettlementInfoLongField?,
+        pSettlementInfo: CThostFtdcSettlementInfoLongField,
         rspField: CThostFtdcRspInfoField?,
         nRequestID: Int,
         bIsLast: Boolean
     ) {
         super.OnRspQrySettlementInfo(pSettlementInfo, rspField, nRequestID, bIsLast)
-        tradeEventPublish?.onNext(RspQrySettlementEvent(RspQrySettlementInfo(RspQrySettlementInfoField.fromCTPAPI(pSettlementInfo),
+        val settlementInfoField = RspQrySettlementInfoField.fromCTPAPI(pSettlementInfo)
+        Log.i("CTPTradeApi","received RspSettlementInfo $settlementInfoField")
+        tradeEventPublish?.onNext(RspQrySettlementEvent(RspQrySettlementInfo(settlementInfoField,
             RspInfoField.fromCTPAPIRsp(rspField),bIsLast)))
     }
 
     //查询结算单响应
     override fun OnRspQrySettlementInfoConfirm(
-        p0: CThostFtdcSettlementInfoConfirmField?,
+        p0: CThostFtdcSettlementInfoConfirmField,
         p1: CThostFtdcRspInfoField?,
         p2: Int,
         p3: Boolean
     ) {
-        super.OnRspQrySettlementInfoConfirm(p0, p1, p2, p3)
+        Log.d(
+            "CTPTradeApi",
+            "OnRspQrySettlementInfoConfirm --> ${p0.accountID} ${p0.brokerID} ${p0.settlementID} ${p0.confirmDate} ${p0.confirmTime} ${p1?.errorID} ${p1?.errorMsg} ${p3}"
+        )
         val rsp = RspQrySettlementInfoConfirm(RspQrySettlementInfoConfirmField.fromCTPAPI(p0),
             RspInfoField.fromCTPAPIRsp(p1),p3)
         tradeEventPublish?.onNext(RspQryConfirmSettlementEvent(rsp))
-        Log.d(
-            "CTPTradeApi",
-            "OnRspQrySettlementInfoConfirm --> ${rsp.rspField?.accountID} ${rsp.rspField?.brokerID} ${rsp.rspField?.settlementID} ${rsp.rspField?.confirmDate} ${rsp.rspField?.confirmTime} ${rsp.rspInfoField.errorID} ${rsp.rspInfoField.errorMsg} ${rsp.bIsLast}"
-        )
+
         // 3.请求结算单信息
         if (rsp.rspField?.settlementID == null && Omits.isOmit(rsp.rspInfoField.errorID)) {
             val reqSettlementField = CThostFtdcQrySettlementInfoField()
@@ -351,6 +353,12 @@ class CTPTradeApi : TradeApiSource, CThostFtdcTraderSpi(),CTPTradeApiSendMsgQueu
         }
         tradeApi?.ReqQrySettlementInfoConfirm(reqField,nRequestIDFactor.getAndIncrement())
         Log.d("CTPTradeApi","[${account?.investorId}] req qry confirm settlement")
+    }
+
+    override fun reqQrySettlementInfo() {
+        val reqField = CThostFtdcQrySettlementInfoField()
+        tradeApi?.ReqQrySettlementInfo(reqField,nRequestIDFactor.getAndIncrement())
+        Log.d("CTPTradeApi","[${account?.investorId}] req qry settlement info")
     }
 
     override fun reqConfirmSettlement() {

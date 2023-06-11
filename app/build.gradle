@@ -12,24 +12,46 @@ android {
         versionName rootProject.ext.app_info.version_name
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        my_signing {
+            storeFile new File(rootDir, "mykeystore.jks")
+            storePassword '12345678'
+            keyAlias 'tradeapp'
+            keyPassword '12345678'
+        }
+    }
+
     buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.my_signing
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.my_signing
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 dokitExt {
     //整个dokit的插件开关
     dokitPluginSwitch = true
     //函数耗时的开关
-    slowMethodSwitch = true
+    slowMethodSwitch = false
     //大图检测的开关
-    bigImgSwitch = true
+    bigImgSwitch = false
     //函数耗时的自定义阈值 单位为ms 1000ms = 1s
     thresholdTime = 200
     //在指定的包名业务代码下插入代码

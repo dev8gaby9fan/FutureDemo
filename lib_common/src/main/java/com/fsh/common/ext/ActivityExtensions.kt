@@ -22,7 +22,7 @@ inline fun <reified VM : ViewModel> BaseActivity.viewModelOf(): Lazy<VM> {
     return viewModels { ViewModelFactory(this, lifecycle) }
 }
 
-inline fun FragmentActivity.addFragment(frameId:Int,fragment:Fragment){
+fun FragmentActivity.addFragment(frameId:Int,fragment:Fragment){
     supportFragmentManager.beginTransaction()
         .add(frameId,fragment)
         .commit()

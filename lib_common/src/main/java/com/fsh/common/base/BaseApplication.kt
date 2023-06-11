@@ -2,18 +2,12 @@ package com.fsh.common.base
 
 import android.app.Application
 import android.content.Context
+import android.os.Process
 import android.util.Log
-import android.widget.Toast
 import androidx.multidex.MultiDex
 import com.alibaba.android.arouter.launcher.ARouter
-import com.didichuxing.doraemonkit.DoraemonKit
 import com.fsh.common.BuildConfig
 import com.fsh.common.util.CommonUtil
-import com.fsh.common.util.DateUtils
-import java.io.File
-import java.io.FileWriter
-import java.io.PrintStream
-import java.io.PrintWriter
 
 /**
  * Created by devFan
@@ -25,20 +19,22 @@ import java.io.PrintWriter
  *
  */
 
-open class BaseApplication : Application(),Thread.UncaughtExceptionHandler{
+open class BaseApplication : Application(), Thread.UncaughtExceptionHandler {
     override fun uncaughtException(t: Thread, e: Throwable) {
-        Log.d("BaseApplication","crash occur ${filesDir.absolutePath}")
+        Log.d("BaseApplication", "crash occur ${filesDir.absolutePath}", e)
 //        val crashLogFile = File(filesDir, DateUtils.formatNow1())
 //        crashLogFile.delete()
 //        crashLogFile.createNewFile()
 //        val fileWriter = FileWriter(crashLogFile)
 //        e.printStackTrace(PrintWriter(fileWriter,true))
-        e.printStackTrace()
+        System.exit(0)
+        Process.killProcess(Process.myPid())
     }
 
-    val application:BaseApplication by lazy {
+    val application: BaseApplication by lazy {
         this
     }
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         MultiDex.install(this)
@@ -49,17 +45,13 @@ open class BaseApplication : Application(),Thread.UncaughtExceptionHandler{
         initArouter()
         CommonUtil.application = this
         Thread.setDefaultUncaughtExceptionHandler(this)
-        if(BuildConfig.DEBUG){
-            DoraemonKit.install(this,null,"c6062411b36abf47c54c365e4f7e5a11")
+        if (BuildConfig.DEBUG) {
+//            DoraemonKit.install(this, null, "c6062411b36abf47c54c365e4f7e5a11")
+//            DoraemonKit.setDebug(false)
         }
     }
 
-    private fun initArouter(){
-//        if(BuildConfig.DEBUG){
-//
-//        }
-        ARouter.openDebug()
-        ARouter.openLog()
+    private fun initArouter() {
         ARouter.init(this)
     }
 

@@ -3,8 +3,7 @@ package com.future.quote.repository
 import com.fsh.common.repository.BaseRepository
 import com.fsh.common.retrofit.BaseRetrofitApi
 import com.future.quote.util.Constants
-import com.google.gson.JsonObject
-import io.reactivex.Observable
+import okhttp3.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
 
@@ -18,11 +17,11 @@ import retrofit2.http.Headers
  *
  */
 
-interface QuoteHttpReposity : BaseRetrofitApi, BaseRepository {
+interface InstrumentHttpRepository : BaseRepository {
     /**
      * 加载合约
      */
-    @Headers("Accept:application/json")
-    @GET(Constants.URL_LAST_INSTRUMENT)
-    fun loadInstruments():Observable<JsonObject>
+//    @Headers("Accept:application/json")
+//    @GET(Constants.URL_LAST_INSTRUMENT)
+    fun loadInstruments(): Response
 }

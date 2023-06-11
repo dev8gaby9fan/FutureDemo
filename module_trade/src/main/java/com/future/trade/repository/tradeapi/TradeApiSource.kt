@@ -41,6 +41,12 @@ interface TradeApiSource {
      * 查询请求确认结算单记录
      */
     fun reqQryConfirmSettlement()
+
+    /**
+     * 请求查询结算单数据
+     */
+    fun reqQrySettlementInfo()
+
     /**
      * 确认结算单
      */

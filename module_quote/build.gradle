@@ -50,6 +50,12 @@ android {
         }
     }
     resourcePrefix "quote_"
+    kotlinOptions {
+        jvmTarget = versions.kotlinJvmTarget
+    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {

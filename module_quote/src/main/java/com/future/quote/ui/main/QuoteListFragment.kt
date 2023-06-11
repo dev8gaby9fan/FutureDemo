@@ -10,15 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.android.arouter.launcher.ARouter
 import com.fsh.common.base.BaseLazyFragment
 import com.fsh.common.ext.OnItemTouchEventListener
 import com.fsh.common.ext.RecyclerViewItemClickListener
 import com.fsh.common.ext.viewModelOf
-import com.fsh.common.model.ARouterPath
 import com.fsh.common.model.InstrumentInfo
-import com.fsh.common.provider.MainService
-import com.fsh.common.util.ARouterUtils
 import com.fsh.common.util.NumberUtils
 import com.fsh.common.util.Omits
 import com.fsh.common.websocket.FWebSocket
@@ -101,7 +97,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
 //            ARouterUtils.getMainService()
 //                .switchTabPage(MainService.PAGE_TRADE)
 //        }
-        FutureInfoActivity.startActivity(requireContext(),insList[pos].id)
+        FutureInfoActivity.startActivity(requireContext(),insList[pos].instrumentID)
     }
 
     private fun initDatas() {
@@ -137,7 +133,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
             return
         }
         val indIdList: String =  insList.subList(startPosition, endPosition)
-            .joinToString(","){it.id}
+            .joinToString(","){it.instrumentID}
         if(isSub){
             viewModel.subscribeQuote(indIdList)
         }else{
@@ -150,7 +146,7 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
         insMap.clear()
         insList.addAll(QuoteInfoMgr.mgr.getExchange(id).getInstruments())
         insList.forEachIndexed { index, ins ->
-            insMap[ins.id] = Pair(index, ins)
+            insMap[ins.instrumentID] = Pair(index, ins)
         }
         adapter.notifyDataSetChanged()
         //如果是WebSocket连接成功，就直接将RecyclerView滚动到第一条
@@ -174,9 +170,9 @@ class QuoteListFragment : BaseLazyFragment(), IContentFragment {
 
         override fun onBindViewHolder(holder: QuoteItem, position: Int) {
             val ins = insList[position]
-            holder.item.tv_ins_name.text = ins.name
+            holder.item.tv_ins_name.text = ins.instrumentName
             holder.item.tv_ins_short_id.text = ins.ctpInstrumentId
-            val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.id)
+            val quoteEntity = QuoteInfoMgr.mgr.getQuoteEntity(ins.instrumentID)
             setQuoteTextToTextView(holder.item.tv_ins_price,quoteEntity?.last_price,ins.priceTick)
             setQuoteTextToTextView(holder.item.tv_ins_pre_settlement,quoteEntity?.pre_settlement,ins.priceTick)
             setQuoteTextToTextView(holder.item.tv_ins_updown,quoteEntity?.updown,ins.priceTick)

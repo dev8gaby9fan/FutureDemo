@@ -175,10 +175,10 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         }
         orderIns = needToBindIns
         transactionInputHelper.setTradeInstrument(needToBindIns,pos)
-        viewModel?.subscribeQuote(needToBindIns.id)
-        tv_order_ins_name.text = needToBindIns.name
+        viewModel?.subscribeQuote(needToBindIns.instrumentID)
+        tv_order_ins_name.text = needToBindIns.instrumentName
 
-        val quoteEntity = quoteService.getQuoteByInstrument(needToBindIns.id)
+        val quoteEntity = quoteService.getQuoteByInstrument(needToBindIns.instrumentID)
         if(quoteEntity != null){
             handleQuoteUpdate(quoteEntity)
         }
@@ -187,7 +187,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
     }
 
     private fun handleQuoteUpdate(quoteEntity: QuoteEntity){
-        if(orderIns?.id != quoteEntity.instrument_id){
+        if(orderIns?.instrumentID != quoteEntity.instrument_id){
             return
         }
 
@@ -252,7 +252,7 @@ class TransactionFragment :BaseLazyFragment(),View.OnClickListener{
         val selectedList = ArrayList<IOrderInsertField>()
         val array = arrayOfNulls<String>(fields.size)
         orderNames.toArray(array)
-        MaterialAlertDialogBuilder(context)
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("请选择")
             .setMultiChoiceItems(array, BooleanArray(fields.size)) { _, which, isChecked ->
                 if(isChecked){

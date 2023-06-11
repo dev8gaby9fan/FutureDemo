@@ -50,7 +50,8 @@ class LoginViewModel : BaseViewModel<TradeApiRepository>(){
                 if(rspLoginEvent.rsp.rspInfo.errorID == 0){
                     //这里发起查询确认结算单记录，看查询的响应结果，
                     // 如果有结果就不加载结算单数据，如果没有就加载结算单数据
-                    repository?.reqQryConfirmSettlement()
+//                    repository?.reqQryConfirmSettlement()
+                    reqConfirmSettlementInfo()
                     repository?.onUserLoginSuccess(rspLoginEvent.rsp.rspField!!)
                     _loginLiveData.postValue(TradeLoginFlowEvent(TradeLoginFlowType.RspUserLoginSuccess,event))
                 }else{

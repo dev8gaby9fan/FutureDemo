@@ -13,7 +13,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
 class BrokerConfigRepository : BaseRepository {
-    private val SIMNOW_FRONT_1 = BrokerConfig("上期模拟盘中","simnow_client_test","0000000000000000","tcp://180.168.146.187:10100","9999","futuredemo")
+    private val SIMNOW_FRONT_1 = BrokerConfig("上期模拟盘中","simnow_client_test","0000000000000000","tcp://180.168.146.187:10201","9999","futuredemo")
     private val SIMNOW_FRONT_2 = BrokerConfig("上期模拟盘后","simnow_client_test","0000000000000000","tcp://180.168.146.187:10130","9999","futuredemo")
     private val configDB:ConfigDatabase by lazy {
         Room.databaseBuilder(CommonUtil.application!!, ConfigDatabase::class.java, "db_config.db")

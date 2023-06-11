@@ -31,130 +31,6 @@ interface DataParser<T> {
     fun parse(json: JsonObject): T
 }
 
-/**
- * 合约信息解析
- */
-class InstrumentParser : DataParser<Int> {
-    companion object {
-        private val supportClassType = arrayOf("FUTURE_CONT", "FUTURE")
-        private val supportedExchange = mapOf(
-            "CFFEX" to Pair(5, "中金所"),
-            "DCE" to Pair(4, "大商所"),
-            "SHFE" to Pair(1, "上期所"),
-            "INE" to Pair(2, "能源所"),
-            "CZCE" to Pair(3, "郑商所"),
-            "KQ" to Pair(0, "主力合约")
-        )
-
-
-        fun getExchangeName(id: String): String {
-            if (supportedExchange.containsKey(id)) {
-                return supportedExchange[id]!!.second
-            }
-            return "UnKnown"
-        }
-
-        fun getExchangeSortKey(id: String): Int {
-            if (supportedExchange.containsKey(id)) {
-                return supportedExchange[id]!!.first
-            }
-            return Int.MAX_VALUE
-        }
-    }
-
-    override fun parse(json: JsonObject): Int {
-        for (instrumentId in json.keySet()) {
-            val subObj = json.getAsJsonObject(instrumentId)
-            val classN = subObj.optString("class")
-            if (classN !in supportClassType) {
-                continue
-            }
-            val expired = subObj.get("expired").asBoolean
-            if (expired) {
-                continue
-            }
-            val insName = subObj.optString("ins_name")
-            val exchId = subObj.optString("exchange_id")
-            val simInsId = subObj.optString("ins_id")
-            val productId = subObj.optString("product_id")
-            val volumeMultiple = subObj.optInt("volume_multiple")
-            val priceTick = subObj.optString("price_tick")
-            val priceDecs = subObj.optString("price_decs")
-            val sortKey = subObj.optInt("sort_key")
-            val productShortName = subObj.optString("product_short_name")
-            val py = subObj.optString("py")
-            val underlying_symbol = subObj.optString("underlying_symbol")
-            //交易所
-
-            var instrument = InstrumentInfo(insName, instrumentId, exchId, productId)
-            instrument.classType = classN
-            instrument.eid = exchId
-            instrument.pid = productId
-            instrument.volumeMultiple = volumeMultiple
-            instrument.priceTick = priceTick
-            instrument.priceDecs = priceDecs
-            instrument.sortkey = sortKey
-            instrument.productShortName = productShortName
-            instrument.py = py
-            instrument.pid = productId
-            instrument.deliveryYear = subObj.optString("delivery_year")
-            instrument.deliveryMonth = subObj.optString("delivery_month")
-            instrument.expireTime = subObj.optString("expire_datetime")
-            instrument.maxMarketOrderVolume = subObj.optString("max_market_order_volume")
-            instrument.maxLimitOrderVolume = subObj.optString("max_limit_order_volume")
-
-            when (classN) {
-                //期货普通合约格式
-                "FUTURE" -> {
-                    instrument.isMainIns = false
-                    instrument.ctpExchangeId = exchId
-                    instrument.ctpInstrumentId = subObj.optString("ins_id")
-                    //快期主力合约格式：KQ.m@CFFEX.IF,这里代表这个品种的主力合约ID
-                    instrument.mainInsId = "KQ.m@$exchId.$productId"
-                }
-                //主力合约
-                "FUTURE_CONT" -> {
-                    instrument.isMainIns = true
-                    //快期主力合约的underlying_symbol格式为: CFFEX.IF2001
-                    val splitSymbole = underlying_symbol.split(Regex("\\."))
-                    instrument.ctpExchangeId = splitSymbole[0]
-                    instrument.ctpInstrumentId = splitSymbole[1]
-                    //主力合约对应的真实合约
-                    instrument.mainInsId = underlying_symbol
-                }
-            }
-            val tradingTime = subObj.get("trading_time")
-            //指数，主力，期货
-            QuoteInfoMgr.mgr.addInstrument(instrument, tradingTime)
-            //组合合约
-//            if ("FUTURE_COMBINE" == classN) {
-//                instrument.leg1_symbol = subObj.optString("leg1_symbol")
-//                instrument.leg2_symbol = subObj.optString("leg2_symbol")
-//                var exchange = futureCombinedMap[exchId]
-//                if (exchange == null) {
-//                    exchange = ExchangeInfo(exchId)
-//                    futureCombinedMap[exchId] = exchange
-//                }
-//                exchange.putInstrument(instrument)
-//            }
-            //期权合约
-//            if ("FUTURE_OPTION" == classN) {
-//                instrument.option_class = subObj.optString("option_class")
-//                instrument.strike_price = subObj.optString("strike_price")
-//                instrument.underlying_multiple = subObj.optString("underlying_multiple")
-//                var exchange = futureOptionMap[exchId]
-//                if (exchange == null) {
-//                    exchange = ExchangeInfo(exchId)
-//                    futureOptionMap[exchId] = exchange
-//                }
-//                exchange.putInstrument(instrument)
-//            }
-        }
-        return ACTION_LOAD_INS_OK
-    }
-
-}
-
 class WebSocketFrameParser(
     private var quoteLieData: Subject<QuoteEntity>,
     private var chartLiveData: Subject<List<KLineEntity>>
@@ -262,12 +138,18 @@ class QuoteParser(
                 for (klinePropertyName in klineEntityJson.keySet()) {
                     val property = klineEntityJson.get(klinePropertyName)
                     if (property !is JsonObject) {
-                        setJsonValueToObjProperty(
-                            kLineEntity,
-                            property as JsonPrimitive,
-                            KLineEntity::class.java.getDeclaredField(klinePropertyName)
-                        )
-                        Log.d("QuoteParser", "parse kline $duration $klinePropertyName:$property")
+                        try {
+                            setJsonValueToObjProperty(
+                                kLineEntity,
+                                property as JsonPrimitive,
+                                KLineEntity::class.java.getDeclaredField(klinePropertyName)
+                            )
+                            Log.d("QuoteParser", "parse kline $duration $klinePropertyName:$property")
+                        }catch (e:Throwable) {
+                            Log.e("QuoteParser","no field $klinePropertyName found in KLineEntity $klineEntityJson")
+                        }
+
+
                     } else {
                         if (klinePropertyName == JSON_DATA) {
                             for (dataKey in property.keySet()) {
@@ -323,11 +205,16 @@ class QuoteParser(
                     chartEntity.state[stateType] = stateJson.optString(stateType)
                 }
             } else {
-                setJsonValueToObjProperty(
-                    chartEntity,
-                    chartIdJson.asJsonObject.get(key) as JsonPrimitive,
-                    ChartEntity::class.java.getDeclaredField(key)
-                )
+                try {
+                    setJsonValueToObjProperty(
+                        chartEntity,
+                        chartIdJson.asJsonObject.get(key) as JsonPrimitive,
+                        ChartEntity::class.java.getDeclaredField(key)
+                    )
+                }catch (e:Throwable) {
+                    Log.e("QuoteParser","no field $key found in ChartEntity class ${chartIdJson.asJsonObject}")
+                }
+
             }
         }
     }

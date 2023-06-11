@@ -4,8 +4,10 @@ import android.content.res.Resources
 import android.graphics.Color
 import androidx.annotation.ArrayRes
 import androidx.annotation.ColorRes
+import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import com.fsh.common.base.BaseApplication
+import java.io.InputStream
 
 /**
  * Created by devFan
@@ -18,45 +20,49 @@ import com.fsh.common.base.BaseApplication
  */
 
 object CommonUtil {
-    var application:BaseApplication? = null
+    lateinit var application:BaseApplication
 
     fun getAppId():String{
-        if(application == null){
+        if(!this::application.isInitialized){
             return "com.fsh.future"
         }
-        return application!!.packageName
+        return application.packageName
     }
 
     fun getColorRes(@ColorRes resId:Int):Int{
-        if(application == null){
+        if(!this::application.isInitialized){
             return Color.BLACK
         }
         return try{
-            application!!.resources.getColor(resId)
+            application.resources.getColor(resId)
         }catch (e: Resources.NotFoundException){
             return Color.BLACK
         }
     }
 
     fun getStringRes(@StringRes resId: Int):String{
-        if(application == null){
+        if(!this::application.isInitialized){
             return Omits.OmitString
         }
         return try{
-            application!!.resources.getString(resId)
+            application.resources.getString(resId)
         }catch (e: Resources.NotFoundException){
             return Omits.OmitString
         }
     }
 
     fun getStringArrayRes(@ArrayRes resId: Int):Array<String>{
-        if(application == null){
+        if(!this::application.isInitialized){
             return emptyArray()
         }
         return try{
-            application!!.resources.getStringArray(resId)
+            application.resources.getStringArray(resId)
         }catch (e: Resources.NotFoundException){
             return emptyArray()
         }
+    }
+
+    fun openRawResource(@RawRes resId: Int):InputStream {
+        return application.resources.openRawResource(resId)
     }
 }

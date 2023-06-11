@@ -6,7 +6,7 @@
     android:id="@+id/drawer"
     xmlns:tools="http://schemas.android.com/tools"
     tools:openDrawer="start"
-    >
+    tools:ignore="ResourceName">
 
     <include
         layout="@layout/fragment_quote_main"

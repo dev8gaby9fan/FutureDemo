@@ -6,16 +6,13 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +27,6 @@ import com.future.quote.service.QuoteInfoMgr
 import com.future.quote.viewmodel.SearchInstrumentViewModel
 import kotlinx.android.synthetic.main.quote_activity_instrument_search.*
 import kotlinx.android.synthetic.main.quote_layout_item_instrument.view.*
-import okhttp3.internal.toHexString
 
 @Route(path = ARouterPath.Page.PAGE_INS_SEARCH)
 class InstrumentSearchActivity : BaseActivity() {
@@ -133,15 +129,15 @@ class InstrumentSearchActivity : BaseActivity() {
 
         override fun onBindViewHolder(holder: SearchItemVH, position: Int) {
             val ins = insList[position]
-            val insSpannable = SpannableString(ins.name+"("+ins.id+")")
-            insSpannable.setSpan(ForegroundColorSpan(holder.itemView.resources.getColor(R.color.dark_light)),0,ins.name.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            insSpannable.setSpan(AbsoluteSizeSpan(holder.itemView.resources.getDimensionPixelSize(R.dimen.abc_sp_16)),0,ins.name.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            insSpannable.setSpan(ForegroundColorSpan(holder.itemView.resources.getColor(R.color.color_text_gray)),ins.name.length,insSpannable.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            insSpannable.setSpan(AbsoluteSizeSpan(holder.itemView.resources.getDimensionPixelSize(R.dimen.abc_sp_14)),ins.name.length,insSpannable.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            val insSpannable = SpannableString(ins.instrumentName+"("+ins.instrumentID+")")
+            insSpannable.setSpan(ForegroundColorSpan(holder.itemView.resources.getColor(R.color.dark_light)),0,ins.instrumentName.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            insSpannable.setSpan(AbsoluteSizeSpan(holder.itemView.resources.getDimensionPixelSize(R.dimen.abc_sp_16)),0,ins.instrumentName.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            insSpannable.setSpan(ForegroundColorSpan(holder.itemView.resources.getColor(R.color.color_text_gray)),ins.instrumentName.length,insSpannable.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            insSpannable.setSpan(AbsoluteSizeSpan(holder.itemView.resources.getDimensionPixelSize(R.dimen.abc_sp_14)),ins.instrumentName.length,insSpannable.length,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             holder.itemView.tv_ins_name.text = insSpannable
-            holder.itemView.tv_ins_exchange.text = QuoteInfoMgr.mgr.getExchange(ins.eid).name
+            holder.itemView.tv_ins_exchange.text = QuoteInfoMgr.mgr.getExchange(ins.exchangeID).name
             holder.itemView.setOnClickListener {
-                intent.putExtra(SELECT_INS_ID,ins.id)
+                intent.putExtra(SELECT_INS_ID,ins.instrumentID)
                 setResult(Activity.RESULT_OK,intent)
                 finish()
             }

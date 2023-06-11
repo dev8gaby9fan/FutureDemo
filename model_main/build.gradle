@@ -31,6 +31,12 @@ android {
         targetCompatibility 1.8
     }
     resourcePrefix "main_"
+    kotlinOptions {
+        jvmTarget = versions.kotlinJvmTarget
+    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {

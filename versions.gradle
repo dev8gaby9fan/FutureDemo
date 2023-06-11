@@ -9,27 +9,28 @@ def deps = [:]
 //版本
 def versions=[:]
 versions.gradle="3.5.3"
-versions.accpcompat="1.0.2"
-versions.core_ktx="1.0.2"
-versions.material="1.1.0"
+versions.accpcompat="1.2.0"
+versions.core_ktx="1.10.0"
+versions.material="1.3.0"
 versions.constraint_version="1.1.3"
-versions.lifecycle_extensions="2.0.0"
-versions.fragment="1.2.2"
-versions.fragment_ktx="1.2.2"
+versions.lifecycle_extensions="2.2.0"
+versions.fragment="1.3.6"
+versions.fragment_ktx="1.3.6"
 versions.junit="4.12"
 versions.test_runner="1.1.1"
 versions.test_ext="1.1.0"
 versions.espresso_core="3.1.1"
 versions.multidex="2.0.1"
-versions.kotlin="1.3.41"
-versions.kotlinx_coroutines="1.2.1"
-versions.fragment_ktx="1.1.0-rc01"
+versions.kotlin="1.4.30"
+versions.kotlinx_coroutines="1.4.3"
+versions.fragment_ktx="1.3.6"
 versions.gson="2.8.5"
 versions.MPAndroidChart="v3.1.0"
 versions.EasyPermissions="3.0.0"
-versions.arouter="1.4.1"
+versions.arouter="1.5.1"
 versions.arouter_compiler="1.2.2"
-versions.okhttp="4.4.0"
+versions.okhttp="4.6.0"
+versions.conscrypt="2.4.0"
 versions.rxjava="2.2.18"
 versions.rxandroid="2.1.1"
 versions.retrofit="2.7.2"
@@ -40,6 +41,7 @@ versions.gad="19.1.0"
 versions.doraemonkit="3.1.4"
 versions.doraemonkit_leakcanary="3.1.4"
 versions.doraemonkit_plugin="3.1.4"
+versions.kotlinJvmTarget="1.8"
 
 def androidx=[:]
 androidx.constraint_layout="androidx.constraintlayout:constraintlayout:${versions.constraint_version}"
@@ -75,7 +77,11 @@ def mpchart="com.github.PhilJay:MPAndroidChart:${versions.MPAndroidChart}"
 
 def easy_permission = "pub.devrel:easypermissions:${versions.EasyPermissions}"
 
-def okhttp="com.squareup.okhttp3:okhttp:$versions.okhttp"
+def okhttp=[:]
+okhttp.core="com.squareup.okhttp3:okhttp:$versions.okhttp"
+okhttp.logging="com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+
+def conscrypt = "org.conscrypt:conscrypt-android:$versions.conscrypt"
 
 def retrofit=[:]
 retrofit.api="com.squareup.retrofit2:retrofit:$versions.retrofit"
@@ -110,6 +116,7 @@ deps.rxjava=rxjava
 deps.retrofit=retrofit
 deps.google_ad = google_ad
 deps.doraemonkit = doraemonkit
+deps.conscrypt = conscrypt
 //编译版本
 def build_versions=[:]
 build_versions.min_sdk = 24
@@ -129,6 +136,7 @@ ext.app_info=app_info
 
 def addRepos(RepositoryHandler handler) {
     handler.google()
+    handler.mavenCentral()
     handler.jcenter()
 }
 ext.addRepos = this.&addRepos

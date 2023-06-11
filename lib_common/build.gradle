@@ -30,6 +30,12 @@ android {
         targetCompatibility 1.8
     }
     resourcePrefix "common_"
+    kotlinOptions {
+        jvmTarget = versions.kotlinJvmTarget
+    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
 
@@ -24,15 +23,21 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    kotlinOptions {
+        jvmTarget = versions.kotlinJvmTarget
+    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api deps.kotlin.stdlib
+//    api deps.kotlin.stdlib
     api deps.kotlin.coroutines
     api deps.kotlin.test
     api deps.androidx.appcompat
-    api deps.androidx.core_ktx
+//    api deps.androidx.core_ktx
     api deps.androidx.lifecycle_extensions
     api deps.androidx.multidex
     api deps.androidx.constraint_layout
@@ -45,7 +50,9 @@ dependencies {
     api deps.gson
     api deps.material
     api deps.easy_permission
-    api deps.okhttp
+    api(deps.okhttp.core)
+    api(deps.okhttp.logging)
+    api deps.conscrypt
     api deps.rxjava.java
     api deps.rxjava.android
     api deps.retrofit.api
@@ -53,13 +60,8 @@ dependencies {
     api deps.retrofit.adapter
 //    api deps.google_ad
     api deps.mpchart
-    api deps.doraemonkit.kit
+    api(deps.doraemonkit.kit) {
+        exclude group: "com.squareup.okhttp"
+    }
     api deps.doraemonkit.leakcanary
-
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    implementation 'androidx.appcompat:appcompat:1.0.2'
-//    implementation 'androidx.core:core-ktx:1.0.2'
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

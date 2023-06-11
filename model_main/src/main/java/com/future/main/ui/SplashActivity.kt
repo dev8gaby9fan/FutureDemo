@@ -18,7 +18,7 @@ class SplashActivity : BaseActivity() {
         window.decorView.postDelayed({
             startActivity(Intent(this@SplashActivity,MainActivity::class.java))
             finish()
-        },3000)
+        },1000)
     }
 
     override fun setWindowFlags() {

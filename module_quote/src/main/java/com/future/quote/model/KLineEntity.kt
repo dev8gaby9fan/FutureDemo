@@ -11,6 +11,8 @@ class KLineEntity{
 
     var instrumentId:String = Omits.OmitString
     var klineDuration:Long = Omits.OmitLong
+    var market_time_length:Int = Omits.OmitInt
+    var trading_day_length:Int = Omits.OmitInt
 
     class DataEntity{
         var datetime:Long = 0
